@@ -13,4 +13,5 @@ package utilities;
 public class Constants {
 	public static final String TAKEN_USERNAME = "That username has areadly been taken";
 	public static final String PASSWORDS_DONT_MATCH = "Those passwords do not match";
+	public static final String INCORRECT_NAME_PASS = "That username and password combination is not recognized";
 }

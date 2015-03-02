@@ -51,10 +51,18 @@ public class User extends Model {
 		if(!users.isEmpty()) return null;
 
 		String insertQuery = "INSERT INTO user (name, password) VALUES ("+
-			       "'"+name+"', '"+password+"')";
+			       "'"+name+"', MD5('"+password+"'))";
 		Query.update(insertQuery);
 		
 		return (User)Query.getModel(getQuery, new User()).get(0);
+	}
+
+	public static User login(String name, String password) {
+		String query = "SELECT * FROM user WHERE name='"+name+"' AND "+
+				"password=MD5('"+password+"')";
+		ArrayList<Model> user = Query.getModel(query, new User());
+
+		return (User)(user.isEmpty() ? null : user.get(0));
 	}
 
 	/**

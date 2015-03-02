@@ -22,7 +22,7 @@ import javax.servlet.http.HttpSession;
  * @author aryner
  */
 @WebServlet(name = "Controller", urlPatterns = {
-						"/Controller","/register","/createUser"
+						"/Controller","/register","/createUser","/select_study","/login"
 						})
 public class Controller extends HttpServlet {
 	/**
@@ -88,7 +88,7 @@ public class Controller extends HttpServlet {
 				}
 				else { 
 					session.setAttribute("user", user); 
-					response.sendRedirect("/Photo_Grader/home"); 
+					response.sendRedirect("/Photo_Grader/select_study"); 
 					return;
 				} 
 			}
@@ -97,6 +97,21 @@ public class Controller extends HttpServlet {
 				response.sendRedirect("/Photo_Grader/register"); 
 				return;
 			}
+		}
+		else if(userPath.equals("/login")) {
+			String name = request.getParameter("userName");
+			String password = request.getParameter("password");
+			user = User.login(name, password);
+
+			if(user == null) {
+				session.setAttribute("error", Constants.INCORRECT_NAME_PASS);
+				response.sendRedirect("/Photo_Grader/"); 
+				return;
+			}
+
+			session.setAttribute("user",user);
+			response.sendRedirect("/Photo_Grader/select_study"); 
+			return;
 		}
 
 		String url = "/WEB-INF/view" + userPath + ".jsp";

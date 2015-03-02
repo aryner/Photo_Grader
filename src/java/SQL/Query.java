@@ -39,10 +39,10 @@ public class Query {
 			}
 		}
 		catch (javax.naming.NamingException e) {
-			e.printStackTrace(System.out);
+			e.printStackTrace(System.err);
 		}
 		catch (SQLException e) {
-			e.printStackTrace(System.out);
+			e.printStackTrace(System.err);
 		}
 		finally {
 			close(con, stmt, resultSet);
@@ -66,10 +66,10 @@ public class Query {
 			stmt.executeUpdate(query);
 		}
 		catch (javax.naming.NamingException e) {
-			e.printStackTrace(System.out);
+			e.printStackTrace(System.err);
 		}
 		catch (SQLException e) {
-			e.printStackTrace(System.out);
+			e.printStackTrace(System.err);
 		}
 		finally {
 			close(con, stmt, null);
@@ -83,7 +83,7 @@ public class Query {
 			if(con != null) con.close();
 		}
 		catch (SQLException e) {
-			e.printStackTrace(System.out);
+			e.printStackTrace(System.err);
 		}
 	}
 }
