@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context antiJARLocking="true" path="/Photo_Grader">
+  <!-- maxActive: Maximum number of database connections in pool
+		make sure you configure your mysqld max_connections large
+		enough to handl all of your db connections. Set to -1 for no
+		limit
+	-->
+  <!-- maxIdle: Maximum number of idle database connections to reatin in
+		pool.  Set to -1 for no limit.  See also the DBCP documentation
+		on this and the minEvictableIdleTimeMillis configuration parameter
+	-->
+  <!-- maxWait: Maximum time to wait for a database connection to become
+		available in ms, in this example 10 seconds. An exception is thrwon
+		if this timeout is exceeded.  Set to -1 to wait indefinitely.
+	-->
+  <!-- username and password: MySQL username and password for database 
+		connections 
+	-->
+  <!-- driverClassName: class name for the old mm.mysql JDBC drive is
+		org.gjt.mm.mysql.Driver - we recommend using Connector/J though
+		Class name for the official MySQL Connector/J dirve is
+		com.mysql.jdbc.Driver.
+	-->
+  <!-- url: The JDBC connection url for connecting to your MySQL database -->
+
+<!-- change the username and password to what is appropriate for your db -->
+  <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" maxActive="100" maxIdle="30" maxWait="10000" name="photo_grader" password="" type="javax.sql.DataSource" url="jdbc:mysql://localhost:3306/photo_grader" username=""/>
+</Context>
+
+
