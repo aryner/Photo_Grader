@@ -9,7 +9,7 @@
 
 <%
 	if(session.getAttribute("error") != null){
-		out.print("<p style='color:red;'>Incorrect password or user name");
+		out.print("<p class='error'>"+session.getAttribute("error")+"</p>");
 		session.removeAttribute("error");
 	}
 	if(session.getAttribute("user") != null) {

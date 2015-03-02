@@ -22,7 +22,8 @@ import javax.servlet.http.HttpSession;
  * @author aryner
  */
 @WebServlet(name = "Controller", urlPatterns = {
-						"/Controller","/register","/createUser","/select_study","/login"
+						"/Controller","/register","/createUser","/select_study","/login",
+						"/logout"
 						})
 public class Controller extends HttpServlet {
 	/**
@@ -52,7 +53,7 @@ public class Controller extends HttpServlet {
 		try {
 			request.getRequestDispatcher(url).forward(request, response);
 		} catch (IOException ex){
-			ex.printStackTrace(System.out);
+			ex.printStackTrace(System.err);
 		}
 	}
 
@@ -70,7 +71,7 @@ public class Controller extends HttpServlet {
 
 		String userPath = request.getServletPath(); 
 		HttpSession session = request.getSession(); 
-		User user = (User)session.getAttribute("user");
+		User user;
 
 		if(userPath.equals("/createUser")) {
 			String name = request.getParameter("userName");
@@ -113,13 +114,18 @@ public class Controller extends HttpServlet {
 			response.sendRedirect("/Photo_Grader/select_study"); 
 			return;
 		}
+		else if(userPath.equals("/logout")) {
+			session.removeAttribute("user");
+			response.sendRedirect("/Photo_Grader/");
+			return;
+		}
 
 		String url = "/WEB-INF/view" + userPath + ".jsp";
 
 		try {
 			request.getRequestDispatcher(url).forward(request, response);
 		} catch (IOException ex){
-			ex.printStackTrace(System.out);
+			ex.printStackTrace(System.err);
 		}
 	}
 
