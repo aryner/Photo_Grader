@@ -20,7 +20,7 @@
     </jsp-config>
     <resource-ref>
         <description>DB Connection</description>
-        <res-ref-name>photo_grader</res-ref-name>
+        <res-ref-name>Photo_Grader</res-ref-name>
         <res-type>javax.sql.DataSource</res-type>
         <res-auth>Container</res-auth>
         <res-sharing-scope>Shareable</res-sharing-scope>
