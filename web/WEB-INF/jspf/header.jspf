@@ -1,0 +1,26 @@
+<%-- any content can be specified here e.g.: --%>
+<%@ page pageEncoding="UTF-8" %>
+<%@ page import="model.User" %>
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<link rel="stylesheet" type="text/css" href="css/main.css">
+		<title>Photo Grader</title>
+	</head>
+	<body>
+		<div id="header">
+			<div class='tinySpacer'></div>
+			<a class="title" href="home">Photo Grader</a>
+			<span class="welcome">
+				<%
+					if(session.getAttribute("user") != null) {
+						out.print("Welcome " + ((User)session.getAttribute("user")).getName());
+					}
+				%>
+			</span>
+			<form action="logout" method="POST">
+				<input type="submit" value="log out" class="logOutBtn logOut">
+			</form>
+		</div>
+		<div id="content">
