@@ -7,6 +7,8 @@
 package controller;
 
 import model.*;
+import utilities.*;
+
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -20,7 +22,7 @@ import javax.servlet.http.HttpSession;
  * @author aryner
  */
 @WebServlet(name = "Controller", urlPatterns = {
-						"/Controller","/register"
+						"/Controller","/register","/createUser"
 						})
 public class Controller extends HttpServlet {
 	/**
@@ -41,7 +43,7 @@ public class Controller extends HttpServlet {
 
 		//The user is not logged in so is redirected to the index/login page
 		if(user == null && !userPath.equals("/register")) {
-			response.sendRedirect("/Cornea_Grader/index.jsp");
+			response.sendRedirect("/Photo_Grader/index.jsp");
 			return;
 		}
 
@@ -69,6 +71,33 @@ public class Controller extends HttpServlet {
 		String userPath = request.getServletPath(); 
 		HttpSession session = request.getSession(); 
 		User user = (User)session.getAttribute("user");
+
+		if(userPath.equals("/createUser")) {
+			String name = request.getParameter("userName");
+			String password = request.getParameter("password");
+			String rePassword = request.getParameter("rePassword");
+			String type = request.getParameter("graderType");
+
+			if(password.equals(rePassword)){
+				user = User.register(name, password);
+
+				if(user == null) {
+					session.setAttribute("error", Constants.TAKEN_USERNAME);
+					response.sendRedirect("/Photo_Grader/register");
+					return;
+				}
+				else { 
+					session.setAttribute("user", user); 
+					response.sendRedirect("/Photo_Grader/home"); 
+					return;
+				} 
+			}
+			else {
+				session.setAttribute("error", Constants.PASSWORDS_DONT_MATCH);
+				response.sendRedirect("/Photo_Grader/register"); 
+				return;
+			}
+		}
 
 		String url = "/WEB-INF/view" + userPath + ".jsp";
 

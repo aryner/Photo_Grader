@@ -13,7 +13,7 @@
 		session.removeAttribute("error");
 	}
 	if(session.getAttribute("user") != null) {
-		response.sendRedirect("/Photo_Grader/home"); 
+//		response.sendRedirect("/Photo_Grader/home"); 
 	}
 %>
 

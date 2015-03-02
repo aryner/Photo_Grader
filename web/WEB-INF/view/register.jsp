@@ -11,7 +11,7 @@
 
 	<%
 		if(session.getAttribute("user") != null) {
-			response.sendRedirect("/Photo_Grader/home"); 
+//			response.sendRedirect("/Photo_Grader/home"); 
 		}
 		if(session.getAttribute("error") != null) {
 			out.print("<p class='error'>" + session.getAttribute("error") + "</p>");
