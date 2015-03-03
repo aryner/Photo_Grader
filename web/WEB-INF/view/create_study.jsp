@@ -3,6 +3,7 @@
     Created on : Mar 2, 2015, 2:08:36 PM
     Author     : aryner
 --%>
+<%@page import="model.MetaData"%>
 
 <%
 String name = request.getParameter("name");
@@ -27,16 +28,16 @@ int number_fields = Integer.parseInt(request.getParameter("number"));
 	</div>
 	<div class="meta-col">
 		Type of data:<br>
-		Integer <input type="radio" name="type<%out.print(i);%>" value="number">
-		Decimal <input type="radio" name="type<%out.print(i);%>" value="decimal">
-		String <input type="radio" name="type<%out.print(i);%>" value="string">
+		Integer <input type="radio" name="type<%out.print(i);%>" value="<%out.print(MetaData.INTEGER);%>">
+		Decimal <input type="radio" name="type<%out.print(i);%>" value="<%out.print(MetaData.DECIMAL);%>">
+		String <input type="radio" name="type<%out.print(i);%>" value="<%out.print(MetaData.STRING);%>">
 	</div>
 	<div class="meta-col">
 		How will the data be collected?<br>
-		Photo name <input type="radio" name="collect" value="name">
-		Excel file <input type="radio" name="collect" value="excel">
-		CSV <input type="radio" name="collect" value="csv">
-		Manually entered <input type="radio" name="collect" value="manual">
+		Photo name <input type="radio" name="collect" value="<%out.print(MetaData.NAME);%>">
+		Excel file <input type="radio" name="collect" value="<%out.print(MetaData.EXCEL);%>">
+		CSV <input type="radio" name="collect" value="<%out.print(MetaData.CSV);%>">
+		Manually entered <input type="radio" name="collect" value="<%out.print(MetaData.MANUAL);%>">
 	</div>
 </div>
 <%

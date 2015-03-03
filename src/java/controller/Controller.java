@@ -9,6 +9,7 @@ package controller;
 import model.*;
 import utilities.*;
 
+import java.util.*;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -121,7 +122,14 @@ public class Controller extends HttpServlet {
 			return;
 		}
 		else if(userPath.equals("/defineAssignment")) {
-			
+			//get arrayLists of each type and send them to
+			// the define_assignment page where they can be
+			//  completed and applied
+			ArrayList<MetaData> name = new ArrayList<MetaData>();
+			ArrayList<MetaData> excel = new ArrayList<MetaData>();
+			ArrayList<MetaData> csv = new ArrayList<MetaData>();
+			ArrayList<MetaData> manual = new ArrayList<MetaData>();
+			MetaData.makeLists(request, name, excel, csv, manual);
 		}
 
 		String url = "/WEB-INF/view" + userPath + ".jsp";
