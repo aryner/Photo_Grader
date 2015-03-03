@@ -10,6 +10,9 @@
 <form action="setStudy" method="POST"> 
 	<p>
 		<select name="name" class="btn">
+			<%
+			//options generated from sql query results of studies
+			%>
 		</select>
 	</p>
 	<input type="submit" class="btn" value="Use Study">
@@ -19,10 +22,13 @@
 
 <div class="hidden error" name="study_name_taken"><%out.print(Constants.STUDY_NAME_TAKEN);%></div>
 
-<form action="createStudy" method="POST">
+<form action="create_study" method="GET">
 	<p>
 		New Study Name: 
 		<input type="text" name="name">
+		<br>
+		Amount of meta-data to track in photos:
+		<input type="text" name="number">
 	</p>
 	<input type="submit" class="btn" value="Create Study">
 </form>
