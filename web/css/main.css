@@ -104,3 +104,17 @@ body {
 .hidden {
 	display: none;
 }
+
+.meta-row {
+	width: 100%;
+	height: 75px;
+}
+
+.meta-col {
+	float: left;
+	margin-right: 40px;
+}
+
+.sub-text {
+	margin: -15px 0px 10px 0px;
+}

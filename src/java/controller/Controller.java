@@ -23,7 +23,8 @@ import javax.servlet.http.HttpSession;
  */
 @WebServlet(name = "Controller", urlPatterns = {
 						"/Controller","/register","/createUser","/select_study","/login",
-						"/logout","/setStudy","/createStudy","/create_study"
+						"/logout","/setStudy","/createStudy","/create_study","/defineAssignment",
+						"/define_assignment"
 						})
 public class Controller extends HttpServlet {
 	/**
@@ -118,6 +119,9 @@ public class Controller extends HttpServlet {
 			session.removeAttribute("user");
 			response.sendRedirect("/Photo_Grader/");
 			return;
+		}
+		else if(userPath.equals("/defineAssignment")) {
+			
 		}
 
 		String url = "/WEB-INF/view" + userPath + ".jsp";
