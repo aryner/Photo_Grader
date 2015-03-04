@@ -49,6 +49,13 @@ public class Controller extends HttpServlet {
 			response.sendRedirect("/Photo_Grader/index.jsp");
 			return;
 		}
+		else if(userPath.equals("/define_assignment")) {
+			ArrayList<MetaData> metaData = new ArrayList<MetaData>();
+			MetaData.makeLists(request, metaData);
+
+			request.setAttribute("studyName",request.getParameter("studyName"));
+			request.setAttribute("metaData",metaData);
+		}
 
 		String url = "/WEB-INF/view" + userPath + ".jsp";
 
@@ -122,14 +129,6 @@ public class Controller extends HttpServlet {
 			return;
 		}
 		else if(userPath.equals("/defineAssignment")) {
-			//get arrayLists of each type and send them to
-			// the define_assignment page where they can be
-			//  completed and applied
-			ArrayList<MetaData> name = new ArrayList<MetaData>();
-			ArrayList<MetaData> excel = new ArrayList<MetaData>();
-			ArrayList<MetaData> csv = new ArrayList<MetaData>();
-			ArrayList<MetaData> manual = new ArrayList<MetaData>();
-			MetaData.makeLists(request, name, excel, csv, manual);
 		}
 
 		String url = "/WEB-INF/view" + userPath + ".jsp";

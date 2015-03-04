@@ -33,12 +33,17 @@ public class MetaData {
 		this.collection = collection;
 	}
 
-	public static void makeLists(
-				HttpServletRequest request,
-				ArrayList<MetaData> name, ArrayList<MetaData> excel,
-				ArrayList<MetaData> csv, ArrayList<MetaData> manual
-	) {
-		
+	public static void makeLists(HttpServletRequest request, ArrayList<MetaData> metaData) {
+		int maxCount = Integer.parseInt(request.getParameter("maxCount"));
+
+		for(int i=0; i<maxCount; i++) {
+			String name = request.getParameter("name"+i);
+			if(name != null && !name.equals("")) {
+				int type = Integer.parseInt(request.getParameter("type"+i));
+				int collect = Integer.parseInt(request.getParameter("collect"+i));
+				metaData.add(new MetaData(name,type,collect));
+			}
+		}
 	}
 
 	/**

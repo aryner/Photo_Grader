@@ -17,8 +17,9 @@ int number_fields = Integer.parseInt(request.getParameter("number"));
 	<b>(The photo name will be saved as meta-data by default)</b>
 </p>
 
-<form action="defineAssignment" method="POST">
+<form action="define_assignment" method="GET">
 	<input type="hidden" name="studyName" value="<%out.print(name);%>">
+	<input type="hidden" name="maxCount" value="<%out.print(number_fields);%>">
 <%
 	for(int i=0; i<number_fields; i++) {
 %>
@@ -34,10 +35,10 @@ int number_fields = Integer.parseInt(request.getParameter("number"));
 	</div>
 	<div class="meta-col">
 		How will the data be collected?<br>
-		Photo name <input type="radio" name="collect" value="<%out.print(MetaData.NAME);%>">
-		Excel file <input type="radio" name="collect" value="<%out.print(MetaData.EXCEL);%>">
-		CSV <input type="radio" name="collect" value="<%out.print(MetaData.CSV);%>">
-		Manually entered <input type="radio" name="collect" value="<%out.print(MetaData.MANUAL);%>">
+		Photo name <input type="radio" name="collect<%out.print(i);%>" value="<%out.print(MetaData.NAME);%>">
+		Excel file <input type="radio" name="collect<%out.print(i);%>" value="<%out.print(MetaData.EXCEL);%>">
+		CSV <input type="radio" name="collect<%out.print(i);%>" value="<%out.print(MetaData.CSV);%>">
+		Manually entered <input type="radio" name="collect<%out.print(i);%>" value="<%out.print(MetaData.MANUAL);%>">
 	</div>
 </div>
 <%
