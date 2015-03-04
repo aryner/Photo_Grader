@@ -24,11 +24,15 @@
 
 <form action="create_study" method="GET">
 	<p>
+		<span class="hidden error" name="missingNameNumber"><%out.print(Constants.MISSING_NAME_NUMBER);%><br></span>
 		New Study Name: 
 		<input type="text" name="name">
 		<br>
 		Amount of meta-data to track in photos:
 		<input type="text" name="number">
 	</p>
-	<input type="submit" class="btn" value="Create Study">
+	<input type="submit" class="btn" value="Create Study" name="newStudy">
 </form>
+
+<script src="javascripts/jquery-1.11.1.min.js" type="text/javascript"></script>
+<script src="javascripts/newStudy.js" type="text/javascript"></script>

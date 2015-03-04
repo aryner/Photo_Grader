@@ -36,8 +36,11 @@ for(MetaData datum : metaData) {
 if(name > 0) {
 %>
 <h3>Specify how to extract meta-data from the photo name</h3>
-
 <%
+	for(MetaData datum : metaData) {
+		if(datum.getCollection() == MetaData.NAME) {
+		}
+	}
 }
 if(excel > 0) {
 %>
