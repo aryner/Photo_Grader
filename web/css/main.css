@@ -118,3 +118,8 @@ body {
 .sub-text {
 	margin: -15px 0px 10px 0px;
 }
+
+.newRow {
+	clear: both;
+	position: relative;
+}

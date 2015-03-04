@@ -7,15 +7,23 @@
 
 $(document).ready(function() {
 	$(':submit[value=Submit]').on('click',function(e) {
-		e.preventDefault();
 		var maxCount = +($('input[type=hidden][name=maxCount]').val());
 		var actualCount = maxCount;
 		var focus = false;
+		var names = [];
 
 		for(var i=0; i<maxCount; i++) {
 			var name = $('input[type=text][name=name'+i+']').val();
 
+			if (!contains(names,name)) { $('div[name=sameName'+i+']').addClass('hidden'); }
 			if(name.trim() === '') { $('div[name=error'+i+']').addClass('hidden'); actualCount--; continue; }
+
+			if(contains(names,name)) {
+				e.preventDefault();
+				$('div[name=sameName'+i+']').removeClass('hidden');
+				focus = setFocus($('input[name=name'+i+']'), focus);
+			}
+			names.push(name);
 
 			var type = $('input[name=type'+i+'][value=1]').prop('checked') 
 				|| $('input[name=type'+i+'][value=2]').prop('checked')
@@ -28,9 +36,26 @@ $(document).ready(function() {
 			if(!type || !collect) {
 				e.preventDefault();
 				$('div[name=error'+i+']').removeClass('hidden');
-				if(!focus) { $('input[name=name'+i+']').focus(); focus = true; }
+				focus = setFocus($('input[name=name'+i+']'), focus);
 			}
 			else { $('div[name=error'+i+']').addClass('hidden'); }
 		}
 	});
 });
+
+function setFocus(element, focus) {
+	if(!focus) {
+		element.focus();
+		focus = true;
+	}
+	return focus;
+}
+
+function contains(haystack, needle) {
+	for(var i=0; i<haystack.length; i++) {
+		if(haystack[i].trim() === needle.trim()) {
+			return true;
+		}
+	}
+	return false;
+}
