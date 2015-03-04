@@ -29,16 +29,20 @@ int number_fields = Integer.parseInt(request.getParameter("number"));
 	</div>
 	<div class="meta-col">
 		Type of data:<br>
-		Integer <input type="radio" name="type<%out.print(i);%>" value="<%out.print(MetaData.INTEGER);%>">
-		Decimal <input type="radio" name="type<%out.print(i);%>" value="<%out.print(MetaData.DECIMAL);%>">
-		String <input type="radio" name="type<%out.print(i);%>" value="<%out.print(MetaData.STRING);%>">
+		<input type="radio" name="type<%out.print(i);%>" value="<%out.print(MetaData.INTEGER);%>">Integer 
+		<input type="radio" name="type<%out.print(i);%>" value="<%out.print(MetaData.DECIMAL);%>">Decimal 
+		<input type="radio" name="type<%out.print(i);%>" value="<%out.print(MetaData.STRING);%>">String 
 	</div>
 	<div class="meta-col">
 		How will the data be collected?<br>
-		Photo name <input type="radio" name="collect<%out.print(i);%>" value="<%out.print(MetaData.NAME);%>">
-		Excel file <input type="radio" name="collect<%out.print(i);%>" value="<%out.print(MetaData.EXCEL);%>">
-		CSV <input type="radio" name="collect<%out.print(i);%>" value="<%out.print(MetaData.CSV);%>">
-		Manually entered <input type="radio" name="collect<%out.print(i);%>" value="<%out.print(MetaData.MANUAL);%>">
+		<input type="radio" name="collect<%out.print(i);%>" value="<%out.print(MetaData.NAME);%>">Photo name 
+		<input type="radio" name="collect<%out.print(i);%>" value="<%out.print(MetaData.EXCEL);%>">Excel file 
+		<input type="radio" name="collect<%out.print(i);%>" value="<%out.print(MetaData.CSV);%>">CSV 
+		<input type="radio" name="collect<%out.print(i);%>" value="<%out.print(MetaData.MANUAL);%>">Manually entered 
+	</div>
+	<div class="meta-col error hidden" name="error<%out.print(i);%>">
+		You must select a type of data and how it will be collected.<br>
+		Or leave the descriptor section empty and this row will be skipped.
 	</div>
 </div>
 <%
@@ -46,3 +50,6 @@ int number_fields = Integer.parseInt(request.getParameter("number"));
 %>
 	<input type="submit" value="Submit" class="btn">
 </form>
+
+<script src="javascripts/jquery-1.11.1.min.js" type="text/javascript"></script>
+<script src="javascripts/createStudy.js" type="text/javascript"></script>
