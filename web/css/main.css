@@ -123,3 +123,7 @@ body {
 	clear: both;
 	position: relative;
 }
+
+.small_text_box {
+	width: 20px;
+}

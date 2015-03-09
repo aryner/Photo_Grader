@@ -26,6 +26,13 @@ public class MetaData {
 	public static final int EXCEL = 2;
 	public static final int CSV = 3;
 	public static final int MANUAL = 4;
+
+	public static final int START = 1;
+	public static final int END = 2;
+	public static final int NUMBER = 3;
+	public static final int DELIMITER = 4;
+	public static final int BEFORE = 5;
+	public static final int AFTER = 6;
 	
 	public MetaData(String name, int type, int collection) {
 		this.name = name;
