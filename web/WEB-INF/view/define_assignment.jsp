@@ -5,6 +5,7 @@
 --%>
 
 <%@page import="model.MetaData"%>
+<%@page import="utilities.ColorPicker"%>
 <%@page import="java.util.*"%>
 
 <%
@@ -77,9 +78,21 @@ if(name > 0) {
 	//end of row
 	out.print("</div>");
 	//row showing example of what has been done so far
+	out.print("<div class='newRow'>");
 	out.print("<div class='meta-row'>");
 
 	out.print("<div class=meta-col>");
+	out.print("<h4>Example key:</h4>");
+	ColorPicker colorPicker = new ColorPicker();
+	for(MetaData datum : metaData) {
+		if(datum.getCollection() == MetaData.NAME) {
+			out.print("<span name='"+datum.getName()+"' "+colorPicker.nextBackgroundColor()+">"+datum.getName()+"</span><br>");
+		}
+	}
+	out.print("</div>");
+	out.print("<div class=meta-col>");
+	out.print("<h4>Example :</h4>");
+	out.print("<p name='example'></p>");
 	out.print("</div>");
 
 	//end of row
