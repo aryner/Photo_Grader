@@ -12,10 +12,15 @@ $(document).ready(function() {
 	for(var i=0; i<3; i++) {
 		completedTracker[i][0] = 0;
 	}
+
+	setEmitters();
+});
+
+function setEmitters() {
 	setTypeCheckedEmitter(index);
 	setStartCheckedEmitter(index);
 	setEndCheckedEmitter(index);
-});
+}
 
 function setTypeCheckedEmitter(index) {
 	var radios = document.getElementsByName('type_1_'+index);
@@ -41,83 +46,69 @@ function setStartCheckedEmitter(index) {
 
 	for(var i=0; i<radios.length; i++) {
 		radios[i].onclick= function() {
-			var event = new CustomEvent("start"+index, {'detail':{'index':index,'type':this.value}});
+			var event = new CustomEvent("start"+index, {'detail':{'index':index,'type':this.value,'section':START}});
 			document.dispatchEvent(event);
 		};
 	}
 	document.getElementsByName('start_'+NUMBER+'_'+index)[0].oninput = function() {
-		var event = new CustomEvent("start"+index, {'detail':{'index':index,'type':NUMBER}});
+		var event = new CustomEvent("start"+index, {'detail':{'index':index,'type':NUMBER,'section':START}});
 		document.dispatchEvent(event);
 	};
 	document.getElementsByName('start_'+DELIMITER+'_'+index)[0].oninput= function() {
-		var event = new CustomEvent("start"+index, {'detail':{'index':index,'type':DELIMITER}});
+		var event = new CustomEvent("start"+index, {'detail':{'index':index,'type':DELIMITER,'section':START}});
 		document.dispatchEvent(event);
 	};
 
-	document.addEventListener('start'+index, startFunction, false);
+	document.addEventListener('start'+index, setLimitsFunction, false);
 }
-
-var startFunction = function(event) {
-	console.log('index = '+event.detail.index+', type = '+event.detail.type);
-
-	switch(Number(event.detail.type)) {
-		case START:
-			completedTracker[1][event.detail.index-1] = 1;
-			break;
-		case NUMBER:
-			checkNumberDeliminter(NUMBER, Number(event.detail.index), START);
-			break;
-		case DELIMITER:
-			checkNumberDeliminter(DELIMITER, Number(event.detail.index), START);
-			break;
-		case AFTER:
-			completedTracker[1][event.detail.index-1] = 1;
-			break;
-	}
-
-	console.log('compltedTracker[1]['+(event.detail.index-1)+'] is now = '+completedTracker[1][event.detail.index-1]);
-};
 
 function setEndCheckedEmitter(index) {
 	var radios = document.getElementsByName('end_'+index);
 
 	for(var i=0; i<radios.length; i++) {
 		radios[i].onclick= function() {
-			var event = new CustomEvent("end"+index, {'detail':{'index':index,'type':this.value}});
+			var event = new CustomEvent("end"+index, {'detail':{'index':index,'type':this.value,'section':END}});
 			document.dispatchEvent(event);
 		};
 	}
 	document.getElementsByName('end_'+NUMBER+'_'+index)[0].oninput = function() {
-		var event = new CustomEvent("end"+index, {'detail':{'index':index,'type':NUMBER}});
+		var event = new CustomEvent("end"+index, {'detail':{'index':index,'type':NUMBER,'section':END}});
 		document.dispatchEvent(event);
 	};
 	document.getElementsByName('end_'+DELIMITER+'_'+index)[0].oninput= function() {
-		var event = new CustomEvent("end"+index, {'detail':{'index':index,'type':DELIMITER}});
+		var event = new CustomEvent("end"+index, {'detail':{'index':index,'type':DELIMITER,'section':END}});
 		document.dispatchEvent(event);
 	};
 
-	document.addEventListener('end'+index, endFunction, false);
+	document.addEventListener('end'+index, setLimitsFunction, false);
 }
 
-var endFunction = function(event) {
+var setLimitsFunction = function(event) {
 	console.log('index = '+event.detail.index+', type = '+event.detail.type);
+	var section = Number(event.detail.section);
 
 	switch(Number(event.detail.type)) {
+		case START:
+			completedTracker[1][event.detail.index-1] = 1;
+			break;
 		case END:
-			completedTracker[2][event.detail.index-1] = 1;
+			completedTracker[section][event.detail.index-1] = 1;
 			break;
 		case NUMBER:
-			checkNumberDeliminter(NUMBER, Number(event.detail.index), END);
+			checkNumberDeliminter(NUMBER, Number(event.detail.index), section);
 			break;
 		case DELIMITER:
-			checkNumberDeliminter(DELIMITER, Number(event.detail.index), END);
+			checkNumberDeliminter(DELIMITER, Number(event.detail.index), section);
 			break;
 		case BEFORE:
-			completedTracker[2][event.detail.index-1] = 1;
+			completedTracker[section][event.detail.index-1] = 1;
+			break;
+		case AFTER:
+			completedTracker[section][event.detail.index-1] = 1;
 			break;
 	}
 
-	console.log('compltedTracker[2]['+(event.detail.index-1)+'] is now = '+completedTracker[2][event.detail.index-1]);
+	console.log('compltedTracker['+section+']['+(event.detail.index-1)+'] is now = '+completedTracker[section][event.detail.index-1]);
 };
 
 function checkNumberDeliminter(type, index, tense) {
