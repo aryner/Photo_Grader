@@ -58,4 +58,36 @@ var typeFunction = function(event) {
 
 var startFunction = function(event) {
 	console.log('index = '+event.detail.index+', type = '+event.detail.type);
+
+	switch(Number(event.detail.type)) {
+		case START:
+			completedTracker[1][event.detail.index-1] = 1;
+			break;
+		case NUMBER:
+			checkNumberDeliminter(NUMBER, Number(event.detail.index), START);
+			break;
+		case DELIMITER:
+			checkNumberDeliminter(DELIMITER, Number(event.detail.index), START);
+			break;
+		case AFTER:
+			completedTracker[1][event.detail.index-1] = 1;
+			break;
+	}
+
+	console.log('compltedTracker[1]['+(event.detail.index-1)+'] is now = '+completedTracker[1][event.detail.index-1]);
 };
+
+function checkNumberDeliminter(type, index, tense) {
+	var checked = $('input[type=radio][name=start_'+tense+'][value='+type+']').prop('checked');
+	tense = (tense === START) ? 'start' : 'end';
+	var text = $('input[type=text][name='+tense+'_'+type+'_'+index+']').val().length > 0;
+
+	if(checked) {
+		if(text){
+			completedTracker[1][Number(index)-1] = 1;
+		}
+		else {
+			completedTracker[1][Number(index)-1] = 0;
+		}
+	}
+}
