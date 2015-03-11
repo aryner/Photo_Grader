@@ -36,10 +36,11 @@ for(MetaData datum : metaData) {
 <%
 if(name > 0) {
 %>
-<div class="meta-row">
 <h3>Specify how to extract meta-data from the photo name</h3>
 <p>Enter them in the order they will appear in the name from left to right</p>
 <%
+	out.print("<div class='meta-row-container'>");
+	out.print("<div class='meta-row'>");
 	out.print("<div class='meta-col'>");
 	out.print("<h4>Which type of meta-data?</h4>");
 	int index = 0;
@@ -50,7 +51,7 @@ if(name > 0) {
 			out.print("<input type='radio' value='"+datum.getName()+"' name='type_"+MetaData.NAME+"_1' title='"+index+"'> "+datum.getName()+"<br>");
 		}
 	}
-	out.print("<br><input type='checkbox' name='specialCharacters' title='1'> Field contains special characters");
+//	out.print("<br><input type='checkbox' name='specialCharacters' title='1'> Field contains special characters");
 	out.print("</div>");
 
 	out.print("<div class='meta-col'>");
@@ -78,6 +79,8 @@ if(name > 0) {
 	out.print("</div>");
 
 	//end of row
+	out.print("</div>");
+	//end of row container
 	out.print("</div>");
 	//row showing example of what has been done so far
 	out.print("<div class='newRow'>");

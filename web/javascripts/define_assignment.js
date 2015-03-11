@@ -38,6 +38,8 @@ var typeFunction = function(event) {
 	completedTracker[0][event.detail.index-1] = 1;
 	console.log('clicked on type button # '+event.detail.elementNumber+', with index # '+event.detail.index);
 	console.log('compltedTracker[0]['+(event.detail.index-1)+'] is now = '+completedTracker[0][event.detail.index-1]);
+
+	checkForRows(event.detail.index);
 };
 
 function setLimitsEmitter(index) {
@@ -97,6 +99,7 @@ var setLimitsFunction = function(event) {
 	}
 
 	console.log('compltedTracker['+section+']['+(event.detail.index-1)+'] is now = '+completedTracker[section][event.detail.index-1]);
+	checkForRows(event.detail.index);
 };
 
 function checkNumberDeliminter(type, index, tense) {
@@ -113,4 +116,68 @@ function checkNumberDeliminter(type, index, tense) {
 			completedTracker[Number(tense)][Number(index)-1] = 0;
 		}
 	}
+}
+
+function checkForRows(index) {
+	var completed = completedTracker[0][index-1] + completedTracker[1][index-1] + completedTracker[2][index-1];
+
+	if(completed === 3) {
+		console.log(1);
+		if(window.index === index) {
+			window.index++;
+			for(var i=0; i<3; i++) {
+				completedTracker[i][index] = 0;
+			}
+
+			makeRow();
+
+			setEmitters();
+		}
+	}
+	else {
+		window.index = index;
+
+		//remove rows after this index
+	}
+}
+
+function makeRow() {
+	var newRow = "<div class='row_"+index+"'><div class='newRow'></div>"+
+		     "<div class='meta-row'><div class='meta-col'>"+
+		     "<h4>Which type of meta-data?</h4>"+
+		     radioFields()+
+		     "</div><div class='meta-col'>"+
+		     "<h4>Where does this section start?</h4>"+
+		     "<input type='radio' name='start_"+index+"' value='"+START+"'> Begining of the file name<br>"+
+		     "<input type='radio' name='start_"+index+"' value='"+NUMBER+"' > After "+
+		     "<input type='text'  class='small_text_box' name='start_"+NUMBER+"_"+index+"'> characters (0 is the start, 1 is after the first character, etc...)<br>"+
+		     "<input type='radio' name='start_"+index+"' value='"+DELIMITER+"' > After "+
+		     "<input type='text' class='small_text_box' name='start_"+DELIMITER+"_"+index+"'> (Not including the delimiter character)<br>"+
+		     "<input type='radio' name='start_"+index+"' value='"+AFTER+"'> Right after the end of the previous section"+
+		     "</div><div class='meta-col'>"+
+		     "<h4>Where does this section end?</h4>"+
+		     "<input type='radio' name='end_"+index+"' value='"+END+"'> The end of the file name (not including the extension)<br>"+
+		     "<input type='radio' name='end_"+index+"' value='"+NUMBER+"'> After "+
+		     "<input type='text' name='end_"+NUMBER+"_"+index+"' class='small_text_box'> characters from the start section"+
+		     " (this number is the same as the length of this section in characters)<br>"+
+		     "<input type='radio' name='end_"+index+"' value='"+DELIMITER+"'> Before "+
+		     "<input type='text' name='end_"+DELIMITER+"_"+index+"' class='small_text_box'> "+
+		     " (Not including the delmiter character)<br>"+
+		     "<input type='radio' name='end_"+index+"' value='"+BEFORE+"'> Right before the start of the next section"+
+		     "</div>"+
+			
+		     "</div></div>";
+	$('div.meta-row-container').append(newRow);
+}
+
+function radioFields() {
+	var fields = document.getElementsByName("type_1_1");
+	var buttons = "";
+
+	for(var i=0; i<fields.length; i++) {
+		buttons += "<input type='radio' name='type_1_"+index+"' value='"+fields[i].value+"'>"+
+			(i>0?fields[i].value:'Not meta-data (use to help break name into sections)')+"<br>";
+	}
+
+	return buttons;
 }
