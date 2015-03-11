@@ -14,6 +14,7 @@ $(document).ready(function() {
 	}
 	setTypeCheckedEmitter(index);
 	setStartCheckedEmitter(index);
+	setEndCheckedEmitter(index);
 });
 
 function setTypeCheckedEmitter(index) {
@@ -28,6 +29,12 @@ function setTypeCheckedEmitter(index) {
 		document.addEventListener('type'+index, typeFunction, false);
 	}
 }
+
+var typeFunction = function(event) {
+	completedTracker[0][event.detail.index-1] = 1;
+	console.log('clicked on type button # '+event.detail.elementNumber+', with index # '+event.detail.index);
+	console.log('compltedTracker[0]['+(event.detail.index-1)+'] is now = '+completedTracker[0][event.detail.index-1]);
+};
 
 function setStartCheckedEmitter(index) {
 	var radios = document.getElementsByName('start_'+index);
@@ -50,12 +57,6 @@ function setStartCheckedEmitter(index) {
 	document.addEventListener('start'+index, startFunction, false);
 }
 
-var typeFunction = function(event) {
-	completedTracker[0][event.detail.index-1] = 1;
-	console.log('clicked on type button # '+event.detail.elementNumber+', with index # '+event.detail.index);
-	console.log('compltedTracker[0]['+(event.detail.index-1)+'] is now = '+completedTracker[0][event.detail.index-1]);
-};
-
 var startFunction = function(event) {
 	console.log('index = '+event.detail.index+', type = '+event.detail.type);
 
@@ -77,17 +78,60 @@ var startFunction = function(event) {
 	console.log('compltedTracker[1]['+(event.detail.index-1)+'] is now = '+completedTracker[1][event.detail.index-1]);
 };
 
+function setEndCheckedEmitter(index) {
+	var radios = document.getElementsByName('end_'+index);
+
+	for(var i=0; i<radios.length; i++) {
+		radios[i].onclick= function() {
+			var event = new CustomEvent("end"+index, {'detail':{'index':index,'type':this.value}});
+			document.dispatchEvent(event);
+		};
+	}
+	document.getElementsByName('end_'+NUMBER+'_'+index)[0].oninput = function() {
+		var event = new CustomEvent("end"+index, {'detail':{'index':index,'type':NUMBER}});
+		document.dispatchEvent(event);
+	};
+	document.getElementsByName('end_'+DELIMITER+'_'+index)[0].oninput= function() {
+		var event = new CustomEvent("end"+index, {'detail':{'index':index,'type':DELIMITER}});
+		document.dispatchEvent(event);
+	};
+
+	document.addEventListener('end'+index, endFunction, false);
+}
+
+var endFunction = function(event) {
+	console.log('index = '+event.detail.index+', type = '+event.detail.type);
+
+	switch(Number(event.detail.type)) {
+		case END:
+			completedTracker[2][event.detail.index-1] = 1;
+			break;
+		case NUMBER:
+			checkNumberDeliminter(NUMBER, Number(event.detail.index), END);
+			break;
+		case DELIMITER:
+			checkNumberDeliminter(DELIMITER, Number(event.detail.index), END);
+			break;
+		case BEFORE:
+			completedTracker[2][event.detail.index-1] = 1;
+			break;
+	}
+
+	console.log('compltedTracker[2]['+(event.detail.index-1)+'] is now = '+completedTracker[2][event.detail.index-1]);
+};
+
 function checkNumberDeliminter(type, index, tense) {
-	var checked = $('input[type=radio][name=start_'+tense+'][value='+type+']').prop('checked');
-	tense = (tense === START) ? 'start' : 'end';
-	var text = $('input[type=text][name='+tense+'_'+type+'_'+index+']').val().length > 0;
+	var tense_text = (tense === START) ? 'start' : 'end';
+	var checked = $('input[type=radio][name='+tense_text+'_'+index+'][value='+type+']').prop('checked');
 
 	if(checked) {
+		var text = $('input[type=text][name='+tense_text+'_'+type+'_'+index+']').val().length > 0;
+
 		if(text){
-			completedTracker[1][Number(index)-1] = 1;
+			completedTracker[Number(tense)][Number(index)-1] = 1;
 		}
 		else {
-			completedTracker[1][Number(index)-1] = 0;
+			completedTracker[Number(tense)][Number(index)-1] = 0;
 		}
 	}
 }
