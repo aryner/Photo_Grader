@@ -55,14 +55,14 @@ function setLimitsEmitter(index) {
 		};
 	}
 
-	setTextBoxLimitsEmitter(START,'start');
-	setTextBoxLimitsEmitter(END,'end');
+	setTextBoxLimitsEmitter(START,'start',index);
+	setTextBoxLimitsEmitter(END,'end',index);
 
 	document.addEventListener('start'+index, setLimitsFunction, false);
 	document.addEventListener('end'+index, setLimitsFunction, false);
 }
 
-function setTextBoxLimitsEmitter(side, side_text) {
+function setTextBoxLimitsEmitter(side, side_text, index) {
 	document.getElementsByName(side_text+'_'+NUMBER+'_'+index)[0].oninput = function() {
 		var event = new CustomEvent(side_text+index, {'detail':{'index':index,'type':NUMBER,'section':side}});
 		document.dispatchEvent(event);
