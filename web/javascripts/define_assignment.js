@@ -18,8 +18,7 @@ $(document).ready(function() {
 
 function setEmitters() {
 	setTypeCheckedEmitter(index);
-	setStartCheckedEmitter(index);
-	setEndCheckedEmitter(index);
+	setLimitsEmitter(index);
 }
 
 function setTypeCheckedEmitter(index) {
@@ -41,46 +40,35 @@ var typeFunction = function(event) {
 	console.log('compltedTracker[0]['+(event.detail.index-1)+'] is now = '+completedTracker[0][event.detail.index-1]);
 };
 
-function setStartCheckedEmitter(index) {
-	var radios = document.getElementsByName('start_'+index);
+function setLimitsEmitter(index) {
+	var radios = Array.prototype.slice.call(document.getElementsByName('start_'+index));
+	radios = radios.concat(Array.prototype.slice.call(document.getElementsByName('end_'+index)));
 
 	for(var i=0; i<radios.length; i++) {
-		radios[i].onclick= function() {
-			var event = new CustomEvent("start"+index, {'detail':{'index':index,'type':this.value,'section':START}});
+		radios[i].onclick = function() {
+			var side = (this.name.indexOf('start')>-1 ? START : END);
+			var side_text = (side === START) ? 'start' : 'end';
+			var event = new CustomEvent(side_text+index, {'detail':{'index':index,'type':this.value,'section':side}});
 			document.dispatchEvent(event);
 		};
 	}
-	document.getElementsByName('start_'+NUMBER+'_'+index)[0].oninput = function() {
-		var event = new CustomEvent("start"+index, {'detail':{'index':index,'type':NUMBER,'section':START}});
-		document.dispatchEvent(event);
-	};
-	document.getElementsByName('start_'+DELIMITER+'_'+index)[0].oninput= function() {
-		var event = new CustomEvent("start"+index, {'detail':{'index':index,'type':DELIMITER,'section':START}});
-		document.dispatchEvent(event);
-	};
+
+	setTextBoxLimitsEmitter(START,'start');
+	setTextBoxLimitsEmitter(END,'end');
 
 	document.addEventListener('start'+index, setLimitsFunction, false);
+	document.addEventListener('end'+index, setLimitsFunction, false);
 }
 
-function setEndCheckedEmitter(index) {
-	var radios = document.getElementsByName('end_'+index);
-
-	for(var i=0; i<radios.length; i++) {
-		radios[i].onclick= function() {
-			var event = new CustomEvent("end"+index, {'detail':{'index':index,'type':this.value,'section':END}});
-			document.dispatchEvent(event);
-		};
-	}
-	document.getElementsByName('end_'+NUMBER+'_'+index)[0].oninput = function() {
-		var event = new CustomEvent("end"+index, {'detail':{'index':index,'type':NUMBER,'section':END}});
+function setTextBoxLimitsEmitter(side, side_text) {
+	document.getElementsByName(side_text+'_'+NUMBER+'_'+index)[0].oninput = function() {
+		var event = new CustomEvent(side_text+index, {'detail':{'index':index,'type':NUMBER,'section':side}});
 		document.dispatchEvent(event);
 	};
-	document.getElementsByName('end_'+DELIMITER+'_'+index)[0].oninput= function() {
-		var event = new CustomEvent("end"+index, {'detail':{'index':index,'type':DELIMITER,'section':END}});
+	document.getElementsByName(side_text+'_'+DELIMITER+'_'+index)[0].oninput= function() {
+		var event = new CustomEvent(side_text+index, {'detail':{'index':index,'type':DELIMITER,'section':side}});
 		document.dispatchEvent(event);
 	};
-
-	document.addEventListener('end'+index, setLimitsFunction, false);
 }
 
 var setLimitsFunction = function(event) {
