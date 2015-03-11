@@ -135,9 +135,10 @@ function checkForRows(index) {
 		}
 	}
 	else {
+		var oldIndex = window.index;
 		window.index = index;
 
-		//remove rows after this index
+		removeRows(oldIndex);
 	}
 }
 
@@ -180,4 +181,15 @@ function radioFields() {
 	}
 
 	return buttons;
+}
+
+function removeRows(oldIndex) {
+	// - remove the emitters above the new index
+	// - remove the rows above the new index
+	for(var i=oldIndex; i>index; i--) {
+		document.removeEventListener('start'+i, setLimitsFunction, false);
+		document.removeEventListener('end'+i, setLimitsFunction, false);
+
+		$('div.row_'+i).remove();
+	}
 }
