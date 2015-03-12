@@ -64,6 +64,7 @@ function setLimitsEmitter(index) {
 
 function setTextBoxLimitsEmitter(side, side_text, index) {
 	document.getElementsByName(side_text+'_'+NUMBER+'_'+index)[0].oninput = function() {
+		this.value = this.value.replace(/[^0-9]/,'');
 		var event = new CustomEvent(side_text+index, {'detail':{'index':index,'type':NUMBER,'section':side}});
 		document.dispatchEvent(event);
 	};
