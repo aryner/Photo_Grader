@@ -218,31 +218,38 @@ function sectionText(text) {
 }
 
 function processText(text, starts, ends, colorCodes) {
-	var currIndex = 0;
 	var processedText = "";
+	var currIndex = 0;
 	for(var i=0; i<starts.length; i++) {
-		currIndex = getStartIndex(currIndex, starts[i], text, (i+1));
+		var currIndex = getSectionIndex(currIndex, starts[i], text, (i+1),'start');
 		console.log('currIndex = '+currIndex);
+		var endIndex = getSectionIndex(currIndex, ends[i], text, (i+1),'end');
+		console.log('endIndex = '+endIndex);
 	}
 
 	return processedText;
 }
 
-function getStartIndex(currIndex, start, text, index) {
-	switch(+start) {
+function getSectionIndex(currIndex, start_end, text, index, tense) {
+	switch(+start_end) {
 		case START:
 		case AFTER:
 			return currIndex;
+		case BEFORE:
+			return -1;
 		case NUMBER:
-			return currIndex + Number($('input[name=start_'+NUMBER+'_'+index+']').val());
+			return currIndex + Number($('input[name='+tense+'_'+NUMBER+'_'+index+']').val());
 		case DELIMITER:
-			return getDelimIndex(currIndex, text, index);
+			return getDelimIndex(currIndex, text, index, tense);
+		case END:
+			var end = text.lastIndexOf(".");
+			return (end > 0) ? end : text.length;
 	}
 	return null;
 }
 
-function getDelimIndex(currIndex, text, index) {
-	var delimiter = $('input[name=start_'+DELIMITER+'_'+index+']').val();
+function getDelimIndex(currIndex, text, index, tense) {
+	var delimiter = $('input[name='+tense+'_'+DELIMITER+'_'+index+']').val();
 	return text.indexOf(delimiter,currIndex);
 }
 
