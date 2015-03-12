@@ -33,6 +33,10 @@ public class MetaData {
 	public static final int DELIMITER = 4;
 	public static final int BEFORE = 5;
 	public static final int AFTER = 6;
+	public static final int NEXT_NUMBER = 7;
+	public static final int NEXT_LETTER = 8;
+	public static final int NEXT_NOT_NUMBER = 9;
+	public static final int NEXT_NOT_LETTER = 10;
 	
 	public MetaData(String name, int type, int collection) {
 		this.name = name;

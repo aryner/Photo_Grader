@@ -6,7 +6,8 @@
 
 var completedTracker = [[],[],[]];
 var index = 1;
-var START = 1, END = 2, NUMBER = 3, DELIMITER = 4, BEFORE = 5, AFTER = 6;
+var START = 1, END = 2, NUMBER = 3, DELIMITER = 4, BEFORE = 5, AFTER = 6,
+	NEXT_NUMBER = 7, NEXT_LETTER = 8, NEXT_NOT_NUMBER = 9, NEXT_NOT_LETTER = 10;
 
 $(document).ready(function() {
 	for(var i=0; i<3; i++) {
@@ -81,9 +82,13 @@ var setLimitsFunction = function(event) {
 
 	switch(Number(event.detail.type)) {
 		case START:
-			completedTracker[1][event.detail.index-1] = 1;
-			break;
+		case BEFORE:
+		case AFTER:
 		case END:
+		case NEXT_NUMBER:
+		case NEXT_LETTER:
+		case NEXT_NOT_NUMBER:
+		case NEXT_NOT_LETTER:
 			completedTracker[section][event.detail.index-1] = 1;
 			break;
 		case NUMBER:
@@ -91,12 +96,6 @@ var setLimitsFunction = function(event) {
 			break;
 		case DELIMITER:
 			checkNumberDeliminter(DELIMITER, Number(event.detail.index), section);
-			break;
-		case BEFORE:
-			completedTracker[section][event.detail.index-1] = 1;
-			break;
-		case AFTER:
-			completedTracker[section][event.detail.index-1] = 1;
 			break;
 	}
 
@@ -156,7 +155,11 @@ function makeRow() {
 		     "<input type='text'  class='small_text_box' name='start_"+NUMBER+"_"+index+"'> characters (0 is the start, 1 is after the first character, etc...)<br>"+
 		     "<input type='radio' name='start_"+index+"' value='"+DELIMITER+"' > After "+
 		     "<input type='text' class='small_text_box' name='start_"+DELIMITER+"_"+index+"'> (Not including the delimiter character)<br>"+
-		     "<input type='radio' name='start_"+index+"' value='"+AFTER+"'> Right after the end of the previous section"+
+		     "<input type='radio' name='start_"+index+"' value='"+AFTER+"'> Right after the end of the previous section<br>"+
+		     "<input type='radio' name='start_"+index+"' value='"+NEXT_NUMBER+"'> The next digit character<br>"+
+		     "<input type='radio' name='start_"+index+"' value='"+NEXT_LETTER+"'> The next letter character<br>"+
+		     "<input type='radio' name='start_"+index+"' value='"+NEXT_NOT_NUMBER+"'> The next character that is not a digit<br>"+
+		     "<input type='radio' name='start_"+index+"' value='"+NEXT_NOT_LETTER+"'> The next character that is not a letter<br>"+
 		     "</div><div class='meta-col'>"+
 		     "<h4>Where does this section end?</h4>"+
 		     "<input type='radio' name='end_"+index+"' value='"+END+"'> The end of the file name (not including the extension)<br>"+
@@ -166,7 +169,11 @@ function makeRow() {
 		     "<input type='radio' name='end_"+index+"' value='"+DELIMITER+"'> Before "+
 		     "<input type='text' name='end_"+DELIMITER+"_"+index+"' class='small_text_box'> "+
 		     " (Not including the delmiter character)<br>"+
-		     "<input type='radio' name='end_"+index+"' value='"+BEFORE+"'> Right before the start of the next section"+
+		     "<input type='radio' name='end_"+index+"' value='"+BEFORE+"'> Right before the start of the next section<br>"+
+		     "<input type='radio' name='end_"+index+"' value='"+NEXT_NUMBER+"'> The next digit character<br>"+
+		     "<input type='radio' name='end_"+index+"' value='"+NEXT_LETTER+"'> The next letter character<br>"+
+		     "<input type='radio' name='end_"+index+"' value='"+NEXT_NOT_NUMBER+"'> The next character that is not a digit<br>"+
+		     "<input type='radio' name='end_"+index+"' value='"+NEXT_NOT_LETTER+"'> The next character that is not a letter<br>"+
 		     "</div>"+
 			
 		     "</div></div>";
@@ -224,9 +231,7 @@ function processText(text, starts, ends, colorCodes) {
 		var nextIndex = getSectionIndex(currIndex, starts[i], text, (i+1),'start');
 		if(nextIndex > currIndex) processedText += text.substring(currIndex, nextIndex);
 		currIndex = nextIndex;
-		console.log('currIndex = '+currIndex);
 		var endIndex = getSectionIndex(currIndex, ends[i], text, (i+1),'end');
-		console.log('endIndex = '+endIndex);
 		processedText += "<span "+colorCodes[i]+">"+text.substring(currIndex,endIndex)+"</span>";
 		currIndex = endIndex;
 	}
@@ -239,9 +244,8 @@ function processText(text, starts, ends, colorCodes) {
 function getSectionIndex(currIndex, start_end, text, index, tense) {
 	switch(+start_end) {
 		case START:
-			return currIndex;
 		case AFTER:
-			return currIndex+1;
+			return currIndex;
 		case BEFORE:
 			return -1;
 		case NUMBER:
@@ -251,8 +255,32 @@ function getSectionIndex(currIndex, start_end, text, index, tense) {
 		case END:
 			var end = text.lastIndexOf(".");
 			return (end > 0) ? end : text.length;
+		case NEXT_NUMBER:
+		case NEXT_LETTER:
+		case NEXT_NOT_NUMBER:
+		case NEXT_NOT_LETTER:
+			return getNextIndex(currIndex, text, start_end);
 	}
 	return null;
+}
+
+function getNextIndex(currIndex, text, type) {
+	var regex;
+	switch(+type) {
+		case NEXT_NUMBER:
+			regex = /[0-9]/;
+			break;
+		case NEXT_LETTER:
+			regex = /[a-zA-Z]/;
+			break;
+		case NEXT_NOT_NUMBER:
+			regex = /[^0-9]/;
+			break;
+		case NEXT_NOT_LETTER:
+			regex = /[^a-zA-Z]/;
+			break;
+	}
+	return +currIndex + text.substring(currIndex).search(regex);
 }
 
 function getDelimIndex(currIndex, text, index, tense) {

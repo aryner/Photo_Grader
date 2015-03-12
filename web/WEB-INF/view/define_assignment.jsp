@@ -61,6 +61,10 @@ if(name > 0) {
 	out.print("<input type='text'  class='small_text_box' name='start_"+MetaData.NUMBER+"_1'> characters (0 is the start, 1 is after the first character, etc...)<br>");
 	out.print("<input type='radio' name='start_1' value='"+MetaData.DELIMITER+"' > After ");
 	out.print("<input type='text' class='small_text_box' name='start_"+MetaData.DELIMITER+"_1'> (Not including the delimiter character)<br>");
+	out.print("<input type='radio' name='start_1' value='"+MetaData.NEXT_NUMBER+"'> The next digit character<br>");
+	out.print("<input type='radio' name='start_1' value='"+MetaData.NEXT_LETTER+"'> The next letter character<br>");
+	out.print("<input type='radio' name='start_1' value='"+MetaData.NEXT_NOT_NUMBER+"'> The next character that is not a digit<br>");
+	out.print("<input type='radio' name='start_1' value='"+MetaData.NEXT_NOT_LETTER+"'> The next character that is not a letter<br>");
 	//this response is only valid after the first section
 	// I'm leaving it in as a comment to be used as template/example
 //	out.print("<input type='radio' name='start_1' value='"+MetaData.AFTER+"'> Right after the end of the previous section");
@@ -75,7 +79,11 @@ if(name > 0) {
 	out.print("<input type='radio' name='end_1' value='"+MetaData.DELIMITER+"'> Before ");
 	out.print("<input type='text' name='end_"+MetaData.DELIMITER+"_1' class='small_text_box'> ");
 	out.print(" (Not including the delmiter character)<br>");
-	out.print("<input type='radio' name='end_1' value='"+MetaData.BEFORE+"'> Right before the start of the next section");
+	out.print("<input type='radio' name='end_1' value='"+MetaData.BEFORE+"'> Right before the start of the next section<br>");
+	out.print("<input type='radio' name='end_1' value='"+MetaData.NEXT_NUMBER+"'> The next digit character<br>");
+	out.print("<input type='radio' name='end_1' value='"+MetaData.NEXT_LETTER+"'> The next letter character<br>");
+	out.print("<input type='radio' name='end_1' value='"+MetaData.NEXT_NOT_NUMBER+"'> The next character that is not a digit<br>");
+	out.print("<input type='radio' name='end_1' value='"+MetaData.NEXT_NOT_LETTER+"'> The next character that is not a letter<br>");
 	out.print("</div>");
 
 	//end of row
