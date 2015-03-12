@@ -124,6 +124,5 @@ if(manual > 0) {
 }
 %>
 
-
 <script src="javascripts/jquery-1.11.1.min.js" type="text/javascript"></script>
-<script src="javascripts/define_assignment.js" type="text/javascript"></script>
+<script src="javascripts/define_name_assignment.js" type="text/javascript"></script>
