@@ -221,11 +221,17 @@ function processText(text, starts, ends, colorCodes) {
 	var processedText = "";
 	var currIndex = 0;
 	for(var i=0; i<starts.length; i++) {
-		var currIndex = getSectionIndex(currIndex, starts[i], text, (i+1),'start');
+		var nextIndex = getSectionIndex(currIndex, starts[i], text, (i+1),'start');
+		if(nextIndex > currIndex) processedText += text.substring(currIndex, nextIndex);
+		currIndex = nextIndex;
 		console.log('currIndex = '+currIndex);
 		var endIndex = getSectionIndex(currIndex, ends[i], text, (i+1),'end');
 		console.log('endIndex = '+endIndex);
+		processedText += "<span "+colorCodes[i]+">"+text.substring(currIndex,endIndex)+"</span>";
+		currIndex = endIndex;
 	}
+
+	if(currIndex<text.length) processedText += text.substring(currIndex,text.length);
 
 	return processedText;
 }
@@ -233,8 +239,9 @@ function processText(text, starts, ends, colorCodes) {
 function getSectionIndex(currIndex, start_end, text, index, tense) {
 	switch(+start_end) {
 		case START:
-		case AFTER:
 			return currIndex;
+		case AFTER:
+			return currIndex+1;
 		case BEFORE:
 			return -1;
 		case NUMBER:
@@ -250,7 +257,7 @@ function getSectionIndex(currIndex, start_end, text, index, tense) {
 
 function getDelimIndex(currIndex, text, index, tense) {
 	var delimiter = $('input[name='+tense+'_'+DELIMITER+'_'+index+']').val();
-	return text.indexOf(delimiter,currIndex);
+	return tense === 'end' ? text.indexOf(delimiter,currIndex) : text.indexOf(delimiter,currIndex)+1;
 }
 
 function getColorCodes(types) {
@@ -258,7 +265,7 @@ function getColorCodes(types) {
 	for(var i=0; i<types.length; i++) {
 		if(types[i] === '') { colorCodes[i] = ''; continue; }
 		var element = document.getElementsByName(types[i]);
-		colorCodes[i] = "background='"+element[0].style.background+"'";
+		colorCodes[i] = "style='background:"+element[0].style.background+"'";
 	}
 
 	return colorCodes;
