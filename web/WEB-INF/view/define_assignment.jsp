@@ -96,7 +96,8 @@ if(name > 0) {
 	}
 	out.print("</div>");
 	out.print("<div class=meta-col>");
-	out.print("<h4>Example :</h4>");
+	out.print("<h4>Enter an example photo name to check the results:</h4>");
+	out.print("<input type='text' name='exampleInput'>");
 	out.print("<p name='example'></p>");
 	out.print("</div>");
 

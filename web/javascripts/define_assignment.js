@@ -14,6 +14,7 @@ $(document).ready(function() {
 	}
 
 	setEmitters();
+	checkFieldMatching();
 });
 
 function setEmitters() {
@@ -150,7 +151,7 @@ function makeRow() {
 		     radioFields()+
 		     "</div><div class='meta-col'>"+
 		     "<h4>Where does this section start?</h4>"+
-		     "<input type='radio' name='start_"+index+"' value='"+START+"'> Begining of the file name<br>"+
+//		     "<input type='radio' name='start_"+index+"' value='"+START+"'> Begining of the file name<br>"+
 		     "<input type='radio' name='start_"+index+"' value='"+NUMBER+"' > After "+
 		     "<input type='text'  class='small_text_box' name='start_"+NUMBER+"_"+index+"'> characters (0 is the start, 1 is after the first character, etc...)<br>"+
 		     "<input type='radio' name='start_"+index+"' value='"+DELIMITER+"' > After "+
@@ -193,4 +194,40 @@ function removeRows(oldIndex) {
 
 		$('div.row_'+i).remove();
 	}
+}
+
+function checkFieldMatching() {
+	$('input[type=text][name=exampleInput]').on('input', function() {
+		document.getElementsByName("example")[0].innerHTML = sectionText(this.value);
+	});
+}
+
+function sectionText(text) {
+	if(index === 1) return text;
+	var types = [];
+	var starts = [];
+	var ends = [];
+
+	var processedText = "";
+	for(var i=1; i<index; i++) {
+		types[i-1] = $('input[name=type_1_'+i+']:checked').val();
+		starts[i-1] = $('input[name=start_'+i+']:checked').val();
+		ends[i-1] = $('input[name=end_'+i+']:checked').val();
+	}
+	
+	var colorCodes = getColorCodes(types);
+
+	return processedText;
+}
+
+function getColorCodes(types) {
+	var colorCodes = [];
+	for(var i=0; i<types.length; i++) {
+		if(types[i] === '') { colorCodes[i] = ''; continue; }
+		var element = document.getElementsByName(types[i]);
+		colorCodes[i] = "background='"+element[0].style.background+"'";
+		console.log(colorCodes[i]);
+	}
+
+	return colorCodes;
 }
