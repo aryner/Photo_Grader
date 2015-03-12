@@ -208,16 +208,42 @@ function sectionText(text) {
 	var starts = [];
 	var ends = [];
 
-	var processedText = "";
 	for(var i=1; i<index; i++) {
 		types[i-1] = $('input[name=type_1_'+i+']:checked').val();
 		starts[i-1] = $('input[name=start_'+i+']:checked').val();
 		ends[i-1] = $('input[name=end_'+i+']:checked').val();
 	}
 	
-	var colorCodes = getColorCodes(types);
+	return processText(text, starts, ends, getColorCodes(types));
+}
+
+function processText(text, starts, ends, colorCodes) {
+	var currIndex = 0;
+	var processedText = "";
+	for(var i=0; i<starts.length; i++) {
+		currIndex = getStartIndex(currIndex, starts[i], text, (i+1));
+		console.log('currIndex = '+currIndex);
+	}
 
 	return processedText;
+}
+
+function getStartIndex(currIndex, start, text, index) {
+	switch(+start) {
+		case START:
+		case AFTER:
+			return currIndex;
+		case NUMBER:
+			return currIndex + Number($('input[name=start_'+NUMBER+'_'+index+']').val());
+		case DELIMITER:
+			return getDelimIndex(currIndex, text, index);
+	}
+	return null;
+}
+
+function getDelimIndex(currIndex, text, index) {
+	var delimiter = $('input[name=start_'+DELIMITER+'_'+index+']').val();
+	return text.indexOf(delimiter,currIndex);
 }
 
 function getColorCodes(types) {
@@ -226,7 +252,6 @@ function getColorCodes(types) {
 		if(types[i] === '') { colorCodes[i] = ''; continue; }
 		var element = document.getElementsByName(types[i]);
 		colorCodes[i] = "background='"+element[0].style.background+"'";
-		console.log(colorCodes[i]);
 	}
 
 	return colorCodes;
