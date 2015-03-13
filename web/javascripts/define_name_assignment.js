@@ -223,7 +223,7 @@ function sectionText(text) {
 	
 	return processText(text, starts, ends, getColorCodes(types));
 }
-
+/*
 function processText(text, starts, ends, colorCodes) {
 	var processedText = "";
 	var currIndex = 0;
@@ -239,6 +239,25 @@ function processText(text, starts, ends, colorCodes) {
 	if(currIndex<text.length) processedText += text.substring(currIndex,text.length);
 
 	return processedText;
+}
+*/
+function processText(text, starts, ends, colorCodes) {
+	var processedTexts = [];
+	var currIndex = 0;
+	for(var i=0; i<starts.length; i++) {
+		var nextIndex = getSectionIndex(currIndex, starts[i], text, (i+1), 'start');
+		processedTexts.push(text.substring(currIndex, nextIndex));
+		currIndex = nextIndex;
+		var endIndex = getSectionIndex(currIndex, ends[i], text, (i+1), 'end');
+		processedTexts.push("<span "+colorCodes[i]+">"+text.substring(currIndex,endIndex)+"</span>");
+		if(endIndex > 0) currIndex = endIndex;
+	}
+
+	if(currIndex<text.length) processedTexts.push(text.substring(currIndex,text.length));
+	console.log("*************");
+	for(var i=0; i<processedTexts.length; i++) console.log('**'+processedTexts[i]+'**');
+
+	return processedTexts.join('');
 }
 
 function getSectionIndex(currIndex, start_end, text, index, tense) {
@@ -280,7 +299,9 @@ function getNextIndex(currIndex, text, type) {
 			regex = /[^a-zA-Z]/;
 			break;
 	}
-	return +currIndex + text.substring(currIndex).search(regex);
+
+	var index = text.substring(currIndex).search(regex);
+	return +currIndex + (index > -1 ? index : text.length-currIndex);
 }
 
 function getDelimIndex(currIndex, text, index, tense) {
