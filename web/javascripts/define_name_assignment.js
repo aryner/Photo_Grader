@@ -5,6 +5,7 @@
  */
 
 var completedTracker = [[],[],[]];
+var fieldsCheckedStatus = [];
 var index = 1;
 var START = 1, END = 2, NUMBER = 3, DELIMITER = 4, BEFORE = 5, AFTER = 6,
 	NEXT_NUMBER = 7, NEXT_LETTER = 8, NEXT_NOT_NUMBER = 9, NEXT_NOT_LETTER = 10;
@@ -14,9 +15,17 @@ $(document).ready(function() {
 		completedTracker[i][0] = 0;
 	}
 
+	initFields();
 	setEmitters();
 	checkFieldMatching();
 });
+
+function initFields() {
+	var fields = document.getElementsByName('type_1_1');
+	for(var i=0; i<fields; i++) {
+		fieldsCheckedStatus[i] = 0;
+	}
+}
 
 function setEmitters() {
 	setTypeCheckedEmitter(index);
@@ -27,19 +36,38 @@ function setTypeCheckedEmitter(index) {
 	var radios = document.getElementsByName('type_1_'+index);
 
 	for(var i=0; i<radios.length; i++) {
-		radios[i].onclick = function(){
-		        var event = new CustomEvent("type"+index, {'detail':{'elementNumber':this.title,'index':index}});
-		        document.dispatchEvent(event);
-			document.removeEventListener('type'+index, typeFunction, false);
+		radios[i].onclick = function(e){
+			if(fieldUnused(this)) {
+				var event = new CustomEvent("type"+index, {'detail':{'elementNumber':this.title,'index':index}});
+				document.dispatchEvent(event);
+				document.removeEventListener('type'+index, typeFunction, false);
+				setFieldToUsed(this);
+			}
+			else {
+				e.preventDefault();
+			}
 		};
 		document.addEventListener('type'+index, typeFunction, false);
 	}
 }
 
+function fieldUnused(field) {
+	var fields = document.getElementsByName('type_1_1');
+
+	for(var i=1; i<fields.length; i++) {
+		if(fields[i].value === field.value && fieldsCheckedStatus[i] === 1) return false;
+	}
+	return true;
+}
+
+function setFieldToUsed(field) {
+	var fields = document.getElementsByName('type_1_1');
+
+	for (var i=0; i<fields.length; i++) if(fields[i].value === field.value) fieldsCheckedStatus[i] = 1;
+}
+
 var typeFunction = function(event) {
 	completedTracker[0][event.detail.index-1] = 1;
-	console.log('clicked on type button # '+event.detail.elementNumber+', with index # '+event.detail.index);
-	console.log('compltedTracker[0]['+(event.detail.index-1)+'] is now = '+completedTracker[0][event.detail.index-1]);
 
 	checkForRows(event.detail.index);
 };
@@ -77,7 +105,6 @@ function setTextBoxLimitsEmitter(side, side_text, index) {
 }
 
 var setLimitsFunction = function(event) {
-	console.log('index = '+event.detail.index+', type = '+event.detail.type);
 	var section = Number(event.detail.section);
 
 	switch(Number(event.detail.type)) {
@@ -99,7 +126,6 @@ var setLimitsFunction = function(event) {
 			break;
 	}
 
-	console.log('compltedTracker['+section+']['+(event.detail.index-1)+'] is now = '+completedTracker[section][event.detail.index-1]);
 	checkForRows(event.detail.index);
 };
 
@@ -123,7 +149,6 @@ function checkForRows(index) {
 	var completed = completedTracker[0][index-1] + completedTracker[1][index-1] + completedTracker[2][index-1];
 
 	if(completed === 3) {
-		console.log(1);
 		if(window.index === index) {
 			window.index++;
 			for(var i=0; i<3; i++) {
@@ -150,7 +175,6 @@ function makeRow() {
 		     radioFields()+
 		     "</div><div class='meta-col'>"+
 		     "<h4>Where does this section start?</h4>"+
-//		     "<input type='radio' name='start_"+index+"' value='"+START+"'> Begining of the file name<br>"+
 		     "<input type='radio' name='start_"+index+"' value='"+NUMBER+"' > After "+
 		     "<input type='text'  class='small_text_box' name='start_"+NUMBER+"_"+index+"'> characters (0 is the start, 1 is after the first character, etc...)<br>"+
 		     "<input type='radio' name='start_"+index+"' value='"+DELIMITER+"' > After "+
@@ -234,7 +258,9 @@ function processText(text, starts, ends, colorCodes) {
 		else {
 			processedTexts.push("<span "+colorCodes[i-1]+">"+text.substring(currIndex,nextIndex)+"</span>");
 		}
+
 		currIndex = nextIndex;
+
 		var endIndex = getSectionIndex(currIndex, ends[i], text, (i+1), 'end');
 		if(endIndex > 0) {
 			processedTexts.push("<span "+colorCodes[i]+">"+text.substring(currIndex,endIndex)+"</span>");
