@@ -53,6 +53,7 @@ function getTypeSelectionErrors(errors) {
 	if(errors.length > 0) {
 		errors.unshift('The following fields have not yet been accounted for in the photo name meta-data section:<br>');
 		errors[errors.length-1] = errors[errors.length-1].substring(0,errors[errors.length-1].length-2);
+		errors.push("<br><br>");
 	}
 
 	return errors;
@@ -61,15 +62,25 @@ function getTypeSelectionErrors(errors) {
 function getLimitSelectionErrors(errors) {
 	for(var i=1; i<fieldsCheckedStatus.length; i++) {
 		if(fieldsCheckedStatus[i] === index) {
-			if(errors.length) errors.push("<br><br>");
-			errors.push('Make sure the start and end for the last photo name meta-data selection have been set.');
+			errors.push('Make sure the start and end for the last photo name meta-data selection have been set.<br><br>');
 		}
 	}
 	for(var i=1; i<index; i++) {
 		//check to make sure that the limits of each side make sense
+		errors.push(badLimitsCheck(i));
 	}
 
 	return errors;
+}
+
+function badLimitsCheck(index) {
+	for(var i=NEXT_NUMBER; i<=NEXT_NOT_LETTER; i++) {
+		if($('input[name=start_'+index+'][value='+i+']').prop('checked') &&
+			$('input[name=end_'+index+'][value='+i+']').prop('checked')) {
+			return '<br>Photo name meta-data ('+index+') cannot have the same start and end point.';
+		}
+	}
+	return '';
 }
 
 function initFields() {
