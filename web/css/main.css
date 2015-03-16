@@ -127,3 +127,7 @@ body {
 .small_text_box {
 	width: 20px;
 }
+
+.errorDiv {
+	margin-top: 20px;
+}

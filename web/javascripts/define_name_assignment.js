@@ -21,37 +21,55 @@ $(document).ready(function() {
 
 	$(':Submit[value=Submit]').click(function(e) {
 		e.preventDefault();
-		var error = getErrorMsg();
+		var errors = getErrorMsg();
+		if(errors.length > 0) {
+			var msg = "";
+			for(var i=0; i<errors.length; i++) {
+				msg += errors[i];
+			}
+			var div = document.getElementsByClassName('errorDiv');
+			div[0].innerHTML = msg;
+		}
+		else {
+			console.log('no errors');
+		}
 	});
 });
 
 function getErrorMsg() {
+	var errors = getLimitSelectionErrors(getTypeSelectionErrors([]));
+
+	return errors;
+}
+
+function getTypeSelectionErrors(errors) {
 	var radios = document.getElementsByName('type_1_1');
 
-	var checked = [];
 	for(var i=1; i<radios.length; i++) {
-		checked[i-1] = false;
-	}
-
-	for(var i=1; i<radios.length; i++) {
-		var value = radios[i].value;
-		var buttons = $(':radio[value="'+value+'"]');
-
-		for(var j=0; j<buttons.length; j++) {
-			if(buttons[j].checked){
-				checked[i-1] = true;
-			}
+		if(fieldsCheckedStatus[i] === undefined) {
+			errors.push(radios[i].value+', ');
 		}
 	}
+	if(errors.length > 0) {
+		errors.unshift('The following fields have not yet been accounted for in the photo name meta-data section:<br>');
+		errors[errors.length-1] = errors[errors.length-1].substring(0,errors[errors.length-1].length-2);
+	}
 
-	for(var i=0; i<checked.length; i++) {
-		if(checked[i] === false) {
-			console.log(radios[i+1].value +' has not been checked');
-		}
-		else {
-			console.log(radios[i+1].value +' has been checked');
+	return errors;
+}
+
+function getLimitSelectionErrors(errors) {
+	for(var i=1; i<fieldsCheckedStatus.length; i++) {
+		if(fieldsCheckedStatus[i] === index) {
+			if(errors.length) errors.push("<br><br>");
+			errors.push('Make sure the start and end for the last photo name meta-data selection have been set.');
 		}
 	}
+	for(var i=1; i<index; i++) {
+		//check to make sure that the limits of each side make sense
+	}
+
+	return errors;
 }
 
 function initFields() {
@@ -257,7 +275,7 @@ function checkForRows(index) {
 function makeRow() {
 	var newRow = "<div class='row_"+index+"'><div class='newRow'></div>"+
 		     "<div class='meta-row'><div class='meta-col'>"+
-		     "<h4>Which type of meta-data?</h4>"+
+		     "<h4>("+index+") Which type of meta-data?</h4>"+
 		     radioFields()+
 		     "</div><div class='meta-col'>"+
 		     "<h4>Where does this section start?</h4>"+

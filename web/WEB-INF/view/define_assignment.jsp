@@ -42,7 +42,7 @@ if(name > 0) {
 	out.print("<div class='meta-row-container'>");
 	out.print("<div class='meta-row'>");
 	out.print("<div class='meta-col'>");
-	out.print("<h4>Which type of meta-data?</h4>");
+	out.print("<h4>(1) Which type of meta-data?</h4>");
 	int index = 0;
 	out.print("<input type='radio' value='' name='type_"+MetaData.NAME+"_1' title='"+index+"'> Not meta-data (use to help break name into sections)<br>");
 	for(MetaData datum : metaData) {
@@ -132,6 +132,9 @@ if(manual > 0) {
 }
 %>
 <div class="newRow"></div>
+<div class="meta-row">
+<div class="errorDiv meta-col error"></div>
+</div>
 <input type="submit" value="Submit" class="btn">
 </form>
 
