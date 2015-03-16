@@ -32,7 +32,7 @@ for(MetaData datum : metaData) {
 %>
 
 <h1>Specify details of meta-data collection...</h1>
-
+<form action="defineAssignment" method="POST">
 <%
 if(name > 0) {
 %>
@@ -131,6 +131,9 @@ if(manual > 0) {
 <%
 }
 %>
+<div class="newRow"></div>
+<input type="submit" value="Submit" class="btn">
+</form>
 
 <script src="javascripts/jquery-1.11.1.min.js" type="text/javascript"></script>
 <script src="javascripts/define_name_assignment.js" type="text/javascript"></script>

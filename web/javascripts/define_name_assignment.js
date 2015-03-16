@@ -18,12 +18,46 @@ $(document).ready(function() {
 	initFields();
 	setEmitters();
 	checkFieldMatching();
+
+	$(':Submit[value=Submit]').click(function(e) {
+		e.preventDefault();
+		var error = getErrorMsg();
+	});
 });
+
+function getErrorMsg() {
+	var radios = document.getElementsByName('type_1_1');
+
+	var checked = [];
+	for(var i=1; i<radios.length; i++) {
+		checked[i-1] = false;
+	}
+
+	for(var i=1; i<radios.length; i++) {
+		var value = radios[i].value;
+		var buttons = $(':radio[value="'+value+'"]');
+
+		for(var j=0; j<buttons.length; j++) {
+			if(buttons[j].checked){
+				checked[i-1] = true;
+			}
+		}
+	}
+
+	for(var i=0; i<checked.length; i++) {
+		if(checked[i] === false) {
+			console.log(radios[i+1].value +' has not been checked');
+		}
+		else {
+			console.log(radios[i+1].value +' has been checked');
+		}
+	}
+}
 
 function initFields() {
 	var fields = document.getElementsByName('type_1_1');
 	for(var i=0; i<fields; i++) {
-		fieldsCheckedStatus[i] = 0;
+		fieldsCheckedStatus[i] = null;
 	}
 }
 
@@ -55,7 +89,7 @@ function fieldUnused(field) {
 	var fields = document.getElementsByName('type_1_1');
 
 	for(var i=1; i<fields.length; i++) {
-		if(fields[i].value === field.value && fieldsCheckedStatus[i] === 1) return false;
+		if(fields[i].value === field.value && fieldsCheckedStatus[i] !== undefined) return false;
 	}
 	return true;
 }
@@ -63,7 +97,21 @@ function fieldUnused(field) {
 function setFieldToUsed(field) {
 	var fields = document.getElementsByName('type_1_1');
 
-	for (var i=0; i<fields.length; i++) if(fields[i].value === field.value) fieldsCheckedStatus[i] = 1;
+	for (var i=0; i<fields.length; i++) {
+		if(fields[i].value === field.value) {
+			var typeIndex = Number(field.name.substring(field.name.lastIndexOf("_")+1));
+			setFieldToUnused(typeIndex);
+			fieldsCheckedStatus[i] = typeIndex;
+		}
+	};
+}
+
+function setFieldToUnused(field) {
+	for(var i=0; i<fieldsCheckedStatus.length; i++) {
+		if(fieldsCheckedStatus[i] === field) {
+			fieldsCheckedStatus[i] = undefined;
+		}
+	}
 }
 
 var typeFunction = function(event) {
@@ -77,11 +125,16 @@ function setLimitsEmitter(index) {
 	radios = radios.concat(Array.prototype.slice.call(document.getElementsByName('end_'+index)));
 
 	for(var i=0; i<radios.length; i++) {
-		radios[i].onclick = function() {
+		radios[i].onclick = function(e) {
 			var side = (this.name.indexOf('start')>-1 ? START : END);
 			var side_text = (side === START) ? 'start' : 'end';
-			var event = new CustomEvent(side_text+index, {'detail':{'index':index,'type':this.value,'section':side}});
-			document.dispatchEvent(event);
+			if(validLimit(this,side,index)) {
+				var event = new CustomEvent(side_text+index, {'detail':{'index':index,'type':this.value,'section':side}});
+				document.dispatchEvent(event);
+			}
+			else {
+				e.preventDefault();
+			}
 		};
 	}
 
@@ -90,6 +143,39 @@ function setLimitsEmitter(index) {
 
 	document.addEventListener('start'+index, setLimitsFunction, false);
 	document.addEventListener('end'+index, setLimitsFunction, false);
+}
+
+function validLimit(limit, side, index) {
+	if(side === START) {
+		switch(limit.value) {
+			case NEXT_NUMBER:
+			case NEXT_LETTER:
+			case NEXT_NOT_NUMBER:
+			case NEXT_NOT_LETTER:
+				break;
+			case AFTER:
+				break;
+			default:
+				return true;
+		}
+	}
+	else {
+		switch(limit.value) {
+			case NEXT_NUMBER:
+				break;
+			case NEXT_LETTER:
+				break;
+			case NEXT_NOT_NUMBER:
+				break;
+			case NEXT_NOT_LETTER:
+				break;
+			case AFTER:
+				break;
+			default:
+				return true;
+		}
+	}
+	return false;
 }
 
 function setTextBoxLimitsEmitter(side, side_text, index) {
