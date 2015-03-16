@@ -66,7 +66,6 @@ function getLimitSelectionErrors(errors) {
 		}
 	}
 	for(var i=1; i<index; i++) {
-		//check to make sure that the limits of each side make sense
 		errors.push(badLimitsCheck(i));
 	}
 
@@ -76,10 +75,21 @@ function getLimitSelectionErrors(errors) {
 function badLimitsCheck(index) {
 	for(var i=NEXT_NUMBER; i<=NEXT_NOT_LETTER; i++) {
 		if($('input[name=start_'+index+'][value='+i+']').prop('checked') &&
-			$('input[name=end_'+index+'][value='+i+']').prop('checked')) {
+		  $('input[name=end_'+index+'][value='+i+']').prop('checked')) {
 			return '<br>Photo name meta-data ('+index+') cannot have the same start and end point.';
 		}
+		if(index < (window.index-1) && $('input[name=end_'+index+'][value='+END+']').prop('checked')) {
+			return 'Photo name meta-data ('+index+') is marked as ending at the end of the file name '+
+				'but only the last photo name meta-data can have this ending.';
+		}
 	}
+
+	if($('input[name=end_'+index+'][value='+BEFORE+']').prop('checked') &&
+	  $('input[name=start_'+(index+1)+'][value='+AFTER+']').prop('checked')) {
+		return 'Photo name meta-data ('+index+') is marked as ending before the start of meta-data ('+
+			(index+1)+') but this meta-data is marked as ending before ('+index+')';
+	}
+
 	return '';
 }
 
