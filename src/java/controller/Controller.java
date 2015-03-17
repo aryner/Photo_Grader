@@ -25,7 +25,7 @@ import javax.servlet.http.HttpSession;
 @WebServlet(name = "Controller", urlPatterns = {
 						"/Controller","/register","/createUser","/select_study","/login",
 						"/logout","/setStudy","/createStudy","/create_study","/defineAssignment",
-						"/define_assignment"
+						"/define_assignment","/home"
 						})
 public class Controller extends HttpServlet {
 	/**
@@ -129,6 +129,10 @@ public class Controller extends HttpServlet {
 			return;
 		}
 		else if(userPath.equals("/defineAssignment")) {
+			MetaData.processDefinitions(request);
+
+			response.sendRedirect("/Photo_Grader/home");
+			return;
 		}
 
 		String url = "/WEB-INF/view" + userPath + ".jsp";

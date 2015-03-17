@@ -33,7 +33,16 @@ for(MetaData datum : metaData) {
 
 <h1>Specify details of meta-data collection...</h1>
 <form action="defineAssignment" method="POST" name='assignmentDefinitions'>
+	<input type='hidden' name='studyName' value='<%out.print(studyName);%>'>
+	<input type='hidden' name='fieldsLength' value='<%out.print(metaData.size());%>'>
 <%
+for(int i=0; i<metaData.size(); i++) {
+	//create hidden fields to show type (int, dec, string)
+%>
+	<input type='hidden' name='data_type_<%out.print(i);%>' value='<%out.print(metaData.get(i).getName()+"_"+metaData.get(i).getType());%>'>
+<%
+}
+
 if(name > 0) {
 %>
 <h3>Specify how to extract meta-data from the photo name</h3>

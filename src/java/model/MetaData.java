@@ -57,6 +57,10 @@ public class MetaData {
 		}
 	}
 
+	public static void processDefinitions(HttpServletRequest request) {
+		//create study and definitions for photo meta-data
+	}
+
 	/**
 	 * @return the name
 	 */
