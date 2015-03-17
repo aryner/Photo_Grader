@@ -20,18 +20,15 @@ $(document).ready(function() {
 	checkFieldMatching();
 
 	$(':Submit[value=Submit]').click(function(e) {
-		e.preventDefault();
 		var errors = getErrorMsg();
 		if(errors.length > 0) {
+			e.preventDefault();
 			var msg = "";
 			for(var i=0; i<errors.length; i++) {
 				msg += errors[i];
 			}
 			var div = document.getElementsByClassName('errorDiv');
 			div[0].innerHTML = msg;
-		}
-		else {
-			console.log('no errors');
 		}
 	});
 });
@@ -66,7 +63,10 @@ function getLimitSelectionErrors(errors) {
 		}
 	}
 	for(var i=1; i<index; i++) {
-		errors.push(badLimitsCheck(i));
+		var error = badLimitsCheck(i);
+		if (error !== null) {
+			errors.push(error);
+		}
 	}
 
 	return errors;
@@ -90,7 +90,7 @@ function badLimitsCheck(index) {
 			(index+1)+') but this meta-data is marked as ending before ('+index+')';
 	}
 
-	return '';
+	return null;
 }
 
 function initFields() {
