@@ -13,16 +13,7 @@ $(document).ready(function() {
 		for(var i=0; i<maxCount; i++) {
 			var name = $('input[type=text][name=name'+i+']').val();
 
-			var type = $('input[name=type'+i+'][value=1]').prop('checked') 
-				|| $('input[name=type'+i+'][value=2]').prop('checked')
-				|| $('input[name=type'+i+'][value=3]').prop('checked');
-
-			var collect = $('input[name=collect'+i+'][value=1]').prop('checked')
-				|| $('input[name=collect'+i+'][value=2]').prop('checked')
-				|| $('input[name=collect'+i+'][value=3]').prop('checked')
-				|| $('input[name=collect'+i+'][value=4]').prop('checked');
-
-			if(errorsCheck(name, names, type, collect, i)) {
+			if(errorsCheck(name, names, i)) {
 				e.preventDefault();
 				focus = setFocus($('input[name=name'+i+']'), focus);
 			}
@@ -31,11 +22,20 @@ $(document).ready(function() {
 	});
 });
 
-function errorsCheck(name, names, type, collect, index) {
-	return (invalidName(name, index) || repeatName(names, name, index) || incompleteRow(name, type,collect,index));
+function errorsCheck(name, names, index) {
+	return (invalidName(name, index) || repeatName(names, name, index) || incompleteRow(name, index));
 }
 
-function incompleteRow(name, type, collect, index) {
+function incompleteRow(name, index) {
+	var type = $('input[name=type'+index+'][value=1]').prop('checked') 
+		|| $('input[name=type'+index+'][value=2]').prop('checked')
+		|| $('input[name=type'+index+'][value=3]').prop('checked');
+
+	var collect = $('input[name=collect'+index+'][value=1]').prop('checked')
+		|| $('input[name=collect'+index+'][value=2]').prop('checked')
+		|| $('input[name=collect'+index+'][value=3]').prop('checked')
+		|| $('input[name=collect'+index+'][value=4]').prop('checked');
+
 	if(name !== '' && (!type || !collect)) {
 		$('div[name=error'+index+']').removeClass('hidden');
 		return true;
