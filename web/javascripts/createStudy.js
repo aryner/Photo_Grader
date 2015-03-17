@@ -4,49 +4,45 @@
  * and open the template in the editor.
  */
 
-
 $(document).ready(function() {
 	$(':submit[value=Submit]').on('click',function(e) {
-		e.preventDefault();
-
 		var maxCount = +($('input[type=hidden][name=maxCount]').val());
-		var actualCount = maxCount;
 		var focus = false;
 		var names = [];
 
 		for(var i=0; i<maxCount; i++) {
 			var name = $('input[type=text][name=name'+i+']').val();
-			if(invalidName(name, i)) {
-				e.preventDefault();
-			}
-
-			if (!contains(names,name)) { $('div[name=sameName'+i+']').addClass('hidden'); }
-			if(name.trim() === '') { $('div[name=error'+i+']').addClass('hidden'); actualCount--; continue; }
-
-			if(contains(names,name)) {
-				e.preventDefault();
-				$('div[name=sameName'+i+']').removeClass('hidden');
-				focus = setFocus($('input[name=name'+i+']'), focus);
-			}
-			names.push(name);
 
 			var type = $('input[name=type'+i+'][value=1]').prop('checked') 
 				|| $('input[name=type'+i+'][value=2]').prop('checked')
 				|| $('input[name=type'+i+'][value=3]').prop('checked');
+
 			var collect = $('input[name=collect'+i+'][value=1]').prop('checked')
 				|| $('input[name=collect'+i+'][value=2]').prop('checked')
 				|| $('input[name=collect'+i+'][value=3]').prop('checked')
 				|| $('input[name=collect'+i+'][value=4]').prop('checked');
 
-			if(!type || !collect) {
+			if(errorsCheck(name, names, type, collect, i)) {
 				e.preventDefault();
-				$('div[name=error'+i+']').removeClass('hidden');
 				focus = setFocus($('input[name=name'+i+']'), focus);
 			}
-			else { $('div[name=error'+i+']').addClass('hidden'); }
+			if(name.trim() !== '') names.push(name);
 		}
 	});
 });
+
+function errorsCheck(name, names, type, collect, index) {
+	return (invalidName(name, index) || repeatName(names, name, index) || incompleteRow(name, type,collect,index));
+}
+
+function incompleteRow(name, type, collect, index) {
+	if(name !== '' && (!type || !collect)) {
+		$('div[name=error'+index+']').removeClass('hidden');
+		return true;
+	}
+	$('div[name=error'+index+']').addClass('hidden'); 
+	return false;
+}
 
 function invalidName(name, index) {
 	if(name.length > 0 && (!name.match(/^[a-zA-z]/) || name.match(/[^a-zA-z0-9_]/))) {
@@ -54,6 +50,16 @@ function invalidName(name, index) {
 		return true;
 	}
 	$('span[name='+(index+1)+']').addClass('hidden');
+	return false;
+}
+
+function repeatName(names,name, index) {
+	if(contains(names,name)) {
+		$('div[name=sameName'+index+']').removeClass('hidden');
+		return true;
+	}
+	$('div[name=sameName'+index+']').addClass('hidden'); 
+
 	return false;
 }
 
