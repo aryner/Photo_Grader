@@ -30,6 +30,10 @@ $(document).ready(function() {
 			var div = document.getElementsByClassName('errorDiv');
 			div[0].innerHTML = msg;
 		}
+		else {
+			var form = document.getElementsByName('assignmentDefinitions');
+			form[0].innerHTML += "<input type='hidden' name='sectionCount' value='"+(index-1)+"'>";
+		}
 	});
 });
 

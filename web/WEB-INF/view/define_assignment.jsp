@@ -32,7 +32,7 @@ for(MetaData datum : metaData) {
 %>
 
 <h1>Specify details of meta-data collection...</h1>
-<form action="defineAssignment" method="POST">
+<form action="defineAssignment" method="POST" name='assignmentDefinitions'>
 <%
 if(name > 0) {
 %>
@@ -44,14 +44,13 @@ if(name > 0) {
 	out.print("<div class='meta-col'>");
 	out.print("<h4>(1) Which type of meta-data?</h4>");
 	int index = 0;
-	out.print("<input type='radio' value='' name='type_"+MetaData.NAME+"_1' title='"+index+"'> Not meta-data (use to help break name into sections)<br>");
+	out.print("<input type='radio' value='_not-meta_' name='type_"+MetaData.NAME+"_1' title='"+index+"'> Not meta-data (use to help break name into sections)<br>");
 	for(MetaData datum : metaData) {
 		if(datum.getCollection() == MetaData.NAME) {
 			index++;
 			out.print("<input type='radio' value='"+datum.getName()+"' name='type_"+MetaData.NAME+"_1' title='"+index+"'> "+datum.getName()+"<br>");
 		}
 	}
-//	out.print("<br><input type='checkbox' name='specialCharacters' title='1'> Field contains special characters");
 	out.print("</div>");
 
 	out.print("<div class='meta-col'>");
