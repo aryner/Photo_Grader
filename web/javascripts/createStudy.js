@@ -7,6 +7,8 @@
 
 $(document).ready(function() {
 	$(':submit[value=Submit]').on('click',function(e) {
+		e.preventDefault();
+
 		var maxCount = +($('input[type=hidden][name=maxCount]').val());
 		var actualCount = maxCount;
 		var focus = false;
@@ -14,6 +16,9 @@ $(document).ready(function() {
 
 		for(var i=0; i<maxCount; i++) {
 			var name = $('input[type=text][name=name'+i+']').val();
+			if(invalidName(name, i)) {
+				e.preventDefault();
+			}
 
 			if (!contains(names,name)) { $('div[name=sameName'+i+']').addClass('hidden'); }
 			if(name.trim() === '') { $('div[name=error'+i+']').addClass('hidden'); actualCount--; continue; }
@@ -42,6 +47,15 @@ $(document).ready(function() {
 		}
 	});
 });
+
+function invalidName(name, index) {
+	if(name.length > 0 && (!name.match(/^[a-zA-z]/) || name.match(/[^a-zA-z0-9_]/))) {
+		$('span[name='+(index+1)+']').removeClass('hidden');
+		return true;
+	}
+	$('span[name='+(index+1)+']').addClass('hidden');
+	return false;
+}
 
 function setFocus(element, focus) {
 	if(!focus) {

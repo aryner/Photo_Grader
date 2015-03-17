@@ -26,6 +26,7 @@ int number_fields = Integer.parseInt(request.getParameter("number"));
 <div class="meta-row">
 	<div class="newRow error hidden" name="sameName<%out.print(i);%>" >You can't have duplicate names</div>
 	<div class="meta-col">
+		<span class="error hidden" name='<%out.print(i+1);%>'>Names must start with a letter and can only contain letters, <br>numbers and underscores<br></span>
 		<b>(<%out.print(i+1);%>)</b> Meta-data descriptor(name): <input type="text" name="name<%out.print(i);%>" autocomplete="off">
 	</div>
 	<div class="meta-col">
