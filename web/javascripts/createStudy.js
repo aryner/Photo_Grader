@@ -6,6 +6,7 @@
 
 $(document).ready(function() {
 	$(':submit[value=Submit]').on('click',function(e) {
+		e.preventDefault();
 		var maxCount = +($('input[type=hidden][name=maxCount]').val());
 		var focus = false;
 		var names = [];
@@ -45,7 +46,7 @@ function incompleteRow(name, index) {
 }
 
 function invalidName(name, index) {
-	if(name.length > 0 && (!name.match(/^[a-zA-z]/) || name.match(/[^a-zA-z0-9_]/))) {
+	if(name.length > 0 && (!name.match(/^[a-zA-z]/) || name.match(/[^a-zA-Z0-9]/))) {
 		$('span[name='+(index+1)+']').removeClass('hidden');
 		return true;
 	}

@@ -59,8 +59,35 @@ public class MetaData {
 	}
 
 	public static void processDefinitions(Study study, HttpServletRequest request) {
-		//create definitions for photo meta-data
+		//get all the data types
+		int metaDataCount = Integer.parseInt(request.getParameter("fieldsLength"));
+		ArrayList<String> dataTypes = new ArrayList<String>();
+		for(int i=0; i<metaDataCount; i++) {
+			dataTypes.add(request.getParameter("data_type_"+i));
+		}
+
+		//get all specifications for all the name meta data
 		ArrayList<PhotoNameMetaData> nameMeta = new ArrayList<PhotoNameMetaData>();
+		int metaNameCount = Integer.parseInt(request.getParameter("sectionCount"));
+		for(int i=0; i<metaNameCount; i++) {
+			String name = request.getParameter("type_"+NAME+"_"+1);
+//check that its a meta data and not a place holder
+		}
+	}
+
+	private Map<String,String> createNameTypeMap(ArrayList<String> name_types) {
+		Map<String,String> map = new HashMap<String,String>();
+		for(String name_type : name_types) {
+			map.put(extractName(name_type),extractType(name_type));
+		}
+
+		return map;
+	}
+	private static String extractName(String name_type) {
+		return name_type.substring(0,name_type.indexOf("_"));
+	}
+	private static String extractType(String name_type) {
+		return name_type.substring(name_type.indexOf("_")+1);
 	}
 
 	/**

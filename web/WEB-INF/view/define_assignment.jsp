@@ -4,7 +4,7 @@
     Author     : aryner
 --%>
 
-<%@page import="model.MetaData"%>
+<%@page import="metaData.MetaData"%>
 <%@page import="utilities.ColorPicker"%>
 <%@page import="java.util.*"%>
 
