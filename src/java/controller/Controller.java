@@ -6,6 +6,7 @@
 
 package controller;
 
+import SQL.*;
 import model.*;
 import utilities.*;
 
@@ -55,6 +56,9 @@ public class Controller extends HttpServlet {
 
 			request.setAttribute("studyName",request.getParameter("studyName"));
 			request.setAttribute("metaData",metaData);
+		}
+		else if(userPath.equals("/select_study")) {
+			request.setAttribute("studyNames",Query.getField("study","name",null));
 		}
 
 		String url = "/WEB-INF/view" + userPath + ".jsp";
@@ -125,6 +129,7 @@ public class Controller extends HttpServlet {
 		}
 		else if(userPath.equals("/logout")) {
 			session.removeAttribute("user");
+			session.removeAttribute("study");
 			response.sendRedirect("/Photo_Grader/");
 			return;
 		}
@@ -133,6 +138,11 @@ public class Controller extends HttpServlet {
 			MetaData.processDefinitions(study, request);
 
 			session.setAttribute("study",study);
+			response.sendRedirect("/Photo_Grader/home");
+			return;
+		}
+		else if(userPath.equals("/setStudy")) {
+			session.setAttribute("study",Study.getStudyByName(request.getParameter("name")));
 			response.sendRedirect("/Photo_Grader/home");
 			return;
 		}

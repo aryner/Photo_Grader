@@ -4,6 +4,7 @@
     Author     : aryner
 --%>
 <%@page import="utilities.Constants"%>
+<%@page import="java.util.*"%>
 
 <h1>Select a study</h1>
 
@@ -11,7 +12,12 @@
 	<p>
 		<select name="name" class="btn">
 			<%
-			//options generated from sql query results of studies
+			ArrayList<String> studyNames = (ArrayList)request.getAttribute("studyNames");
+			for(String study : studyNames) {
+			%>
+			<option value='<%out.print(study);%>'><%out.print(study);%></option>
+			<%
+			}
 			%>
 		</select>
 	</p>

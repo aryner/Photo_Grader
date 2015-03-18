@@ -1,6 +1,6 @@
 <%-- any content can be specified here e.g.: --%>
 <%@ page pageEncoding="UTF-8" %>
-<%@ page import="model.User" %>
+<%@ page import="model.*" %>
 <!DOCTYPE html>
 <html>
 	<head>
@@ -16,6 +16,9 @@
 				<%
 					if(session.getAttribute("user") != null) {
 						out.print("Welcome " + ((User)session.getAttribute("user")).getName());
+					}
+					if(session.getAttribute("study") != null) {
+						out.print(" -- "+((Study)session.getAttribute("study")).getName());
 					}
 				%>
 			</span>

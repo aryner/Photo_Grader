@@ -37,6 +37,11 @@ public class Study extends Model {
 		this.photo_grade_group_name = photo_grade_group_name;
 	}
 
+	public static Study getStudyByName(String name) {
+		String query = "SELECT * FROM STUDY WHERE name='"+name+"'";
+		return (Study)Query.getModel(query,new Study()).get(0);
+	}
+
 	@Override
 	public Study getModel(ResultSet resultSet) {
 		try {
@@ -67,7 +72,7 @@ public class Study extends Model {
 
 		String newStudy = "INSERT INTO study (name, photo_table_name, photo_attribute_table_name, "+
 				  "photo_grade_group_name) VALUES ('"+name+"', '"+photo_table_name+
-				  "', '"+ photo_attribute_table_name+"', "+ photo_grade_group_name+")";
+				  "', '"+ photo_attribute_table_name+"', '"+ photo_grade_group_name+"')";
 		Query.update(newStudy);
 
 		newStudy = "SELECT * FROM study WHERE name='"+name+"'";
