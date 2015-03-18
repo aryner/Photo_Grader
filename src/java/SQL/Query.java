@@ -18,6 +18,7 @@ import model.*;
  * @author aryner
  */
 public class Query {
+
 	public static ArrayList<Model> getModel(String query, Model model) {
 		ArrayList<Model> result = new ArrayList<Model>();
 		Connection con = null;
@@ -50,6 +51,41 @@ public class Query {
 
 		return result;
 	}
+
+	public static ArrayList<Object> getField(String table, String field, String where) {
+		ArrayList<Object> result = new ArrayList<Object>();
+		Connection con = null;
+		Statement stmt = null;
+		ResultSet resultSet = null;
+
+		try {
+			InitialContext initialContext = new InitialContext();
+			Context context = (Context)initialContext.lookup("java:comp/env");
+			DataSource dataSource = (DataSource)context.lookup("photo_grader");
+			con = dataSource.getConnection();
+
+			stmt = con.createStatement();
+
+			String query = "SELECT "+field+" FROM "+table+(where != null ? " WHERE "+where : "");
+			resultSet = stmt.executeQuery(query); 
+
+			while(resultSet.next()) {
+				result.add(resultSet.getObject(field));
+			}
+		}
+		catch (javax.naming.NamingException e) {
+			e.printStackTrace(System.err);
+		}
+		catch (SQLException e) {
+			e.printStackTrace(System.err);
+		}
+		finally {
+			close(con, stmt, resultSet);
+		}
+
+		return result;
+	}
+
 
 	public static void update(String query) {
 		Connection con = null;

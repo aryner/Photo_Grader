@@ -129,8 +129,10 @@ public class Controller extends HttpServlet {
 			return;
 		}
 		else if(userPath.equals("/defineAssignment")) {
-			MetaData.processDefinitions(request);
+			Study study = Study.createStudy(request);
+			MetaData.processDefinitions(study, request);
 
+			session.setAttribute("study",study);
 			response.sendRedirect("/Photo_Grader/home");
 			return;
 		}

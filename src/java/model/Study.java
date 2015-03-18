@@ -7,6 +7,7 @@
 package model;
 
 import java.sql.*;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  *
@@ -43,6 +44,11 @@ public class Study extends Model {
 		} catch(SQLException e) {
 			e.printStackTrace(System.err);
 		}
+
+		return null;
+	}
+
+	public static Study createStudy(HttpServletRequest request) {
 
 		return null;
 	}

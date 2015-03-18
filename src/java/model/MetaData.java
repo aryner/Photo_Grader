@@ -57,7 +57,7 @@ public class MetaData {
 		}
 	}
 
-	public static void processDefinitions(HttpServletRequest request) {
+	public static void processDefinitions(Study study, HttpServletRequest request) {
 		//create study and definitions for photo meta-data
 	}
 
