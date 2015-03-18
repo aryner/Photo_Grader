@@ -35,6 +35,7 @@ for(MetaData datum : metaData) {
 <form action="defineAssignment" method="POST" name='assignmentDefinitions'>
 	<input type='hidden' name='studyName' value='<%out.print(studyName);%>'>
 	<input type='hidden' name='fieldsLength' value='<%out.print(metaData.size());%>'>
+	<input type='hidden' name='sectionCount' value='0'>
 <%
 for(int i=0; i<metaData.size(); i++) {
 	//create hidden fields to show type (int, dec, string)

@@ -30,10 +30,6 @@ $(document).ready(function() {
 			var div = document.getElementsByClassName('errorDiv');
 			div[0].innerHTML = msg;
 		}
-		else {
-			var form = document.getElementsByName('assignmentDefinitions');
-			form[0].innerHTML += "<input type='hidden' name='sectionCount' value='"+(index-1)+"'>";
-		}
 	});
 });
 
@@ -279,6 +275,7 @@ function checkForRows(index) {
 
 	if(completed === 3) {
 		if(window.index === index) {
+			$('input[name=sectionCount]').val(index);
 			window.index++;
 			for(var i=0; i<3; i++) {
 				completedTracker[i][index] = 0;
