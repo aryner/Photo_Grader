@@ -4,10 +4,11 @@
  * and open the template in the editor.
  */
 
-package model;
+package metaData;
 
 import java.util.*;
 import javax.servlet.http.HttpServletRequest;
+import model.Study;
 
 /**
  *
@@ -58,7 +59,8 @@ public class MetaData {
 	}
 
 	public static void processDefinitions(Study study, HttpServletRequest request) {
-		//create study and definitions for photo meta-data
+		//create definitions for photo meta-data
+		ArrayList<PhotoNameMetaData> nameMeta = new ArrayList<PhotoNameMetaData>();
 	}
 
 	/**

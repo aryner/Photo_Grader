@@ -1,12 +1,15 @@
+package metaData;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-package model;
+
 
 import java.sql.*;
+import model.Model;
 
 /**
  *
@@ -22,6 +25,18 @@ public class PhotoNameMetaData extends Model {
 	private int ends;
 	private String start_flag;
 	private String end_flag;
+
+	public PhotoNameMetaData() {
+		id = 0;
+		study_id = 0;
+		name = "";
+		position = 0;
+		used = 0;
+		starts = 0;
+		ends = 0;
+		start_flag = "";
+		end_flag = "";
+	}
 
 	public PhotoNameMetaData(
 			int id, int study_id, String name, int position,
