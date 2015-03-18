@@ -20,8 +20,7 @@ public class User extends Model {
 	private String password;
 	private int access_level;
 
-	public User() {
-	}
+	public User() {}
 
 	public User(int id, String name, String password, int access_level) {
 		this.id = id;

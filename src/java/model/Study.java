@@ -6,6 +6,9 @@
 
 package model;
 
+import SQL.*;
+import utilities.*;
+import java.util.*;
 import java.sql.*;
 import javax.servlet.http.HttpServletRequest;
 
@@ -19,6 +22,8 @@ public class Study extends Model {
 	private String photo_table_name;
 	private String photo_attribute_table_name;
 	private String photo_grade_group_name;
+
+	public Study() {}
 
 	public Study(
 		int id, String name, String photo_table_name, 
@@ -49,8 +54,24 @@ public class Study extends Model {
 	}
 
 	public static Study createStudy(HttpServletRequest request) {
+		String name = request.getParameter("studyName");
 
-		return null;
+		ArrayList<String> usedNames = (ArrayList)Query.getField("study", "photo_table_name", null);
+		String photo_table_name = Tools.generateTableName("photo_table_name_", usedNames);
+
+		usedNames = (ArrayList)Query.getField("study", "photo_attribute_table_name", null);
+		String photo_attribute_table_name = Tools.generateTableName("photo_attribute_table_name_", usedNames);
+
+		usedNames = (ArrayList)Query.getField("study", "photo_grade_group_name", null);
+		String photo_grade_group_name = Tools.generateTableName("photo_grade_group_name_", usedNames);
+
+		String newStudy = "INSERT INTO study (name, photo_table_name, photo_attribute_table_name, "+
+				  "photo_grade_group_name) VALUES ('"+name+"', '"+photo_table_name+
+				  "', '"+ photo_attribute_table_name+"', "+ photo_grade_group_name+")";
+		Query.update(newStudy);
+
+		newStudy = "SELECT * FROM study WHERE name='"+name+"'";
+		return (Study)Query.getModel(newStudy, new Study()).get(0);
 	}
 
 	/**
