@@ -16,4 +16,5 @@ public class Constants {
 	public static final String INCORRECT_NAME_PASS = "That username and password combination is not recognized";
 	public static final String STUDY_NAME_TAKEN = "That study name is already being used";
 	public static final String MISSING_NAME_NUMBER = "You must enter both a study name and an amount of meta-data";
+	public static final String REPEAT_NAME = "That study name is already being used";
 }

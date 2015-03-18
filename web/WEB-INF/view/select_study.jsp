@@ -8,9 +8,9 @@
 
 <h1>Select a study</h1>
 
-<form action="setStudy" method="POST"> 
+<form action="setStudy" method="POST" > 
 	<p>
-		<select name="name" class="btn">
+		<select name="name" id="studyOptions" class="btn">
 			<%
 			ArrayList<String> studyNames = (ArrayList)request.getAttribute("studyNames");
 			for(String study : studyNames) {
@@ -21,7 +21,7 @@
 			%>
 		</select>
 	</p>
-	<input type="submit" class="btn" value="Use Study">
+	<input type="submit" class="btn" value="Use Study" name="setStudy">
 </form>
 
 <h1>...Or create a new one</h1>
@@ -30,6 +30,7 @@
 
 <form action="create_study" method="GET">
 	<p>
+		<span class="hidden error" name="repeatName"><%out.print(Constants.REPEAT_NAME);%><br></span>
 		<span class="hidden error" name="missingNameNumber"><%out.print(Constants.MISSING_NAME_NUMBER);%><br></span>
 		New Study Name: 
 		<input type="text" name="name">

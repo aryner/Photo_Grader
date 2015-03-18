@@ -18,5 +18,22 @@ $(document).ready(function() {
 			e.preventDefault();
 			$('span[name=missingNameNumber]').removeClass('hidden');
 		}
+		if(studyNameTaken()) {
+			e.preventDefault();
+			$('span[name=repeatName]').removeClass('hidden');
+		}
 	});
 });
+
+function studyNameTaken() {
+	var options = document.getElementById('studyOptions');
+	var name = $('input[type=text][name=name]').val();
+
+	for(var i=0; i<options.length; i++) {
+		if(name.trim() === options[i].value) {
+			return true;
+		}
+	}
+
+	return false;
+}
