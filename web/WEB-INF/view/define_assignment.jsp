@@ -149,7 +149,7 @@ if(excel > 0) {
 		</div>
 		<div class="meta-col">
 			<p><b>Column name</b></p>
-			<input type="text" name="column_0">
+			<input type="text" name="excel_column_0">
 		</div>
 	</div>
 	<div class="newRow"></div>
@@ -165,7 +165,7 @@ if(excel > 0) {
 				</div>
 				<div class="meta-col">
 					<p><b>Column name</b></p>
-					<input type="text" name="column_<%out.print(excelCount);%>">
+					<input type="text" name="excel_column_<%out.print(excelCount);%>">
 				</div>
 			</div>
 
@@ -178,8 +178,56 @@ if(excel > 0) {
 if(csv > 0) {
 %>
 <h3>Specify how to extract CSV meta-data</h3>
-
 <%
+	int csvCount = -1;
+	out.print("<div class='meta-row-container'>");
+%>
+	<div class="meta-row">
+		<div class="meta-col">
+			<p><b>Identifying column</b></p>
+			In order to use an CSV document to provide photo <br>
+			meta data it must have a column with values for each <br>
+			photo that are unique to that photo or groups of photos.<br>
+			<p class="note">(if you choose an attribute that groups of photos have <br>
+			then all photos in that group will receive the same meta-data<br>
+			from the CSV file)</p>
+			<input type="hidden" name="csv_0" value="">
+		</div>
+		<div class="meta-col">
+			<p><b>Which piece of meta-data will <br>be the unique identifier?</b></p>
+<%
+	for(MetaData datum : metaData) {
+		out.print("<input type='radio' name='csvIdentifier' value='"+datum.getName()+"'>"+datum.getName()+"<br>");
+	}
+%>
+		</div>
+		<div class="meta-col">
+			<p><b>Column name</b></p>
+			<input type="text" name="csv_column_0">
+		</div>
+	</div>
+	<div class="newRow"></div>
+<%
+	for(MetaData datum : metaData) {
+		if(datum.getCollection() == MetaData.CSV) {
+			csvCount++;
+%>
+			<div class="meta-row">
+				<div class="meta-col">
+					<p><b><%out.print(datum.getName());%></b></p>
+					<input type="hidden" name="csv_<%out.print(csvCount);%>" value="<%out.print(datum.getName());%>">
+				</div>
+				<div class="meta-col">
+					<p><b>Column name</b></p>
+					<input type="text" name="csv_column_<%out.print(csvCount);%>">
+				</div>
+			</div>
+
+			<div class="newRow"></div>
+<%
+		}
+	}
+	out.print("<input type='hidden' name='csvCount' value='"+csvCount+"'>");
 }
 if(manual > 0) {
 %>
