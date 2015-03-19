@@ -6,7 +6,6 @@
 
 $(document).ready(function() {
 	$(':submit[value=Submit]').on('click',function(e) {
-		e.preventDefault();
 		var maxCount = +($('input[type=hidden][name=maxCount]').val());
 		var focus = false;
 		var names = [];

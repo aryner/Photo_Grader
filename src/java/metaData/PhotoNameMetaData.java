@@ -9,7 +9,9 @@ package metaData;
 
 
 import java.sql.*;
+import java.util.*;
 import model.Model;
+import SQL.*;
 
 /**
  *
@@ -25,6 +27,9 @@ public class PhotoNameMetaData extends Model {
 	private int ends;
 	private String start_flag;
 	private String end_flag;
+
+	public static final int TRUE = 2;
+	public static final int FALSE = 1;
 
 	public PhotoNameMetaData() {
 		id = 0;
@@ -68,6 +73,23 @@ public class PhotoNameMetaData extends Model {
 		}
 
 		return null;
+	}
+
+	public static void updateDB(ArrayList<PhotoNameMetaData> metaData) {
+		String query = "INSERT INTO photo_data_by_name (study_id, name, "+
+				"position, used, starts, ends, start_flag, end_flag) "+
+				"VALUES (";
+		String postfix = "";
+		for(PhotoNameMetaData data : metaData) {
+			if(postfix.length() == 0) postfix += ", ";
+			postfix += "('"+data.getStudy_id()+"', '"+data.getName()+"', "+
+				   data.getPosition()+"', '"+data.getUsed()+"', '"+
+				   data.getStarts()+"', '"+data.getEnds()+"', '"+
+				   data.getStart_flag()+"', '"+data.getEnd_flag()+"')";
+		}
+		postfix += ")";
+
+		Query.update(query+postfix);
 	}
 
 	/**
