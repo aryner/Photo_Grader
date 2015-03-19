@@ -6,9 +6,9 @@
 
 package metaData;
 
+import model.*;
 import java.util.*;
 import javax.servlet.http.HttpServletRequest;
-import model.Study;
 
 /**
  *
@@ -73,6 +73,10 @@ public class MetaData {
 		}
 
 		PhotoNameMetaData.updateDB(nameMeta);
+
+//process the other types of meta data like we did with photo name meta data
+
+		Photo.generateAttributes(study, types);
 	}
 
 	private static void setFields(PhotoNameMetaData metaData, int study_id, HttpServletRequest request, int position) {
