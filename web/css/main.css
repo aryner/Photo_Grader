@@ -131,3 +131,7 @@ body {
 .errorDiv {
 	margin-top: 20px;
 }
+
+.note {
+	font-size: 75%;
+}

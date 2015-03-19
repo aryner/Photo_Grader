@@ -124,8 +124,56 @@ if(name > 0) {
 if(excel > 0) {
 %>
 <h3>Specify how to extract excel meta-data</h3>
-
 <%
+	int excelCount = -1;
+	out.print("<div class='meta-row-container'>");
+%>
+	<div class="meta-row">
+		<div class="meta-col">
+			<p><b>Identifying column</b></p>
+			In order to use an excel document to provide photo <br>
+			meta data it must have a column with values for each <br>
+			photo that are unique to that photo or groups of photos.<br>
+			<p class="note">(if you choose an attribute that groups of photos have <br>
+			then all photos in that group will receive the same meta-data<br>
+			from the excel file)</p>
+			<input type="hidden" name="excel_0" value="">
+		</div>
+		<div class="meta-col">
+			<p><b>Which piece of meta-data will <br>be the unique identifier?</b></p>
+<%
+	for(MetaData datum : metaData) {
+		out.print("<input type='radio' name='excelIdentifier' value='"+datum.getName()+"'>"+datum.getName()+"<br>");
+	}
+%>
+		</div>
+		<div class="meta-col">
+			<p><b>Column name</b></p>
+			<input type="text" name="column_0">
+		</div>
+	</div>
+	<div class="newRow"></div>
+<%
+	for(MetaData datum : metaData) {
+		if(datum.getCollection() == MetaData.EXCEL) {
+			excelCount++;
+%>
+			<div class="meta-row">
+				<div class="meta-col">
+					<p><b><%out.print(datum.getName());%></b></p>
+					<input type="hidden" name="excel_<%out.print(excelCount);%>" value="<%out.print(datum.getName());%>">
+				</div>
+				<div class="meta-col">
+					<p><b>Column name</b></p>
+					<input type="text" name="column_<%out.print(excelCount);%>">
+				</div>
+			</div>
+
+			<div class="newRow"></div>
+<%
+		}
+	}
+	out.print("<input type='hidden' name='excelCount' value='"+excelCount+"'>");
 }
 if(csv > 0) {
 %>
