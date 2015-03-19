@@ -78,16 +78,15 @@ public class PhotoNameMetaData extends Model {
 	public static void updateDB(ArrayList<PhotoNameMetaData> metaData) {
 		String query = "INSERT INTO photo_data_by_name (study_id, name, "+
 				"position, used, starts, ends, start_flag, end_flag) "+
-				"VALUES (";
+				"VALUES ";
 		String postfix = "";
 		for(PhotoNameMetaData data : metaData) {
-			if(postfix.length() == 0) postfix += ", ";
-			postfix += "('"+data.getStudy_id()+"', '"+data.getName()+"', "+
+			if(postfix.length() != 0) postfix += ", ";
+			postfix += "('"+data.getStudy_id()+"', '"+data.getName()+"', '"+
 				   data.getPosition()+"', '"+data.getUsed()+"', '"+
 				   data.getStarts()+"', '"+data.getEnds()+"', '"+
 				   data.getStart_flag()+"', '"+data.getEnd_flag()+"')";
 		}
-		postfix += ")";
 
 		Query.update(query+postfix);
 	}

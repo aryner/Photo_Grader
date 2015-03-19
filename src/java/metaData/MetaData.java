@@ -81,7 +81,7 @@ public class MetaData {
 
 	private static void setFields(PhotoNameMetaData metaData, int study_id, HttpServletRequest request, int position) {
 		metaData.setStudy_id(study_id);
-		metaData.setName(request.getParameter("type_"+NAME+"_"+1));
+		metaData.setName(request.getParameter("type_"+NAME+"_"+position));
 		metaData.setPosition(position);
 		metaData.setUsed(metaData.getName().equals("_not-meta_")?PhotoNameMetaData.FALSE:PhotoNameMetaData.TRUE);
 		metaData.setStarts(Integer.parseInt(request.getParameter("start_"+position)));
