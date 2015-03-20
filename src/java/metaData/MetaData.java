@@ -59,35 +59,37 @@ public class MetaData {
 	}
 
 	public static void processDefinitions(Study study, HttpServletRequest request) {
-		//get all specifications for all the name meta data
 		ArrayList<PhotoNameMetaData> nameMeta = new ArrayList<PhotoNameMetaData>();
-		int metaNameCount = Integer.parseInt(request.getParameter("sectionCount"));
-		for(int i=1; i<=metaNameCount; i++) {
-			PhotoNameMetaData metaData = new PhotoNameMetaData();
-			metaData.setFields(study.getId(),request,i,null,null,NAME);
-
-			nameMeta.add(metaData);
-		}
-
+		getSpecifications(nameMeta,NAME,request,study.getId());
 		PhotoNameMetaData.updateDB(nameMeta);
 
-		//get all specifications for all the excel meta data
-		String identifier = request.getParameter("excelIdentifier");
-		String identifier_col = request.getParameter("excel_column_0");
-		ArrayList<TableMetaData> excelMeta = new ArrayList<TableMetaData>();
-		int excelCount = Integer.parseInt(request.getParameter("excelCount"));
-		for(int i=1; i<=excelCount; i++) {
-			TableMetaData metaData = new TableMetaData();
-			metaData.setFields(study.getId(),request,i,identifier,identifier_col,EXCEL);
+		ArrayList<TableMetaData> tableMeta = new ArrayList<TableMetaData>();
+		getSpecifications(tableMeta,EXCEL,request,study.getId());
+		getSpecifications(tableMeta,CSV,request,study.getId());
+		TableMetaData.updateDB(tableMeta);
 
-			excelMeta.add(metaData);
-		}
-
-		TableMetaData.updateDB(excelMeta);
-//process the other types of meta data like we did with photo name meta data
+		ArrayList<ManualMetaData> manualMeta = new ArrayList<ManualMetaData>();
+		getSpecifications(manualMeta,MANUAL,request,study.getId());
+		ManualMetaData.updateDB(manualMeta);
 
 		Map<String,String> types = createNameTypeMap(request);
 		Photo.generateAttributes(study, types);
+	}
+
+	private static void getSpecifications(ArrayList meta, int type, HttpServletRequest request, int study_id) {
+		String identifier = request.getParameter("excelIdentifier");
+		String identifier_col = request.getParameter("excel_column_0");
+		String typeString = type == NAME ? "name" : 
+				    type == EXCEL ? "excel" :
+				    type == CSV ? "csv" : "manual";
+		int count = Integer.parseInt(request.getParameter(typeString+"Count"));
+		for(int i=1; i<=count; i++) {
+			MetaDataSource metaData = type == NAME ? new PhotoNameMetaData() : 
+					          type == MANUAL ? new ManualMetaData() : new TableMetaData();
+			metaData.setFields(study_id,request,i,identifier,identifier_col,type);
+
+			meta.add(metaData);
+		}
 	}
 
 	private static Map<String,String> createNameTypeMap(HttpServletRequest request) {
