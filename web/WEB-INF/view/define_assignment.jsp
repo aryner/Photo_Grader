@@ -232,8 +232,25 @@ if(csv > 0) {
 if(manual > 0) {
 %>
 <h3>Specify how to obtain manual meta-data</h3>
-
 <%
+	int manualCount = 0;
+	for(MetaData datum : metaData) {
+		if(datum.getCollection() == MetaData.MANUAL) {
+			manualCount++;
+%>
+			<div class="meta-row" name="manual_<%out.print(manualCount);%>">
+				<div class="meta-col">
+					<p>Set <b><%out.print(datum.getName());%></b> with:</p>
+					<input type="radio" name="manual_type_<%out.print(manualCount);%>" value="<%out.print(MetaData.TEXT);%>">Text<br>
+					<input type="radio" name="manual_type_<%out.print(manualCount);%>" value="<%out.print(MetaData.RADIO);%>">Radio button<br>
+					<input type="radio" name="manual_type_<%out.print(manualCount);%>" value="<%out.print(MetaData.CHECKBOX);%>">Check box<br>
+				</div>
+			</div>
+			
+			<div class="newRow"></div>
+<%
+		}
+	}
 }
 %>
 <div class="newRow"></div>

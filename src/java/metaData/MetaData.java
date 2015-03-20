@@ -39,6 +39,10 @@ public class MetaData {
 	public static final int NEXT_NOT_NUMBER = 9;
 	public static final int NEXT_NOT_LETTER = 10;
 
+	public static final int TEXT = 1;
+	public static final int RADIO = 2;
+	public static final int CHECKBOX = 3;
+
 	public MetaData(String name, int type, int collection) {
 		this.name = name;
 		this.type = type;
