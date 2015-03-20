@@ -38,7 +38,7 @@ public class MetaData {
 	public static final int NEXT_LETTER = 8;
 	public static final int NEXT_NOT_NUMBER = 9;
 	public static final int NEXT_NOT_LETTER = 10;
-	
+
 	public MetaData(String name, int type, int collection) {
 		this.name = name;
 		this.type = type;
@@ -59,42 +59,35 @@ public class MetaData {
 	}
 
 	public static void processDefinitions(Study study, HttpServletRequest request) {
-		//get all the data types
-		Map<String,String> types = createNameTypeMap(request);
-
 		//get all specifications for all the name meta data
 		ArrayList<PhotoNameMetaData> nameMeta = new ArrayList<PhotoNameMetaData>();
 		int metaNameCount = Integer.parseInt(request.getParameter("sectionCount"));
 		for(int i=1; i<=metaNameCount; i++) {
 			PhotoNameMetaData metaData = new PhotoNameMetaData();
-			setFields(metaData, study.getId(), request, i);
+			metaData.setFields(study.getId(),request,i,null,null,NAME);
 
 			nameMeta.add(metaData);
 		}
 
 		PhotoNameMetaData.updateDB(nameMeta);
 
+		//get all specifications for all the excel meta data
+		String identifier = request.getParameter("excelIdentifier");
+		String identifier_col = request.getParameter("excel_column_0");
+		ArrayList<TableMetaData> excelMeta = new ArrayList<TableMetaData>();
+		int excelCount = Integer.parseInt(request.getParameter("excelCount"));
+		for(int i=1; i<=excelCount; i++) {
+			TableMetaData metaData = new TableMetaData();
+			metaData.setFields(study.getId(),request,i,identifier,identifier_col,EXCEL);
+
+			excelMeta.add(metaData);
+		}
+
+		TableMetaData.updateDB(excelMeta);
 //process the other types of meta data like we did with photo name meta data
 
+		Map<String,String> types = createNameTypeMap(request);
 		Photo.generateAttributes(study, types);
-	}
-
-	private static void setFields(PhotoNameMetaData metaData, int study_id, HttpServletRequest request, int position) {
-		metaData.setStudy_id(study_id);
-		metaData.setName(request.getParameter("type_"+NAME+"_"+position));
-		metaData.setPosition(position);
-		metaData.setUsed(metaData.getName().equals("_not-meta_")?PhotoNameMetaData.FALSE:PhotoNameMetaData.TRUE);
-		metaData.setStarts(Integer.parseInt(request.getParameter("start_"+position)));
-		metaData.setEnds(Integer.parseInt(request.getParameter("end_"+position)));
-		metaData.setStart_flag(getDelimiterFlag(request, metaData.getStarts(), position, START));
-		metaData.setEnd_flag(getDelimiterFlag(request, metaData.getEnds(), position, END));
-	}
-
-	private static String getDelimiterFlag(HttpServletRequest request, int type, int index, int side) {
-		if(type == DELIMITER || type == NUMBER) {
-			return (side == START) ? request.getParameter("start_"+type+"_"+index) : request.getParameter("end_"+type+"_"+index);
-		}
-		return null;
 	}
 
 	private static Map<String,String> createNameTypeMap(HttpServletRequest request) {

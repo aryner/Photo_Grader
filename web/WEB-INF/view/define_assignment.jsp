@@ -125,7 +125,7 @@ if(excel > 0) {
 %>
 <h3>Specify how to extract excel meta-data</h3>
 <%
-	int excelCount = -1;
+	int excelCount = 0;
 	out.print("<div class='meta-row-container'>");
 %>
 	<div class="meta-row">

@@ -12,12 +12,13 @@ import java.sql.*;
 import java.util.*;
 import model.Model;
 import SQL.*;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  *
  * @author aryner
  */
-public class PhotoNameMetaData extends Model {
+public class PhotoNameMetaData extends Model implements MetaDataSource {
 	private int id;
 	private int study_id;
 	private String name;
@@ -89,6 +90,28 @@ public class PhotoNameMetaData extends Model {
 		}
 
 		Query.update(query+postfix);
+	}
+
+	@Override
+	public void setFields(
+		int study_id, HttpServletRequest request, int position, 
+		String identifier, String identifier_col, int type
+	) {
+		this.setStudy_id(study_id);
+		this.setName(request.getParameter("type_"+MetaData.NAME+"_"+position));
+		this.setPosition(position);
+		this.setUsed(this.getName().equals("_not-meta_")?PhotoNameMetaData.FALSE:PhotoNameMetaData.TRUE);
+		this.setStarts(Integer.parseInt(request.getParameter("start_"+position)));
+		this.setEnds(Integer.parseInt(request.getParameter("end_"+position)));
+		this.setStart_flag(getDelimiterFlag(request, this.getStarts(), position, MetaData.START));
+		this.setEnd_flag(getDelimiterFlag(request, this.getEnds(), position, MetaData.END));
+	}
+
+	private static String getDelimiterFlag(HttpServletRequest request, int type, int index, int side) {
+		if(type == MetaData.DELIMITER || type == MetaData.NUMBER) {
+			return (side == MetaData.START) ? request.getParameter("start_"+type+"_"+index) : request.getParameter("end_"+type+"_"+index);
+		}
+		return null;
 	}
 
 	/**
