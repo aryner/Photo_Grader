@@ -179,7 +179,7 @@ if(csv > 0) {
 %>
 <h3>Specify how to extract CSV meta-data</h3>
 <%
-	int csvCount = -1;
+	int csvCount = 0;
 	out.print("<div class='meta-row-container'>");
 %>
 	<div class="meta-row">

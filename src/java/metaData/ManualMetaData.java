@@ -23,5 +23,6 @@ public class ManualMetaData implements MetaDataSource {
 	}
 
 	public static void updateDB(ArrayList<ManualMetaData> metaData) {
+		if(metaData.isEmpty()) return;
 	}
 }

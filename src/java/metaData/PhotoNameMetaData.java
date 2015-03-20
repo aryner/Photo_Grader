@@ -77,6 +77,7 @@ public class PhotoNameMetaData extends Model implements MetaDataSource {
 	}
 
 	public static void updateDB(ArrayList<PhotoNameMetaData> metaData) {
+		if(metaData.isEmpty()) return;
 		String query = "INSERT INTO photo_data_by_name (study_id, name, "+
 				"position, used, starts, ends, start_flag, end_flag) "+
 				"VALUES ";

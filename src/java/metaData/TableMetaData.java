@@ -54,15 +54,16 @@ public class TableMetaData implements MetaDataSource {
 	}
 
 	public static void updateDB(ArrayList<TableMetaData> metaData) {
+		if(metaData.isEmpty()) return;
 		String query = "INSERT INTO photo_data_by_table (study_id, name, "+
 				"col_name, identifier, identifier_col, table_type) "+
 				"VALUES ";
 		String postfix = "";
 		for(TableMetaData datum : metaData) {
 			if(postfix.length() != 0) postfix += ", ";
-			postfix += "('"+datum.getStudy_id()+"', '"+datum.getCol_name()+"', "+
-				   datum.getIdentifier()+"', '"+datum.getIdentifier_col()+"', "+
-				   datum.getTable_type()+"')";
+			postfix += "('"+datum.getStudy_id()+"', '"+datum.getName()+"', '"+
+				   datum.getCol_name()+"', '"+datum.getIdentifier()+"', '"+
+				   datum.getIdentifier_col()+"', '"+ datum.getTable_type()+"')";
 		}
 
 		Query.update(query+postfix);

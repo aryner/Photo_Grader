@@ -59,6 +59,9 @@ public class MetaData {
 	}
 
 	public static void processDefinitions(Study study, HttpServletRequest request) {
+		Map<String,String> types = createNameTypeMap(request);
+		Photo.generateAttributes(study, types);
+
 		ArrayList<PhotoNameMetaData> nameMeta = new ArrayList<PhotoNameMetaData>();
 		getSpecifications(nameMeta,NAME,request,study.getId());
 		PhotoNameMetaData.updateDB(nameMeta);
@@ -71,18 +74,16 @@ public class MetaData {
 		ArrayList<ManualMetaData> manualMeta = new ArrayList<ManualMetaData>();
 		getSpecifications(manualMeta,MANUAL,request,study.getId());
 		ManualMetaData.updateDB(manualMeta);
-
-		Map<String,String> types = createNameTypeMap(request);
-		Photo.generateAttributes(study, types);
 	}
 
 	private static void getSpecifications(ArrayList meta, int type, HttpServletRequest request, int study_id) {
-		String identifier = request.getParameter("excelIdentifier");
-		String identifier_col = request.getParameter("excel_column_0");
+		String identifier = request.getParameter((type == CSV ? "csv" : "excel")+"Identifier");
+		String identifier_col = request.getParameter((type == CSV ? "csv" : "excel")+"_column_0");
 		String typeString = type == NAME ? "name" : 
 				    type == EXCEL ? "excel" :
 				    type == CSV ? "csv" : "manual";
-		int count = Integer.parseInt(request.getParameter(typeString+"Count"));
+		String stringCount = request.getParameter(typeString+"Count");
+		int count = Integer.parseInt(stringCount != null ? stringCount : "0");
 		for(int i=1; i<=count; i++) {
 			MetaDataSource metaData = type == NAME ? new PhotoNameMetaData() : 
 					          type == MANUAL ? new ManualMetaData() : new TableMetaData();
