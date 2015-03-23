@@ -238,6 +238,7 @@ if(manual > 0) {
 		if(datum.getCollection() == MetaData.MANUAL) {
 			manualCount++;
 %>
+			<input type="hidden" name="option_count_<%out.print(manualCount);%>" value="0">
 			<div class="meta-row" name="manual_<%out.print(manualCount);%>">
 				<div class="meta-col">
 					<p>Set <b><%out.print(datum.getName());%></b> with:</p>
@@ -251,6 +252,7 @@ if(manual > 0) {
 <%
 		}
 	}
+	out.print("<input type='hidden' name='manualCount' value='"+manualCount+"'>");
 }
 %>
 <div class="newRow"></div>
@@ -262,3 +264,4 @@ if(manual > 0) {
 
 <script src="javascripts/jquery-1.11.1.min.js" type="text/javascript"></script>
 <script src="javascripts/define_name_assignment.js" type="text/javascript"></script>
+<script src="javascripts/define_manual_assignment.js" type="text/javascript"></script>
