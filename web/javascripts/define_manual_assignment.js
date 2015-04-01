@@ -45,8 +45,9 @@ var manualType = function(event) {
 	}
 };
 
-function clearOptions(index) {
-	while(option_counts[index] > 0) {
+function clearOptions(index, downTo) {
+	downTo = typeof downTo !== 'undefined' ? downTo : 0;
+	while(option_counts[index] > downTo) {
 		option_counts[+index]--;
 		var row = $('div[name='+index+'_option_'+option_counts[+index]+']');
 		row.remove();
@@ -71,9 +72,11 @@ function addRadioOrCheckListener(index,count) {
 
 		if(this.value.length > 0 && this.value !== '') {
 			if((count+1) === option_counts[index]) {
-				console.log('in second if');
 				addRadioOrCheck(index);
 			}
+		}
+		else {
+			clearOptions(index,count+1);
 		}
 	};
 }
