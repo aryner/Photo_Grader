@@ -13,8 +13,7 @@ var CHECKBOX = 3;
 $(document).ready(function() {
 	var manualCount = Number($('input[name=manualCount]').val());
 	for(var i=0; i<manualCount; i++) {
-		option_counts.push([]);
-		option_counts[i][0] = UNCHECKED;
+		option_counts.push(0);
 	}
 
 	initializeEmitters(manualCount);
@@ -22,21 +21,34 @@ $(document).ready(function() {
 
 function initializeEmitters(count) {
 	for(var i=1; i<=count; i++) {
-		var radios = getElementsByName("manual_type_"+i);
+		var radios = document.getElementsByName("manual_type_"+i);
 		for(var j=0; j<radios.length; j++) {
-			radios[j].onclick(function () {
-				var event = new CustomEvent("manual_"+i, {'detail':{'index':i, 'value':this.value}});
-				document.dispatchEvent(event);
-			});
+			setOnClick(radios[j], i);
 		}
-		document.addEventListener("manual_"+i, manualType, false);
+		document.addEventListener('manual_'+i, manualType, false);
 	}
 }
 
+function setOnClick(radio, index) {
+	radio.onclick = function () {
+		var event = new CustomEvent('manual_'+index, {'detail':{'index':index, 'value':this.value}});
+		document.dispatchEvent(event);
+		console.log('in onclick, i = '+index);
+		console.log(event);
+	};
+}
+
 var manualType = function(event) {
-	switch(event.detail.value) {
-		case TEXT:
-		case RADIO:
-		case CHECKBOX:
+	console.log("in manualType");
+	if(+event.detail.value === TEXT)  {
+	}
+	else {
+		addRadioOrCheck(event.detail.index, event.detail.value);
 	}
 };
+
+function addRadioOrCheck(index, type) {
+	var row = $("div[name=manual_"+(index)+"]");
+	var newInput = "<div class='meta-col'><br><br><br>Option label: <input type='text' name='option_"+option_counts[index]+"'>";
+	row.append(newInput);
+}
