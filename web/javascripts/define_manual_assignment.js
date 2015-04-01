@@ -33,22 +33,31 @@ function setOnClick(radio, index) {
 	radio.onclick = function () {
 		var event = new CustomEvent('manual_'+index, {'detail':{'index':index, 'value':this.value}});
 		document.dispatchEvent(event);
-		console.log('in onclick, i = '+index);
-		console.log(event);
 	};
 }
 
 var manualType = function(event) {
-	console.log("in manualType");
 	if(+event.detail.value === TEXT)  {
+		clearOptions(+event.detail.index);
 	}
-	else {
+	else if(option_counts[+event.detail.index-1] === 0){
 		addRadioOrCheck(event.detail.index, event.detail.value);
 	}
 };
 
+function clearOptions(index) {
+	while(option_counts[index-1] > 0) {
+		option_counts[+index-1]--;
+		var row = $('div[name='+index+'_option_'+option_counts[+index]+']');
+		row.remove();
+	}
+}
+
 function addRadioOrCheck(index, type) {
 	var row = $("div[name=manual_"+(index)+"]");
-	var newInput = "<div class='meta-col'><br><br><br>Option label: <input type='text' name='option_"+option_counts[index]+"'>";
+	var newInput = "<div class='meta-col' name='"+index+"_option_"+option_counts[index]+
+			"'><br><br><br>Option label: <input type='text' name='option_"+
+			option_counts[index]+"'>";
 	row.append(newInput);
+	option_counts[index-1]++;
 }
