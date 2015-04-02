@@ -241,7 +241,7 @@ if(manual > 0) {
 			<input type="hidden" name="option_count_<%out.print(manualCount);%>" value="0">
 			<div class="meta-row" name="manual_<%out.print(manualCount);%>">
 				<div class="meta-col">
-					<p>Set <b><%out.print(datum.getName());%></b> with:</p>
+					<p><b>(<%out.print(manualCount);%>)</b> Set <b><%out.print(datum.getName());%></b> with:</p>
 					<input type="radio" name="manual_type_<%out.print(manualCount);%>" value="<%out.print(MetaData.TEXT);%>">Text<br>
 					<input type="radio" name="manual_type_<%out.print(manualCount);%>" value="<%out.print(MetaData.RADIO);%>">Radio button<br>
 					<input type="radio" name="manual_type_<%out.print(manualCount);%>" value="<%out.print(MetaData.CHECKBOX);%>">Check box<br>

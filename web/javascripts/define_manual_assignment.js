@@ -17,7 +17,61 @@ $(document).ready(function() {
 	}
 
 	initializeEmitters(manualCount);
+
+	$(':Submit[value=Submit]').click(function(e) {
+		var errors = getManualErrors();
+		if(errors.length > 0) {
+			e.preventDefault();
+
+			var msg = "";
+			for(var i=0; i<errors.length; i++) {
+				msg += errors[i];
+			}
+			var div = document.getElementsByClassName('errorDiv');
+			div[0].innerHTML = msg;
+			console.log('errors');
+		}
+	});
 });
+
+function getManualErrors() {
+	var errors = [];
+
+	//check each radio group
+	for(var i=0; i<option_counts.length; i++) {
+		if(!oneChecked(i)) {
+			errors.push('You must select either text, radio button, or check box for each manual option, check row '+(i+1)+'<br>');
+		}
+		else if(!$('input[type=radio][name=manual_type_'+(i+1)+'][value='+TEXT+']').prop('checked')) {
+			var input = $('input[type=text][name='+i+'_option_0]').val();
+			if(input === undefined || input === '') {
+				errors.push('Each manual radio or checkbox selection must have at least one option label, check row '+(i+1)+'<br>');
+			}
+			
+			var option_labels = $('input[type=text][title='+i+']');
+			for(var j=0; j<option_labels.length; j++) {
+				if(!validOptionLabelName(option_labels[j].value)) {
+					errors.push("Option labels must start with a letter and only contain letters or numbers, check row "+(i+1)+'<br>');
+					break;
+				}
+			}
+		}
+	}
+
+	return errors;
+}
+
+function oneChecked(index) {
+	return $('input[type=radio][name=manual_type_'+(index+1)+'][value='+TEXT+']').prop('checked')
+		|| $('input[type=radio][name=manual_type_'+(index+1)+'][value='+RADIO+']').prop('checked')
+		|| $('input[type=radio][name=manual_type_'+(index+1)+'][value='+CHECKBOX+']').prop('checked');
+}
+
+function validOptionLabelName(name) {
+	if(name.length > 0 && (!name.match(/^[a-zA-z]/) || name.match(/[^a-zA-Z0-9]/))) 
+		return false;
+	return true;
+}
 
 function initializeEmitters(count) {
 	for(var i=1; i<=count; i++) {
@@ -58,7 +112,7 @@ function addRadioOrCheck(index) {
 	var row = $("div[name=manual_"+(+index+1)+"]");
 	var newInput = "<div class='meta-col' name='"+index+"_option_"+option_counts[index]+
 			"'><br><br><br>Option label: <input type='text' name='"+(index)+"_option_"+
-			option_counts[index]+"'>";
+			option_counts[index]+"' title='"+index+"'>";
 	row.append(newInput);
 	option_counts[+index]++;
 	addRadioOrCheckListener(+index, (+option_counts[index])-1);
