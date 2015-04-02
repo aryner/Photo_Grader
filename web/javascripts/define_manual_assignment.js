@@ -29,7 +29,6 @@ $(document).ready(function() {
 			}
 			var div = document.getElementsByClassName('errorDiv');
 			div[0].innerHTML = msg;
-			console.log('errors');
 		}
 	});
 });
@@ -43,18 +42,32 @@ function getManualErrors() {
 			errors.push('You must select either text, radio button, or check box for each manual option, check row '+(i+1)+'<br>');
 		}
 		else if(!$('input[type=radio][name=manual_type_'+(i+1)+'][value='+TEXT+']').prop('checked')) {
-			var input = $('input[type=text][name='+i+'_option_0]').val();
-			if(input === undefined || input === '') {
-				errors.push('Each manual radio or checkbox selection must have at least one option label, check row '+(i+1)+'<br>');
-			}
-			
-			var option_labels = $('input[type=text][title='+i+']');
-			for(var j=0; j<option_labels.length; j++) {
-				if(!validOptionLabelName(option_labels[j].value)) {
-					errors.push("Option labels must start with a letter and only contain letters or numbers, check row "+(i+1)+'<br>');
-					break;
-				}
-			}
+			errors.push(optionLabelErrorsCheck([], i));
+		}
+	}
+
+	return errors;
+}
+
+function optionLabelErrorsCheck(errors, i) {
+	return validOptionsCheck(atLeastOneOption(errors, i),i);
+}
+
+function atLeastOneOption(errors, i) {
+	var input = $('input[type=text][name='+i+'_option_0]').val();
+	if(input === undefined || input === '') {
+		errors.push('Each manual radio or checkbox selection must have at least one option label, check row '+(i+1)+'<br>');
+	}
+
+	return errors;
+}
+
+function validOptionsCheck(errors, i) {
+	var option_labels = $('input[type=text][title='+i+']');
+	for(var j=0; j<option_labels.length; j++) {
+		if(!validOptionLabelName(option_labels[j].value)) {
+			errors.push("Option labels must start with a letter and only contain letters or numbers, check row "+(i+1)+'<br>');
+			break;
 		}
 	}
 
