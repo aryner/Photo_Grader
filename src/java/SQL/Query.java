@@ -52,7 +52,7 @@ public class Query {
 		return result;
 	}
 
-	public static ArrayList<Object> getField(String table, String field, String where) {
+	public static ArrayList<Object> getField(String table, String field, String where, String order) {
 		ArrayList<Object> result = new ArrayList<Object>();
 		Connection con = null;
 		Statement stmt = null;
@@ -66,7 +66,8 @@ public class Query {
 
 			stmt = con.createStatement();
 
-			String query = "SELECT "+field+" FROM "+table+(where != null ? " WHERE "+where : "");
+			String query = "SELECT "+field+" FROM "+table+(where != null ? " WHERE "+where : "")+
+					(order != null ? " ORDER BY "+order : "");
 			resultSet = stmt.executeQuery(query); 
 
 			while(resultSet.next()) {

@@ -239,6 +239,7 @@ if(manual > 0) {
 			manualCount++;
 %>
 			<input type="hidden" name="option_count_<%out.print(manualCount);%>" value="0">
+			<input type="hidden" name='manual_name_<%out.print(manualCount);%>' value='<%out.print(datum.getName());%>'>
 			<div class="meta-row" name="manual_<%out.print(manualCount);%>">
 				<div class="meta-col">
 					<p><b>(<%out.print(manualCount);%>)</b> Set <b><%out.print(datum.getName());%></b> with:</p>

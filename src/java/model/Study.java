@@ -61,13 +61,13 @@ public class Study extends Model {
 	public static Study createStudy(HttpServletRequest request) {
 		String name = request.getParameter("studyName");
 
-		ArrayList<String> usedNames = (ArrayList)Query.getField("study", "photo_table_name", null);
+		ArrayList<String> usedNames = (ArrayList)Query.getField("study", "photo_table_name", null,null);
 		String photo_table_name = Tools.generateTableName("photo_table_name_", usedNames);
 
-		usedNames = (ArrayList)Query.getField("study", "photo_attribute_table_name", null);
+		usedNames = (ArrayList)Query.getField("study", "photo_attribute_table_name", null,null);
 		String photo_attribute_table_name = Tools.generateTableName("photo_attribute_table_name_", usedNames);
 
-		usedNames = (ArrayList)Query.getField("study", "photo_grade_group_name", null);
+		usedNames = (ArrayList)Query.getField("study", "photo_grade_group_name", null,null);
 		String photo_grade_group_name = Tools.generateTableName("photo_grade_group_name_", usedNames);
 
 		String newStudy = "INSERT INTO study (name, photo_table_name, photo_attribute_table_name, "+

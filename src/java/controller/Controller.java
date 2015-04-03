@@ -59,7 +59,7 @@ public class Controller extends HttpServlet {
 			request.setAttribute("metaData",metaData);
 		}
 		else if(userPath.equals("/select_study")) {
-			request.setAttribute("studyNames",Query.getField("study","name",null));
+			request.setAttribute("studyNames",Query.getField("study","name",null,null));
 		}
 
 		String url = "/WEB-INF/view" + userPath + ".jsp";
