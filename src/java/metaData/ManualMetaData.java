@@ -56,7 +56,7 @@ public class ManualMetaData implements MetaDataSource {
 								    "name", 
 							            "study_id='"+study_id+"'", 
 								    "id");
-		ArrayList<Integer> ids = (ArrayList)Query.getField("photo_data_by_manual", 
+		ArrayList<Long> ids = (ArrayList)Query.getField("photo_data_by_manual", 
 								    "id", 
 							            "study_id='"+study_id+"'", 
 								    "id");
@@ -67,13 +67,13 @@ public class ManualMetaData implements MetaDataSource {
 			postfix = matchOptionsForUpdate(postfix, i, metaData, names, ids);
 		}
 
-		Query.update(query);
+		Query.update(query+postfix);
 	}
 
 	private static String matchOptionsForUpdate(String postfix, int index, 
 						    ArrayList<ManualMetaData> metaData,
 						    ArrayList<String> names, 
-						    ArrayList<Integer> ids
+						    ArrayList<Long> ids
 						   ) {
 		for(ManualMetaData datum : metaData) {
 			if(names.get(index).equals(datum.getName())) {
@@ -84,7 +84,7 @@ public class ManualMetaData implements MetaDataSource {
 		return postfix;
 	}
 
-	private static String matchOptionsToIds(String postfix, int id, ArrayList<String> values) {
+	private static String matchOptionsToIds(String postfix, long id, ArrayList<String> values) {
 		for(String value : values) {
 			if(postfix.length() != 0) postfix += ", ";
 			postfix += "('"+id+"', '"+value+"')";

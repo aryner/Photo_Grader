@@ -21,6 +21,8 @@ $(document).ready(function() {
 	$(':Submit[value=Submit]').click(function(e) {
 		var errors = getManualErrors();
 		if(errors.length > 0) {
+			console.log('errors = '+errors);
+			console.log('errros.length = '+errors.length);
 			e.preventDefault();
 
 			var msg = "";
@@ -42,7 +44,7 @@ function getManualErrors() {
 			errors.push('You must select either text, radio button, or check box for each manual option, check row '+(i+1)+'<br>');
 		}
 		else if(!$('input[type=radio][name=manual_type_'+(i+1)+'][value='+TEXT+']').prop('checked')) {
-			errors.push(optionLabelErrorsCheck([], i));
+			errors = (optionLabelErrorsCheck(errors, i));
 		}
 	}
 
