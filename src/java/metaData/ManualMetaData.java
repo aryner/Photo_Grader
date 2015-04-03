@@ -34,7 +34,8 @@ public class ManualMetaData implements MetaDataSource {
 		this.setStudy_id(study_id);
 		this.setName(request.getParameter("manual_name_"+position));
 		this.setInput_type(Integer.parseInt(request.getParameter("manual_type_"+position)));
-		this.setOptions(request, position);
+		this.setOptions(request, (position-1));
+		System.out.println("name = "+this.name+", position = "+position+", options.size() = "+options.size());
 	}
 
 	public static void updateDB(ArrayList<ManualMetaData> metaData) {
@@ -66,7 +67,7 @@ public class ManualMetaData implements MetaDataSource {
 		for(int i=0; i<names.size(); i++) {
 			postfix = matchOptionsForUpdate(postfix, i, metaData, names, ids);
 		}
-
+System.out.println(query+postfix);
 		Query.update(query+postfix);
 	}
 
@@ -76,7 +77,9 @@ public class ManualMetaData implements MetaDataSource {
 						    ArrayList<Long> ids
 						   ) {
 		for(ManualMetaData datum : metaData) {
+			System.out.println(names.get(index) + " =? "+datum.getName());
 			if(names.get(index).equals(datum.getName())) {
+				System.out.println("in if, index = "+index+", options.size() = "+datum.getOptions().size());
 				postfix = matchOptionsToIds(postfix, ids.get(index), datum.getOptions());
 				break;
 			}
@@ -86,6 +89,7 @@ public class ManualMetaData implements MetaDataSource {
 
 	private static String matchOptionsToIds(String postfix, long id, ArrayList<String> values) {
 		for(String value : values) {
+			System.out.println(value);
 			if(postfix.length() != 0) postfix += ", ";
 			postfix += "('"+id+"', '"+value+"')";
 		}
@@ -99,11 +103,11 @@ public class ManualMetaData implements MetaDataSource {
 	private void setOptions(HttpServletRequest request, int position) {
 		this.options = new ArrayList<String>();
 		int col = 0;
-		String option = request.getParameter((position+1)+"_option_"+col);
+		String option = request.getParameter((position)+"_option_"+col);
 		while (option != null && !option.equals("")) {
 			this.options.add(option);
 			col++;
-			option = request.getParameter((position+1)+"_option_"+col);
+			option = request.getParameter((position)+"_option_"+col);
 		}
 	}
 
