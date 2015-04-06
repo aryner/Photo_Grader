@@ -52,7 +52,7 @@ function getManualErrors() {
 }
 
 function optionLabelErrorsCheck(errors, i) {
-	return validOptionsCheck(atLeastOneOption(errors, i),i);
+	return uniqueOptionsCheck(validOptionsCheck(atLeastOneOption(errors, i),i),i);
 }
 
 function atLeastOneOption(errors, i) {
@@ -70,6 +70,20 @@ function validOptionsCheck(errors, i) {
 		if(!validOptionLabelName(option_labels[j].value)) {
 			errors.push("Option labels must start with a letter and only contain letters or numbers, check row "+(i+1)+'<br>');
 			break;
+		}
+	}
+
+	return errors;
+}
+
+function uniqueOptionsCheck(errors, i) {
+	var option_labels = $('input[type=text][title='+i+']');
+	for(var j=0; j<option_labels.length-1; j++) {
+		for(var k=j+1; k<option_labels.length; k++) {
+			if(option_labels[j].value.toLowerCase().trim() === option_labels[k].value.toLowerCase().trim()) {
+				errors.push("Option labels for the same field must be unique, check row "+(i+1)+'<br>');
+				break;
+			}
 		}
 	}
 
