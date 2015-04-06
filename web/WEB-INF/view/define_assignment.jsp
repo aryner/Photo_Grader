@@ -106,6 +106,7 @@ if(name > 0) {
 	out.print("<div class=meta-col>");
 	out.print("<h4>Example key:</h4>");
 	ColorPicker colorPicker = new ColorPicker();
+	out.print("<span name='_not_meta_' style='background:white'></span>");
 	for(MetaData datum : metaData) {
 		if(datum.getCollection() == MetaData.NAME) {
 			out.print("<span name='"+datum.getName()+"' "+colorPicker.nextBackgroundColor()+">"+datum.getName()+"</span><br>");

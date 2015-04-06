@@ -339,6 +339,7 @@ function radioFields() {
 	var buttons = "";
 
 	for(var i=0; i<fields.length; i++) {
+		console.log(fields[i].value);
 		buttons += "<input type='radio' name='type_1_"+index+"' value='"+fields[i].value+"'>"+
 			(i>0?fields[i].value:'Not meta-data (use to help break name into sections)')+"<br>";
 	}
@@ -454,9 +455,16 @@ function getDelimIndex(currIndex, text, index, tense) {
 
 function getColorCodes(types) {
 	var colorCodes = [];
+	console.log("types.length = "+types.length);
 	for(var i=0; i<types.length; i++) {
+		console.log(types[i]);
 		if(types[i] === '') { colorCodes[i] = ''; continue; }
 		var element = document.getElementsByName(types[i]);
+		if(element[0] === undefined) {
+			console.log(i +" is in the if");
+			colorCodes[i] = "sytle='background:white'";
+			continue;
+		}
 		colorCodes[i] = "style='background:"+element[0].style.background+"'";
 	}
 
