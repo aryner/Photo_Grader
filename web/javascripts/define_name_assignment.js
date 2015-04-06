@@ -295,6 +295,7 @@ function checkForRows(index) {
 
 		removeRows(oldIndex);
 	}
+	$('input[type=hidden][name=nameCount]').val(index);
 }
 
 function makeRow() {
@@ -330,7 +331,7 @@ function makeRow() {
 		     "</div>"+
 			
 		     "</div></div>";
-	$('div.meta-row-container').append(newRow);
+	$('div[name=name-assignment]').append(newRow);
 }
 
 function radioFields() {

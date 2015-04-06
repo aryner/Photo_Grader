@@ -49,7 +49,7 @@ if(name > 0) {
 <h3>Specify how to extract meta-data from the photo name</h3>
 <p>Enter them in the order they will appear in the name from left to right</p>
 <%
-	out.print("<div class='meta-row-container'>");
+	out.print("<div name='name-assignment' class='meta-row-container'>");
 	out.print("<div class='meta-row'>");
 	out.print("<div class='meta-col'>");
 	out.print("<h4>(1) Which type of meta-data?</h4>");
@@ -114,7 +114,7 @@ if(name > 0) {
 	out.print("</div>");
 	out.print("<div class=meta-col>");
 	out.print("<h4>Enter an example photo name to check the results:</h4>");
-	out.print("<input type='text' name='exampleInput'>");
+	out.print("<input type='text' name='exampleInput' autocomplete='off'>");
 	out.print("<p name='example'></p>");
 	out.print("</div>");
 
