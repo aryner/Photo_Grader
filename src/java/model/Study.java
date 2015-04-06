@@ -79,6 +79,10 @@ public class Study extends Model {
 		return (Study)Query.getModel(newStudy, new Study()).get(0);
 	}
 
+	public boolean usesTableMetaData() {
+		return !Query.getField("photo_data_by_table","name","study_id='"+this.id+"'",null).isEmpty();
+	}
+
 	/**
 	 * @return the id
 	 */

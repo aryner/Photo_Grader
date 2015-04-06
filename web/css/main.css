@@ -135,3 +135,10 @@ body {
 .note {
 	font-size: 75%;
 }
+
+.container {
+	width:80%;
+	clear: both;
+	margin: 20px;
+	padding: 10px;
+}
