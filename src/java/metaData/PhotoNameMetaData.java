@@ -32,6 +32,9 @@ public class PhotoNameMetaData extends Model implements MetaDataSource {
 	public static final int TRUE = 2;
 	public static final int FALSE = 1;
 
+	public static final int USED = 2;
+	public static final int NOT_USED = 1;
+
 	public PhotoNameMetaData() {
 		id = 0;
 		study_id = 0;
@@ -119,6 +122,28 @@ public class PhotoNameMetaData extends Model implements MetaDataSource {
 			return (side == MetaData.START) ? request.getParameter("start_"+type+"_"+index) : request.getParameter("end_"+type+"_"+index);
 		}
 		return null;
+	}
+
+	public static String getNameQueryString(ArrayList<PhotoNameMetaData> data) {
+		String result = "";
+
+		for(PhotoNameMetaData datum : data) {
+			if(datum.isUsed()) {
+				result += ", "+datum.getName();
+			}
+		}
+
+		return result;
+	}
+
+	public static String getAttributesForQuery(ArrayList<PhotoNameMetaData> data) {
+		String result = "";
+
+		return result;
+	}
+
+	public boolean isUsed() {
+		return this.used == USED;
 	}
 
 	/**

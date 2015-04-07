@@ -31,10 +31,16 @@ public class Helper {
 		ArrayList<String> errors = new ArrayList<String>();
 		ArrayList<PhotoNameMetaData> metaData = (ArrayList)new PhotoNameMetaData().getMetaDataSources("study_id='"+study.getId()+"'","position");
 
-		String query = "INSERT INTO "+study.getPhoto_attribute_table_name()+" (";
+		String query = "INSERT INTO "+study.getPhoto_attribute_table_name()+" (name, path"+
+				PhotoNameMetaData.getNameQueryString(metaData)+") VALUES ";
 
+		String postfix = "";
 		for(String picName : picNames) {
+			if(postfix.length() != 0) postfix += ", ";
+			postfix += "('"+picName+"', '"+FileIO.BASE_PICTURE_DIR+Tools.getGeneratedNumber(study.getPhoto_attribute_table_name())+Constants.FILE_SEP+
+				   "'"+PhotoNameMetaData.getAttributesForQuery(metaData)+")";
 		}
+		query += postfix;
 
 		if(picNames.isEmpty()) errors.add(Constants.NO_FILES_SELECTED);
 		else Query.update(query);
