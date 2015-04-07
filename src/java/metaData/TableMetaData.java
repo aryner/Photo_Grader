@@ -9,12 +9,14 @@ package metaData;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import SQL.*;
+import model.*;
+import java.sql.*;
 
 /**
  *
  * @author aryner
  */
-public class TableMetaData implements MetaDataSource {
+public class TableMetaData extends Model implements MetaDataSource {
 	private int id;
 	private int study_id;
 	private String name;
@@ -51,6 +53,28 @@ public class TableMetaData implements MetaDataSource {
 		this.setIdentifier(identifier);
 		this.setIdentifier_col(identifier_col);
 		this.setTable_type(type);
+	}
+
+	@Override
+	public ArrayList<Model> getMetaDataSources(String where, String order){
+		String query = "SELECT * FROM photo_data_by_table "+(where.length()>0?"WHERE "+where:"")+(order.length()>0?" ORDER BY "+order:"");
+		return Query.getModel(query, this);
+	}
+
+	@Override
+	public TableMetaData getModel(ResultSet resultSet) {
+		try {
+			return new TableMetaData(
+				resultSet.getInt("id"),resultSet.getInt("study_id"),
+				resultSet.getString("name"),resultSet.getString("col_name"),
+				resultSet.getString("identifier"),resultSet.getString("identifier_col"),
+				resultSet.getInt("table_type")
+			);
+		} catch(SQLException e) {
+			e.printStackTrace(System.err);
+		}
+
+		return null;
 	}
 
 	public static void updateDB(ArrayList<TableMetaData> metaData) {

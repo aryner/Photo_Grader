@@ -8,10 +8,10 @@ package metaData;
 
 
 
-import java.sql.*;
 import java.util.*;
-import model.Model;
+import java.sql.*;
 import SQL.*;
+import model.*;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -57,6 +57,12 @@ public class PhotoNameMetaData extends Model implements MetaDataSource {
 		this.ends = ends;
 		this.start_flag = start_flag;
 		this.end_flag = end_flag;
+	}
+
+	@Override
+	public ArrayList<Model> getMetaDataSources(String where, String order){
+		String query = "SELECT * FROM photo_data_by_name "+(where.length()>0?"WHERE "+where:"")+(order.length()>0?" ORDER BY "+order:"");
+		return Query.getModel(query, this);
 	}
 
 	@Override

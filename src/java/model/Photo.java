@@ -8,6 +8,8 @@ package model;
 
 import java.util.*;
 import SQL.*;
+import utilities.*;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  *
@@ -34,6 +36,10 @@ public class Photo {
 		}
 
 		Query.update(query+fields+postfix);
+	}
+
+	public static ArrayList<String> upload(HttpServletRequest request, Study study) {
+		return FileIO.upload(request, FileIO.PHOTO, study);
 	}
 
 	/**

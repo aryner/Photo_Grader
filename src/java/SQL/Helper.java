@@ -5,7 +5,11 @@
  */
 
 package SQL;
+
+import model.*;
+import java.util.*;
 import metaData.*;
+import utilities.*;
 
 /**
  *
@@ -17,5 +21,24 @@ public class Helper {
 			return "int";
 		}
 		return "varchar(40)";
+	}
+
+	public static ArrayList<String> insertAndUpdateUploads(int type, Study study, ArrayList<String> picNames) {
+		return type == FileIO.PHOTO ? insertPhotos(study, picNames) : null;
+	}
+
+	private static ArrayList<String> insertPhotos(Study study, ArrayList<String> picNames) {
+		ArrayList<String> errors = new ArrayList<String>();
+		ArrayList<PhotoNameMetaData> metaData = (ArrayList)new PhotoNameMetaData().getMetaDataSources("study_id='"+study.getId()+"'","position");
+
+		String query = "INSERT INTO "+study.getPhoto_attribute_table_name()+" (";
+
+		for(String picName : picNames) {
+		}
+
+		if(picNames.isEmpty()) errors.add(Constants.NO_FILES_SELECTED);
+		else Query.update(query);
+
+		return errors;
 	}
 }

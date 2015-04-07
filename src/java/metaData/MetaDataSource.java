@@ -6,6 +6,8 @@
 
 package metaData;
 
+import java.util.*;
+import model.*;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -18,4 +20,6 @@ public interface MetaDataSource {
 		int position, String identifier, String identifier_col,
 		int type
 	);
+
+	public ArrayList<Model> getMetaDataSources(String where, String order);
 }

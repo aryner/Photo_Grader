@@ -22,4 +22,11 @@ public class Tools {
 
 		return base+postfix;
 	}
+
+	public static String getGeneratedNumber(String generatedName) {
+		return generatedName.contains("_") ? 
+		       generatedName.substring(generatedName.lastIndexOf("_")+1, 
+			       		       generatedName.length()
+		       ) : "";
+	}
 }

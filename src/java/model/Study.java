@@ -19,20 +19,18 @@ import javax.servlet.http.HttpServletRequest;
 public class Study extends Model {
 	private int id;
 	private String name;
-	private String photo_table_name;
 	private String photo_attribute_table_name;
 	private String photo_grade_group_name;
 
 	public Study() {}
 
 	public Study(
-		int id, String name, String photo_table_name, 
+		int id, String name, 
 		String photo_attribute_table_name,
 		String photo_grade_group_name
 	) {
 		this.id = id;
 		this.name = name;
-		this.photo_table_name = photo_table_name;
 		this.photo_attribute_table_name = photo_attribute_table_name;
 		this.photo_grade_group_name = photo_grade_group_name;
 	}
@@ -47,7 +45,6 @@ public class Study extends Model {
 		try {
 			return new Study(
 				resultSet.getInt("id"),resultSet.getString("name"),
-				resultSet.getString("photo_table_name"),
 				resultSet.getString("photo_attribute_table_name"),
 				resultSet.getString("photo_grade_group_name")
 			);
@@ -61,18 +58,15 @@ public class Study extends Model {
 	public static Study createStudy(HttpServletRequest request) {
 		String name = request.getParameter("studyName");
 
-		ArrayList<String> usedNames = (ArrayList)Query.getField("study", "photo_table_name", null,null);
-		String photo_table_name = Tools.generateTableName("photo_table_name_", usedNames);
-
-		usedNames = (ArrayList)Query.getField("study", "photo_attribute_table_name", null,null);
+		ArrayList<String> usedNames = (ArrayList)Query.getField("study", "photo_attribute_table_name", null,null);
 		String photo_attribute_table_name = Tools.generateTableName("photo_attribute_table_name_", usedNames);
 
 		usedNames = (ArrayList)Query.getField("study", "photo_grade_group_name", null,null);
 		String photo_grade_group_name = Tools.generateTableName("photo_grade_group_name_", usedNames);
 
-		String newStudy = "INSERT INTO study (name, photo_table_name, photo_attribute_table_name, "+
-				  "photo_grade_group_name) VALUES ('"+name+"', '"+photo_table_name+
-				  "', '"+ photo_attribute_table_name+"', '"+ photo_grade_group_name+"')";
+		String newStudy = "INSERT INTO study (name, photo_attribute_table_name, "+
+				  "photo_grade_group_name) VALUES ('"+name+"', '"+photo_attribute_table_name+
+			          "', '"+ photo_grade_group_name+"')";
 		Query.update(newStudy);
 
 		newStudy = "SELECT * FROM study WHERE name='"+name+"'";
@@ -109,20 +103,6 @@ public class Study extends Model {
 	 */
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	/**
-	 * @return the photo_table_name
-	 */
-	public String getPhoto_table_name() {
-		return photo_table_name;
-	}
-
-	/**
-	 * @param photo_table_name the photo_table_name to set
-	 */
-	public void setPhoto_table_name(String photo_table_name) {
-		this.photo_table_name = photo_table_name;
 	}
 
 	/**

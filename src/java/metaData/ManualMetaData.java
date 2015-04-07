@@ -9,12 +9,14 @@ package metaData;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import SQL.*;
+import java.sql.*;
+import model.*;
 
 /**
  *
  * @author aryner
  */
-public class ManualMetaData implements MetaDataSource {
+public class ManualMetaData extends Model implements MetaDataSource {
 	private int id;
 	private int study_id;
 	private String name;
@@ -24,6 +26,16 @@ public class ManualMetaData implements MetaDataSource {
 	public static final int TEXT = MetaData.TEXT;
 	public static final int RADIO = MetaData.RADIO;
 	public static final int CHECKBOX = MetaData.CHECKBOX;
+
+	public ManualMetaData() {
+	}
+
+	public ManualMetaData(int id, int study_id, String name, int input_type) {
+		this.id = id;
+		this.study_id = study_id;
+		this.name = name;
+		this.input_type = input_type;
+	}
 
 	@Override
 	public void setFields(
@@ -35,6 +47,29 @@ public class ManualMetaData implements MetaDataSource {
 		this.setName(request.getParameter("manual_name_"+position));
 		this.setInput_type(Integer.parseInt(request.getParameter("manual_type_"+position)));
 		this.setOptions(request, (position-1));
+	}
+
+	@Override
+	public ArrayList<Model> getMetaDataSources(String where, String order){
+		String query = "SELECT * FROM photo_data_by_manual "+(where.length()>0?"WHERE "+where:"")+(order.length()>0?" ORDER BY "+order:"");
+		return Query.getModel(query, this);
+	}
+
+	@Override
+	public ManualMetaData getModel(ResultSet resultSet) {
+		try {
+			ManualMetaData datum = new ManualMetaData(
+				resultSet.getInt("id"),resultSet.getInt("study_id"),
+				resultSet.getString("name"),resultSet.getInt("input_type")
+			);
+			datum.setOptions();
+
+			return datum;
+		} catch(SQLException e) {
+			e.printStackTrace(System.err);
+		}
+
+		return null;
 	}
 
 	public static void updateDB(ArrayList<ManualMetaData> metaData) {
@@ -105,6 +140,10 @@ public class ManualMetaData implements MetaDataSource {
 			col++;
 			option = request.getParameter((position)+"_option_"+col);
 		}
+	}
+
+	private void setOptions() {
+		this.options = (ArrayList)Query.getField("check_radio_option","value","photo_data_id='"+getId()+"'",null);
 	}
 
 	/**
