@@ -124,20 +124,20 @@ public class PhotoNameMetaData extends Model implements MetaDataSource {
 		return null;
 	}
 
-	public static String getNameQueryString(ArrayList<PhotoNameMetaData> data) {
-		String result = "";
+	public static ArrayList<String> extractNames(ArrayList<PhotoNameMetaData> data) {
+		ArrayList<String> result = new ArrayList<String>();
 
 		for(PhotoNameMetaData datum : data) {
 			if(datum.isUsed()) {
-				result += ", "+datum.getName();
+				result.add(datum.getName());
 			}
 		}
 
 		return result;
 	}
 
-	public static String getAttributesForQuery(ArrayList<PhotoNameMetaData> data) {
-		String result = "";
+	public static ArrayList<String> extractAttributes(String name, ArrayList<PhotoNameMetaData> data) {
+		ArrayList<String> result = new ArrayList<String>();
 
 		return result;
 	}
