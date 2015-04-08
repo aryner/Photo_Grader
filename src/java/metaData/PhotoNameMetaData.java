@@ -12,6 +12,7 @@ import java.util.*;
 import java.sql.*;
 import SQL.*;
 import model.*;
+import utilities.*;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -28,6 +29,17 @@ public class PhotoNameMetaData extends Model implements MetaDataSource {
 	private int ends;
 	private String start_flag;
 	private String end_flag;
+
+	public static final int START = 1;
+	public static final int END = 2;
+	public static final int NUMBER = 3;
+	public static final int DELIMITER = 4;
+	public static final int BEFORE = 5;
+	public static final int AFTER = 6;
+	public static final int NEXT_NUMBER = 7;
+	public static final int NEXT_LETTER = 8;
+	public static final int NEXT_NOT_NUMBER = 9;
+	public static final int NEXT_NOT_LETTER = 10;
 
 	public static final int TRUE = 2;
 	public static final int FALSE = 1;
@@ -138,8 +150,47 @@ public class PhotoNameMetaData extends Model implements MetaDataSource {
 
 	public static ArrayList<String> extractAttributes(String name, ArrayList<PhotoNameMetaData> data) {
 		ArrayList<String> result = new ArrayList<String>();
+		int currIndex = 0;
+		int endIndex = 0;
+
+		for(PhotoNameMetaData datum : data) {
+			int nextIndex = getNextIndex(name, currIndex, datum, START);
+		}
 
 		return result;
+	}
+
+	private static int getNextIndex(String name, int currIndex, PhotoNameMetaData datum, int side) {
+		switch(side == START ? datum.getStarts() : datum.getEnds()) {
+			case START:
+			case AFTER:
+				return currIndex;
+			case BEFORE:
+				return -2;
+			case NUMBER:
+				return currIndex + Integer.parseInt(datum.getStart_flag());
+			case DELIMITER:
+				return getDelimIndex(currIndex, name, datum, side);
+			case END:
+				int end = name.lastIndexOf(".");
+				return end > 0 ? end : name.length();
+			case NEXT_NUMBER:
+				return Tools.getRegexIndex(name, "/[0-9]/", currIndex);
+			case NEXT_LETTER:
+				return Tools.getRegexIndex(name, "/[a-zA-Z]/", currIndex);
+			case NEXT_NOT_NUMBER:
+				return Tools.getRegexIndex(name, "/[^0-9]/", currIndex);
+			case NEXT_NOT_LETTER:
+				return Tools.getRegexIndex(name, "/^a-zA-Z]/", currIndex);
+			default:
+				return -1;
+		}
+	}
+
+	private static int getDelimIndex(int currIndex, String name, PhotoNameMetaData datum, int side) {
+		String delimiter = side == START ? datum.getStart_flag() : datum.getEnd_flag();
+		int offset = side == END ? 0 : 1;
+		return name.indexOf(delimiter, currIndex) + offset;
 	}
 
 	public boolean isUsed() {

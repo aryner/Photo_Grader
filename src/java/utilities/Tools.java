@@ -7,6 +7,7 @@
 package utilities;
 
 import java.util.*;
+import java.util.regex.*;
 
 /**
  *
@@ -28,5 +29,23 @@ public class Tools {
 		       generatedName.substring(generatedName.lastIndexOf("_")+1, 
 			       		       generatedName.length()
 		       ) : "";
+	}
+
+	public static int getRegexIndex(String haystack, String regex, int index) {
+		int offset = 0;
+		Pattern pattern = Pattern.compile(regex);
+		Matcher matcher = pattern.matcher(haystack);
+		if(!matcher.find()) return -1;
+
+		int position = matcher.start();
+		while((position+offset) < index) {
+			offset += position;
+			haystack = haystack.substring(position+1,haystack.length());
+			matcher = pattern.matcher(haystack);
+			if(!matcher.find()) return -1;
+			position = matcher.start();
+		}
+
+		return position+offset;
 	}
 }
