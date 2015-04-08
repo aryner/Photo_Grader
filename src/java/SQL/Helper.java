@@ -48,6 +48,7 @@ public class Helper {
 		}
 		query += postfix;
 
+		System.out.println(query);
 		if(picNames.isEmpty()) errors.add(Constants.NO_FILES_SELECTED);
 		else Query.update(query);
 

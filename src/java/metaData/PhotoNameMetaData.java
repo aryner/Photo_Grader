@@ -195,13 +195,13 @@ public class PhotoNameMetaData extends Model implements MetaDataSource {
 				int end = name.lastIndexOf(".");
 				return end > 0 ? end : name.length();
 			case NEXT_NUMBER:
-				return Tools.getRegexIndex(name, "/[0-9]/", currIndex);
+				return Tools.getRegexIndex(name, "[0-9]", currIndex);
 			case NEXT_LETTER:
-				return Tools.getRegexIndex(name, "/[a-zA-Z]/", currIndex);
+				return Tools.getRegexIndex(name, "[a-zA-Z]", currIndex);
 			case NEXT_NOT_NUMBER:
-				return Tools.getRegexIndex(name, "/[^0-9]/", currIndex);
+				return Tools.getRegexIndex(name, "[^0-9]", currIndex);
 			case NEXT_NOT_LETTER:
-				return Tools.getRegexIndex(name, "/^a-zA-Z]/", currIndex);
+				return Tools.getRegexIndex(name, "[^a-zA-Z]", currIndex);
 			default:
 				return -1;
 		}

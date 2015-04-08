@@ -71,15 +71,15 @@ public class FileIO {
 		ArrayList<String> errors = new ArrayList<String>();
 
 		if(hasPhotoExtension(fileName)) {
-		}
-		else {
-			errors.add(fileName+Constants.HAS_WRONG_EXTENSION);
 			String fileDir = BASE_PICTURE_DIR+Tools.getGeneratedNumber(study.getPhoto_attribute_table_name())+Constants.FILE_SEP;
 			new File(fileDir).mkdirs();
 			File file = new File(fileDir+fileName);
 			fileItem.write(file);
 
 			picNames.add(fileName);
+		}
+		else {
+			errors.add(fileName+Constants.HAS_WRONG_EXTENSION);
 		}
 
 		return errors;

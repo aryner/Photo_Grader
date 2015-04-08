@@ -38,8 +38,8 @@ public class Tools {
 		if(!matcher.find()) return -1;
 
 		int position = matcher.start();
-		while((position+offset) < index) {
-			offset += position;
+		while((position+offset) <= index) {
+			offset += position+1;
 			haystack = haystack.substring(position+1,haystack.length());
 			matcher = pattern.matcher(haystack);
 			if(!matcher.find()) return -1;

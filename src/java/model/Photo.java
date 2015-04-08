@@ -25,7 +25,7 @@ public class Photo {
 		String query = "CREATE TABLE IF NOT EXISTS "+study.getPhoto_attribute_table_name()+" ("+
 				"id int unsigned AUTO_INCREMENT, "+
 				"name varchar(40), "+
-				"path varchar(40), ";
+				"path varchar(50), ";
 		String postfix = "PRIMARY KEY(id)) ENGINE=INnoDB";
 		String fields = "";
 

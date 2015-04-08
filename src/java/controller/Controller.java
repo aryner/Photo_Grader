@@ -150,6 +150,8 @@ public class Controller extends HttpServlet {
 			return;
 		}
 		else if(userPath.equals("/upload_pictures")) {
+			ArrayList<String> errors = FileIO.upload(request,FileIO.PHOTO,(Study)session.getAttribute("study"));
+			session.setAttribute("errors",errors);
 			response.sendRedirect("/Photo_Grader/home");
 			return;
 		}
