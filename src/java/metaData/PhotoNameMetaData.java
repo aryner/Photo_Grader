@@ -152,9 +152,29 @@ public class PhotoNameMetaData extends Model implements MetaDataSource {
 		ArrayList<String> result = new ArrayList<String>();
 		int currIndex = 0;
 		int endIndex = 0;
+		boolean used = false;
 
+		//-1 is an error, -2 is not
 		for(PhotoNameMetaData datum : data) {
 			int nextIndex = getNextIndex(name, currIndex, datum, START);
+			if(nextIndex < currIndex) {
+				//-1 is an error for sure
+				//-2 should be an error because this is the start index
+			}
+			if(endIndex == -2 && used) result.add(name.substring(currIndex,nextIndex));
+			used = datum.isUsed();
+
+			currIndex = nextIndex;
+			endIndex = getNextIndex(name, currIndex, datum, END);
+			if(endIndex >= currIndex) {
+				if(used) {
+					result.add(name.substring(currIndex,endIndex));
+				}
+				currIndex = endIndex;
+			}
+			else if(endIndex != -2) {
+				//error
+			}
 		}
 
 		return result;
