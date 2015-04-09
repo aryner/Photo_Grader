@@ -148,7 +148,7 @@ public class PhotoNameMetaData extends Model implements MetaDataSource {
 		return result;
 	}
 
-	public static ArrayList<String> extractAttributes(String name, ArrayList<PhotoNameMetaData> data) {
+	public static ArrayList<String> extractAttributes(String name, ArrayList<PhotoNameMetaData> data, ArrayList<String> errors) {
 		ArrayList<String> result = new ArrayList<String>();
 		int currIndex = 0;
 		int endIndex = 0;
@@ -160,6 +160,7 @@ public class PhotoNameMetaData extends Model implements MetaDataSource {
 			if(nextIndex < currIndex) {
 				//-1 is an error for sure
 				//-2 should be an error because this is the start index
+				errors.add(name+" does not conform to the defined file name meta-data");
 			}
 			if(endIndex == -2 && used) result.add(name.substring(currIndex,nextIndex));
 			used = datum.isUsed();
@@ -174,6 +175,7 @@ public class PhotoNameMetaData extends Model implements MetaDataSource {
 			}
 			else if(endIndex != -2) {
 				//error
+				errors.add(name+" does not conform to the defined file name meta-data");
 			}
 		}
 
