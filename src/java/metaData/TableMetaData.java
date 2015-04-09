@@ -47,7 +47,7 @@ public class TableMetaData extends Model implements MetaDataSource {
 		int position, String identifier, String identifier_col,
 		int type
 	) {
-		this.setId(study_id);
+		this.setStudy_id(study_id);
 		this.setName(request.getParameter((type == MetaData.EXCEL?"excel":"csv")+"_"+position));
 		this.setCol_name(request.getParameter((type == MetaData.EXCEL?"excel":"csv")+"_column_"+position));
 		this.setIdentifier(identifier);
