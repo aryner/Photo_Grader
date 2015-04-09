@@ -65,7 +65,7 @@ public class PhotoNameMetaData extends Model implements MetaDataSource {
 			String end_flag) {
 		this.id = id;
 		this.study_id = study_id;
-		this.name = name;
+		this.name = Helper.unprocess(name);
 		this.position = position;
 		this.used = used;
 		this.starts = starts;
@@ -105,7 +105,7 @@ public class PhotoNameMetaData extends Model implements MetaDataSource {
 		String postfix = "";
 		for(PhotoNameMetaData data : metaData) {
 			if(postfix.length() != 0) postfix += ", ";
-			postfix += "('"+data.getStudy_id()+"', '"+data.getName()+"', '"+
+			postfix += "('"+data.getStudy_id()+"', '"+Helper.process(data.getName())+"', '"+
 				   data.getPosition()+"', '"+data.getUsed()+"', '"+
 				   data.getStarts()+"', '"+data.getEnds()+"', '"+
 				   data.getStart_flag()+"', '"+data.getEnd_flag()+"')";

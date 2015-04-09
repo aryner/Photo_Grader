@@ -44,7 +44,7 @@ public class Study extends Model {
 	public Study getModel(ResultSet resultSet) {
 		try {
 			return new Study(
-				resultSet.getInt("id"),resultSet.getString("name"),
+				resultSet.getInt("id"),Helper.unprocess(resultSet.getString("name")),
 				resultSet.getString("photo_attribute_table_name"),
 				resultSet.getString("photo_grade_group_name")
 			);
@@ -65,11 +65,11 @@ public class Study extends Model {
 		String photo_grade_group_name = Tools.generateTableName("photo_grade_group_name_", usedNames);
 
 		String newStudy = "INSERT INTO study (name, photo_attribute_table_name, "+
-				  "photo_grade_group_name) VALUES ('"+name+"', '"+photo_attribute_table_name+
+				  "photo_grade_group_name) VALUES ('"+Helper.process(name)+"', '"+photo_attribute_table_name+
 			          "', '"+ photo_grade_group_name+"')";
 		Query.update(newStudy);
 
-		newStudy = "SELECT * FROM study WHERE name='"+name+"'";
+		newStudy = "SELECT * FROM study WHERE name='"+Helper.process(name)+"'";
 		return (Study)Query.getModel(newStudy, new Study()).get(0);
 	}
 

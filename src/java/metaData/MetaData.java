@@ -7,6 +7,7 @@
 package metaData;
 
 import model.*;
+import SQL.*;
 import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 
@@ -44,7 +45,7 @@ public class MetaData {
 	public static final int CHECKBOX = 3;
 
 	public MetaData(String name, int type, int collection) {
-		this.name = name;
+		this.name = Helper.unprocess(name);
 		this.type = type;
 		this.collection = collection;
 	}

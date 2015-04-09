@@ -54,4 +54,24 @@ public class Helper {
 
 		return errors;
 	}
+
+	public static String process(String string) {
+		return string.charAt(0) == '_' || string.charAt(string.length()-1) == '_' ? string : "_"+string;
+	}
+
+	public static void process(ArrayList<String> list) {
+		for(int i=0; i<list.size(); i++) {
+			list.set(i, process(list.get(i)));
+		}
+	}
+
+	public static String unprocess(String string) {
+		return string.charAt(0)=='_'&&string.charAt(string.length()-1)!='_' ? string.substring(1,string.length()) : string;
+	}
+
+	public static void unprocess(ArrayList<String> list) {
+		for(int i=0; i<list.size(); i++) {
+			list.set(i, unprocess(list.get(i)));
+		}
+	}
 }

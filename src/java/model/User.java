@@ -24,7 +24,7 @@ public class User extends Model {
 
 	public User(int id, String name, String password, int access_level) {
 		this.id = id;
-		this.name = name;
+		this.name = Helper.unprocess(name);
 		this.password = password;
 		this.access_level = access_level;
 	}
@@ -44,20 +44,20 @@ public class User extends Model {
 	}
 
 	public static User register(String name, String password) {
-		String getQuery = "SELECT * FROM user WHERE name='"+name+"'";
+		String getQuery = "SELECT * FROM user WHERE name='"+Helper.process(name)+"'";
 		ArrayList<Model> users = Query.getModel(getQuery, new User());
 
 		if(!users.isEmpty()) return null;
 
 		String insertQuery = "INSERT INTO user (name, password) VALUES ("+
-			       "'"+name+"', MD5('"+password+"'))";
+			       "'"+Helper.process(name)+"', MD5('"+password+"'))";
 		Query.update(insertQuery);
 		
 		return (User)Query.getModel(getQuery, new User()).get(0);
 	}
 
 	public static User login(String name, String password) {
-		String query = "SELECT * FROM user WHERE name='"+name+"' AND "+
+		String query = "SELECT * FROM user WHERE name='"+Helper.process(name)+"' AND "+
 				"password=MD5('"+password+"')";
 		ArrayList<Model> user = Query.getModel(query, new User());
 

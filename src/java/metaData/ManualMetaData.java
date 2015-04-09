@@ -33,7 +33,7 @@ public class ManualMetaData extends Model implements MetaDataSource {
 	public ManualMetaData(int id, int study_id, String name, int input_type) {
 		this.id = id;
 		this.study_id = study_id;
-		this.name = name;
+		this.name = Helper.unprocess(name);
 		this.input_type = input_type;
 	}
 
@@ -79,7 +79,7 @@ public class ManualMetaData extends Model implements MetaDataSource {
 		for(int i=0; i<metaData.size(); i++) {
 			if(i > 0) query += ", ";
 			query += "('"+metaData.get(i).getId()+"', '"+metaData.get(i).getStudy_id()+
-				 "', '"+metaData.get(i).getName()+"', '"+metaData.get(i).getInput_type()+"')";
+				 "', '"+Helper.process(metaData.get(i).getName())+"', '"+metaData.get(i).getInput_type()+"')";
 		}
 		Query.update(query);
 
@@ -91,6 +91,7 @@ public class ManualMetaData extends Model implements MetaDataSource {
 								    "name", 
 							            "study_id='"+study_id+"'", 
 								    "id");
+		Helper.unprocess(names);
 		ArrayList<Long> ids = (ArrayList)Query.getField("photo_data_by_manual", 
 								    "id", 
 							            "study_id='"+study_id+"'", 
@@ -122,7 +123,7 @@ public class ManualMetaData extends Model implements MetaDataSource {
 	private static String matchOptionsToIds(String postfix, long id, ArrayList<String> values) {
 		for(String value : values) {
 			if(postfix.length() != 0) postfix += ", ";
-			postfix += "('"+id+"', '"+value+"')";
+			postfix += "('"+id+"', '"+Helper.process(value)+"')";
 		}
 		return postfix;
 	}
@@ -144,6 +145,7 @@ public class ManualMetaData extends Model implements MetaDataSource {
 
 	private void setOptions() {
 		this.options = (ArrayList)Query.getField("check_radio_option","value","photo_data_id='"+getId()+"'",null);
+		Helper.unprocess(this.options);
 	}
 
 	/**

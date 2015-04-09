@@ -34,10 +34,10 @@ public class TableMetaData extends Model implements MetaDataSource {
 	) {
 		this.id = id;
 		this.study_id = study_id;
-		this.name = name;
-		this.col_name = col_name;
+		this.name = Helper.unprocess(name);
+		this.col_name = Helper.unprocess(col_name);
 		this.identifier = identifier;
-		this.identifier_col = identifier_col;
+		this.identifier_col = Helper.unprocess(identifier_col);
 		this.table_type = table_type;
 	}
 
@@ -85,9 +85,9 @@ public class TableMetaData extends Model implements MetaDataSource {
 		String postfix = "";
 		for(TableMetaData datum : metaData) {
 			if(postfix.length() != 0) postfix += ", ";
-			postfix += "('"+datum.getStudy_id()+"', '"+datum.getName()+"', '"+
-				   datum.getCol_name()+"', '"+datum.getIdentifier()+"', '"+
-				   datum.getIdentifier_col()+"', '"+ datum.getTable_type()+"')";
+			postfix += "('"+datum.getStudy_id()+"', '"+Helper.process(datum.getName())+"', '"+
+				   Helper.process(datum.getCol_name())+"', '"+datum.getIdentifier()+"', '"+
+				   Helper.process(datum.getIdentifier_col())+"', '"+ datum.getTable_type()+"')";
 		}
 
 		Query.update(query+postfix);

@@ -32,7 +32,7 @@ public class Photo {
 		Iterator<String> keys = name_types.keySet().iterator();
 		while(keys.hasNext()) {
 			String key = keys.next();
-			fields += key+" "+Helper.javaToSQLType(name_types.get(key))+", ";
+			fields += Helper.process(key)+" "+Helper.javaToSQLType(name_types.get(key))+", ";
 		}
 
 		Query.update(query+fields+postfix);
