@@ -353,6 +353,8 @@ function removeRows(oldIndex) {
 		document.removeEventListener('start'+i, setLimitsFunction, false);
 		document.removeEventListener('end'+i, setLimitsFunction, false);
 
+		setFieldToUnused(i);
+
 		$('div.row_'+i).remove();
 	}
 }
