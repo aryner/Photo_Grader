@@ -71,7 +71,9 @@ public class Query {
 			resultSet = stmt.executeQuery(query); 
 
 			while(resultSet.next()) {
-				result.add(resultSet.getObject(field));
+				Object obj = resultSet.getObject(field);
+				if(obj instanceof String) result.add(Helper.unprocess((String)obj));
+				else result.add(obj);
 			}
 		}
 		catch (javax.naming.NamingException e) {

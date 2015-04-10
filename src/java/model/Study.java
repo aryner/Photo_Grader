@@ -36,7 +36,7 @@ public class Study extends Model {
 	}
 
 	public static Study getStudyByName(String name) {
-		String query = "SELECT * FROM STUDY WHERE name='"+name+"'";
+		String query = "SELECT * FROM STUDY WHERE name='"+Helper.process(name)+"'";
 		return (Study)Query.getModel(query,new Study()).get(0);
 	}
 

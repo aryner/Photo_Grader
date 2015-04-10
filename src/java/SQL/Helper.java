@@ -33,7 +33,7 @@ public class Helper {
 
 		String query = "INSERT INTO "+study.getPhoto_attribute_table_name()+" (name, path";
 		for(String name : PhotoNameMetaData.extractNames(metaData)) {
-			query += ", "+name;
+			query += ", "+Helper.process(name);
 		}
 		query += ") VALUES ";
 
