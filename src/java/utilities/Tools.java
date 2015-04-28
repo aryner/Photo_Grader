@@ -48,4 +48,33 @@ public class Tools {
 
 		return position+offset;
 	}
+
+	public static boolean hasExcelExtension(String fileName) {
+		String ext = getExtension(fileName).toLowerCase();
+
+		return  ext.equals("xls") ? true :
+			ext.equals("xlsx") ? true :
+			ext.equals("xlsm") ? true :
+			ext.equals("xlt") ? true :
+			ext.equals("xlm") ? true :
+			ext.equals("xltx") ? true :
+			ext.equals("xltm") ? true :
+			ext.equals("xlsb") ? true :
+			ext.equals("xla") ? true :
+			ext.equals("xlam") ? true :
+			ext.equals("xll") ? true :
+			ext.equals("xlw");
+	}
+
+	public static boolean hasCSVExtension(String fileName) {
+		String ext = getExtension(fileName).toLowerCase();
+
+		return ext.equals("csv");
+	}
+
+	public static String getExtension(String fileName) {
+		if(fileName.contains("."))
+			return fileName.substring(fileName.lastIndexOf(".")+1,fileName.length());
+		return "";
+	}
 }

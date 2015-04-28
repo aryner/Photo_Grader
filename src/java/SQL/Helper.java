@@ -10,6 +10,7 @@ import model.*;
 import java.util.*;
 import metaData.*;
 import utilities.*;
+import java.io.*;
 
 /**
  *
@@ -24,7 +25,7 @@ public class Helper {
 	}
 
 	public static ArrayList<String> insertAndUpdateUploads(int type, Study study, ArrayList<String> picNames) {
-		return type == FileIO.PHOTO ? insertPhotos(study, picNames) : null;
+		return type == FileIO.PHOTO ? insertPhotos(study, picNames) : updateTableData(study);
 	}
 
 	private static ArrayList<String> insertPhotos(Study study, ArrayList<String> picNames) {
@@ -51,6 +52,23 @@ public class Helper {
 		System.out.println(query);
 		if(picNames.isEmpty()) errors.add(Constants.NO_FILES_SELECTED);
 		else Query.update(query);
+
+		return errors;
+	}
+
+	private static ArrayList<String> updateTableData(Study study) {
+		ArrayList<String> errors = new ArrayList<String>();
+
+		File dir = new File(FileIO.TEMP_DIR);
+		File [] fileList = dir.listFiles();
+		for(File file : fileList) {
+			if(file.isFile()) {
+				if(Tools.hasExcelExtension(file.getName())) {
+				}
+				else if(Tools.hasCSVExtension(file.getName())) {
+				}
+			}
+		}
 
 		return errors;
 	}

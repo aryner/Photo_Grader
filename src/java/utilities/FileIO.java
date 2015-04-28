@@ -10,6 +10,7 @@ import java.util.*;
 import java.io.*;
 import model.*;
 import javax.servlet.http.HttpServletRequest;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.fileupload.FileItem; 
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload; 
@@ -22,9 +23,12 @@ public class FileIO {
 	public static final int PHOTO = 1;
 	public static final int EXCEL = 2;
 	public static final int CSV = 3;
+	public static final int TABLE = 4;
 
 	public static final int UPLOAD_SIZE_THRESHOLD = 100 * 1024;
 	public static final int MAX_UPLOAD_SIZE = 4000000 * 1024;
+	public static final String EXCEL_FILE = "excel.xls";
+	public static final String CSV_FILE = "csv.csv";
 	public static final String TEMP_DIR = ".."+Constants.FILE_SEP+"webapps"+Constants.FILE_SEP+"temp"+Constants.FILE_SEP;
 
 	public static final String BASE_PICTURE_DIR = ".."+Constants.FILE_SEP+"webapps"+Constants.FILE_SEP+"Photo_Grader"+Constants.FILE_SEP+"pictures"+Constants.FILE_SEP;
@@ -51,17 +55,21 @@ public class FileIO {
 
 				errors.addAll(
 					type == PHOTO ? uploadPhotos(fileItem, fileName, picNames, study) :
-					type == EXCEL ? uploadExcel(fileItem, fileName, study) :
-							uploadCSV(fileItem, fileName, study)
+					uploadTable(fileItem, fileName, study)
 				);
 			}
 		} catch(org.apache.commons.fileupload.FileUploadException e) {
-			e.printStackTrace(System.out);
+			e.printStackTrace(System.err);
 		} catch(Exception e) {
-			e.printStackTrace(System.out);
+			e.printStackTrace(System.err);
 		}
 
 		errors.addAll(SQL.Helper.insertAndUpdateUploads(type, study, picNames));
+		try {
+			FileUtils.cleanDirectory(new File(TEMP_DIR));
+		} catch(java.io.IOException e) {
+			e.printStackTrace(System.err);
+		}
 
 		return errors;
 	}
@@ -85,13 +93,16 @@ public class FileIO {
 		return errors;
 	}
 
-	private static ArrayList<String> uploadExcel(FileItem fileItem, String fileName, Study study) {
+	private static ArrayList<String> uploadTable(FileItem fileItem, String fileName, Study study) 
+			throws Exception {
 		ArrayList<String> errors = new ArrayList<String>();
-		return errors;
-	}
 
-	private static ArrayList<String> uploadCSV(FileItem fileItem, String fileName, Study study) {
-		ArrayList<String> errors = new ArrayList<String>();
+		new File(TEMP_DIR).mkdirs();
+		File file = new File(TEMP_DIR+(Tools.hasExcelExtension(fileName)?EXCEL_FILE : CSV_FILE));
+		fileItem.write(file);
+
+		TableReader.extractTableData(file, study, errors);
+
 		return errors;
 	}
 

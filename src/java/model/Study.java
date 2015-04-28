@@ -11,6 +11,7 @@ import utilities.*;
 import java.util.*;
 import java.sql.*;
 import javax.servlet.http.HttpServletRequest;
+import metaData.*;
 
 /**
  *
@@ -71,6 +72,10 @@ public class Study extends Model {
 
 		newStudy = "SELECT * FROM study WHERE name='"+Helper.process(name)+"'";
 		return (Study)Query.getModel(newStudy, new Study()).get(0);
+	}
+
+	public ArrayList getExcelTableMetaData() {
+		return new TableMetaData().getMetaDataSources("study_id='"+this.id+"' AND table_type='"+MetaData.EXCEL+"'","");
 	}
 
 	public boolean usesTableMetaData() {
