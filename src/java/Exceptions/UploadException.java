@@ -6,6 +6,8 @@
 
 package Exceptions;
 
+import java.util.*;
+
 /**
  *
  * @author aryner
@@ -21,6 +23,14 @@ public class UploadException extends Exception {
 
 	public UploadException(int type) {
 		this.type = type;
+	}
+
+	public void populateErrorList(List<String> errors) {
+		switch(this.getType()) {
+			case UploadException.MISSING_COLUMNS:
+				errors.add("The uploaded table was missing columns, check that all columns are in the table you are uploading");
+				break;
+		}
 	}
 
 	/**

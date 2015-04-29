@@ -33,11 +33,7 @@ public class TableReader {
 		} catch (IOException e) {
 			errors.add("There was a problem uploading the table data, please try again");
 		} catch (UploadException e) {
-			switch(e.getType()) {
-				case UploadException.MISSING_COLUMNS:
-					errors.add("The uploaded table was missing columns, check that all columns are in the table you are uploading");
-					break;
-			}
+			e.populateErrorList(errors);
 		}
 	}
 
@@ -65,6 +61,10 @@ public class TableReader {
 			String colName = cell.getRichStringCellValue().toString();
 
 			checkColumn(columns, colName, i, meta);
+		}
+
+		if(Tools.contains(columns, -1)) {
+			throw new UploadException(1);
 		}
 
 		//TOFINISH

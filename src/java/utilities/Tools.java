@@ -83,4 +83,10 @@ public class Tools {
 		for(int i=0; i<size; i++) result[i] = -1;
 		return result;
 	}
+
+	public static boolean contains(int [] haystack, int needle) {
+		for(int check : haystack) 
+			if(check == needle) return true;
+		return false;
+	}
 }
