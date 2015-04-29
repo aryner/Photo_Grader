@@ -33,10 +33,19 @@
 		</div>
 		<div class="meta-col">
 			<h4>Question</h4>
-			<textarea name="question" cols="40" rows="1"></textarea>
+			<textarea name="question_0" cols="40" rows="1"></textarea>
+		</div>
+		<div class="meta-col" name="options_0">
 		</div>
 
 		<div class="newRow"></div>
+
+		<br><br><br><input type="checkbox" name="new_question_0"> Ask Another Question?
+
+		<div class="newRow"></div>
+
+		<div name="generated_sections">
+		</div>
 	</div>
 	<input type="submit" value="Submit" class="btn">
 </form>
