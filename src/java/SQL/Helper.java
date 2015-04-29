@@ -74,7 +74,7 @@ public class Helper {
 	}
 
 	public static String process(String string) {
-		return string.charAt(0) == '_' || string.charAt(string.length()-1) == '_' ? string : "_"+string;
+		return string.contains("_") ? string : "_"+string;
 	}
 
 	public static void process(ArrayList<String> list) {
@@ -84,7 +84,8 @@ public class Helper {
 	}
 
 	public static String unprocess(String string) {
-		return string.charAt(0)=='_'&&string.charAt(string.length()-1)!='_' ? string.substring(1,string.length()) : string;
+		int index = string.indexOf("_");
+		return index >= 0 ? string.substring(index+1,string.length()) : string;
 	}
 
 	public static void unprocess(ArrayList<String> list) {

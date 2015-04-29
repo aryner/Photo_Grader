@@ -8,10 +8,12 @@ package utilities;
 
 import java.util.*;
 import model.*;
+import SQL.*;
 import metaData.*;
 import Exceptions.*;
 import java.io.*;
 import org.apache.poi.xssf.usermodel.*; 
+import org.apache.poi.ss.usermodel.*; 
 
 /**
  *
@@ -45,10 +47,7 @@ public class TableReader {
 		XSSFWorkbook workbook = new XSSFWorkbook(file);
 		XSSFSheet sheet = workbook.getSheetAt(0);
 		
-		int rowEnd = sheet.getLastRowNum();
-		int colEnd = sheet.getRow(0).getLastCellNum();
-
-		int[] columns = getExcelColumns(sheet, colEnd, study.getExcelTableMetaData());
+		int[] columns = getExcelColumns(sheet, study.getExcelTableMetaData());
 		//TOFINISH
 	}
 	
@@ -56,11 +55,33 @@ public class TableReader {
 		//TODO
 	}
 
-	private static int[] getExcelColumns(XSSFSheet sheet, int colEnd, ArrayList<TableMetaData> meta) 
+	private static int[] getExcelColumns(XSSFSheet sheet, ArrayList<TableMetaData> meta) 
 			throws UploadException {
-		int [] columns = new int[meta.size()];
+		int [] columns = Tools.defaultIntArray(meta.size()+1);
+
+		Row row = sheet.getRow(0);
+		for(int i=row.getFirstCellNum(); i<row.getLastCellNum(); i++) {
+			Cell cell = row.getCell(i);
+			String colName = cell.getRichStringCellValue().toString();
+
+			checkColumn(columns, colName, i, meta);
+		}
 
 		//TOFINISH
 		return columns;
+	}
+
+	private static void checkColumn(int [] columns, String colName, int colIndex, ArrayList<TableMetaData> meta) {
+		if (colName.equals(Helper.unprocess(meta.get(0).getIdentifier_col()))) {
+			columns[0] = colIndex;
+		}
+		else {
+			for(int i=0; i<meta.size(); i++) {
+				if(colName.equals(Helper.unprocess(meta.get(i).getCol_name()))) {
+					columns[i+1] = colIndex;
+					return;
+				}
+			}
+		}
 	}
 }
