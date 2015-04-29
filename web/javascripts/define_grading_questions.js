@@ -7,18 +7,34 @@
 var questionCount = 0;
 
 $(document).ready(function() {
-	$('input[name=new_question_0]').change(function() {
-		if(this.checked) {
-			questionCount++;
-			addQuestion(questionCount);
-		}
-		else {
-			//delete all Qs below this one
-			trimQuestions(0);
-			questionCount = 0;
-		}
-	});
+	addNewQuestionListener(0);
 });
+
+function trimQuestions(index) {
+	for(var i=questionCount; i>index; i--) {
+		$('div[name=index_'+i+']').remove();
+	}
+}
+
+function addNewQuestionListener(index) {
+	document.addEventListener('question'+index, newQuestionListener, false);
+	$('input[name=new_question_'+index+']').change(function() {
+		var event = new CustomEvent("question"+index, {'detail':{'index':index, 'checked':this.checked}});
+		document.dispatchEvent(event);
+	});
+}
+
+var newQuestionListener = function(event) {
+	if(event.detail.checked) {
+		questionCount++;
+		addQuestion(questionCount);
+	}
+	else {
+		//delete all Qs below this one
+		trimQuestions(event.detail.index);
+		questionCount = event.detail.index;
+	}
+}
 
 function addQuestion(index) {
 	var newQuestion = '<div name="index_'+index+'">'+
@@ -39,10 +55,6 @@ function addQuestion(index) {
 			'<div class="newRow"></div></div> ';
 
 	$("div[name=generated_sections]").append(newQuestion);
-}
 
-function trimQuestions(index) {
-	for(var i=questionCount; i>index; i--) {
-		$('div[name=index_'+i+']').remove();
-	}
+	addNewQuestionListener(index);
 }
