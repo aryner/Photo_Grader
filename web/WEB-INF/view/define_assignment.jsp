@@ -145,7 +145,8 @@ if(excel > 0) {
 			<input type='radio' name='excelIdentifier' value='photo_name'>Photo file name<br>
 <%
 	for(MetaData datum : metaData) {
-		out.print("<input type='radio' name='excelIdentifier' value='"+datum.getName()+"'>"+datum.getName()+"<br>");
+		if(datum.getCollection() == MetaData.NAME)
+			out.print("<input type='radio' name='excelIdentifier' value='"+datum.getName()+"'>"+datum.getName()+"<br>");
 	}
 %>
 		</div>
@@ -200,7 +201,8 @@ if(csv > 0) {
 			<input type='radio' name='csvIdentifier' value='photo_name'>Photo file name<br>
 <%
 	for(MetaData datum : metaData) {
-		out.print("<input type='radio' name='csvIdentifier' value='"+datum.getName()+"'>"+datum.getName()+"<br>");
+		if(datum.getCollection() == MetaData.NAME)
+			out.print("<input type='radio' name='csvIdentifier' value='"+datum.getName()+"'>"+datum.getName()+"<br>");
 	}
 %>
 		</div>
