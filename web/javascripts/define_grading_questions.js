@@ -8,13 +8,8 @@ var questionCount = 0;
 
 $(document).ready(function() {
 	addNewQuestionListener(0);
+	addAnswerTypeListener(0);
 });
-
-function trimQuestions(index) {
-	for(var i=questionCount; i>index; i--) {
-		$('div[name=index_'+i+']').remove();
-	}
-}
 
 function addNewQuestionListener(index) {
 	document.addEventListener('question'+index, newQuestionListener, false);
@@ -22,6 +17,17 @@ function addNewQuestionListener(index) {
 		var event = new CustomEvent("question"+index, {'detail':{'index':index, 'checked':this.checked}});
 		document.dispatchEvent(event);
 	});
+}
+
+function addAnswerTypeListener(index) {
+	document.addEventListener('answerType'+index, newAnswerTypeListener, false);
+	var radios = $('input[name=type_'+index+']');
+	for(var i=0; i<radios.length; i++) {
+		radios[i].onclick = function() {
+			var event = new CustomEvent("answerType"+index, {'detail':{'index':index, 'type':this.value}});
+			document.dispatchEvent(event);
+		};
+	}
 }
 
 var newQuestionListener = function(event) {
@@ -33,6 +39,32 @@ var newQuestionListener = function(event) {
 		//delete all Qs below this one
 		trimQuestions(event.detail.index);
 		questionCount = event.detail.index;
+	}
+};
+
+var newAnswerTypeListener = function(event) {
+	if(event.detail.type === 'text') {
+		$('input[name=option_count_'+event.detail.index+']').val(0);
+		var container = $('div[name=options_'+event.detail.index+']');
+		container.empty();
+		var contents = '<h4>Select What Type of Data is Accepted</h4>'+
+				'<input type="radio" name="text_option_'+event.detail.index+'" value="text"> Text'+
+				'<input type="radio" name="text_option_'+event.detail.index+'" value="int"> Integer'+
+				'<input type="radio" name="text_option_'+event.detail.index+'" value="dec"> Decimal';
+		container.append(contents); 
+	}
+	else {
+		var container = $('div[name=options_'+event.detail.index+']');
+		var optionCount = $('input[name=option_count_'+event.detail.index+']').val();
+		console.log("optionCount = "+optionCount);
+		if((+optionCount) === 0) {container.empty();}
+		$('input[name=option_count_'+event.detail.index+']').val(optionCount+1);
+	}
+};
+
+function trimQuestions(index) {
+	for(var i=questionCount; i>index; i--) {
+		$('div[name=index_'+i+']').remove();
 	}
 }
 
@@ -48,6 +80,7 @@ function addQuestion(index) {
 				'<h4>Question</h4>'+
 				'<textarea name="question_'+index+'" cols="40" rows="1"></textarea>'+
 			'</div>'+
+			'<input type="hidden" name="option_count_'+index+'" value="0">'+
 			'<div class="meta-col" name="options_'+index+'">'+
 			'</div>'+
 			'<div class="newRow"></div>'+
@@ -57,4 +90,5 @@ function addQuestion(index) {
 	$("div[name=generated_sections]").append(newQuestion);
 
 	addNewQuestionListener(index);
+	addAnswerTypeListener(index);
 }
