@@ -74,6 +74,7 @@ public class Helper {
 	}
 
 	public static String process(String string) {
+		if(string.equals("photo_name")) return "name";
 		return string.contains("_") ? string : "_"+string;
 	}
 

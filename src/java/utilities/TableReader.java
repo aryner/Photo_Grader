@@ -43,12 +43,34 @@ public class TableReader {
 		XSSFWorkbook workbook = new XSSFWorkbook(file);
 		XSSFSheet sheet = workbook.getSheetAt(0);
 		
-		int[] columns = getExcelColumns(sheet, study.getExcelTableMetaData());
-		//TOFINISH
+		ArrayList<TableMetaData> meta = study.getExcelTableMetaData();
+		int[] columns = getExcelColumns(sheet, meta);
+
+		ArrayList<String> updates = new ArrayList<String>();
+		for(int i=1; i<columns.length; i++) {
+			updates.add(getUpdate(sheet, columns, meta, errors, i));
+		}
+
+		String queryPrefix = "UPDATE "+Helper.process(study.getPhoto_attribute_table_name())+" SET ";
+		for(String update : updates) {
+			Query.update(queryPrefix+update);
+		}
 	}
 	
 	private static void extractCSVData(Study study, ArrayList<String> errors) {
 		//TODO
+	}
+
+	private static String getUpdate(XSSFSheet sheet, int [] columns, ArrayList<TableMetaData> meta, ArrayList<String> errors, int col) {
+		String update = Helper.process(meta.get(col-1).getName()) + " = case "+Helper.process(meta.get(0).getIdentifier());
+
+		for(int i=1; i<sheet.getLastRowNum(); i++) {
+			Row row = sheet.getRow(i);
+			update += " WHEN '"+getCellContents(row.getCell(columns[0]))+"' THEN '"+getCellContents(row.getCell(columns[col]))+"'";
+		}
+		update += " ELSE "+Helper.process(meta.get(col-1).getName()) + " END";
+
+		return update;
 	}
 
 	private static int[] getExcelColumns(XSSFSheet sheet, ArrayList<TableMetaData> meta) 
@@ -67,7 +89,6 @@ public class TableReader {
 			throw new UploadException(1);
 		}
 
-		//TOFINISH
 		return columns;
 	}
 
@@ -83,5 +104,13 @@ public class TableReader {
 				}
 			}
 		}
+	}
+
+	private static String getCellContents(Cell cell) {
+		if(cell == null) return "";
+		if(cell.getCellType() == Cell.CELL_TYPE_STRING) {
+			return cell.getRichStringCellValue().toString();
+		}
+		return cell.getNumericCellValue() + "";
 	}
 }

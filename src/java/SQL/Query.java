@@ -40,9 +40,11 @@ public class Query {
 			}
 		}
 		catch (javax.naming.NamingException e) {
+			System.err.println(query);
 			e.printStackTrace(System.err);
 		}
 		catch (SQLException e) {
+			System.err.println(query);
 			e.printStackTrace(System.err);
 		}
 		finally {
@@ -105,9 +107,11 @@ public class Query {
 			stmt.executeUpdate(query);
 		}
 		catch (javax.naming.NamingException e) {
+			System.err.println(query);
 			e.printStackTrace(System.err);
 		}
 		catch (SQLException e) {
+			System.err.println(query);
 			e.printStackTrace(System.err);
 		}
 		finally {
