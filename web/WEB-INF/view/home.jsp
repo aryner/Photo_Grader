@@ -25,5 +25,9 @@
 		<div class="meta-col">
 			<a href="upload" class="btn">Upload</a>
 		</div>
+
+		<div class="meta-col">
+			<a href="define_grading_questions" class="btn">Define Grading Scenario</a>
+		</div>
 	</div>
 </div>

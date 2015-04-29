@@ -42,6 +42,14 @@ public class Photo {
 		return FileIO.upload(request, FileIO.PHOTO, study);
 	}
 
+	public static ArrayList<String> getMetaDataKeys(String table_name) {
+		String query = "SELECT * FROM "+table_name;
+		ArrayList<String> keys = Query.getColumnNames(query);
+		for(int i=0; i<3; i++) keys.remove(0);
+
+		return keys;
+	}
+
 	/**
 	 * @return the id
 	 */

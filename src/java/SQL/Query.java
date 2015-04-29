@@ -119,6 +119,42 @@ public class Query {
 		}
 	}
 
+	public static ArrayList<String> getColumnNames(String query) {
+		ArrayList<String> names = new ArrayList<String>();
+		Connection con = null;
+		Statement stmt = null;
+		ResultSet resultSet = null;
+
+		try {
+			InitialContext initialContext = new InitialContext();
+			Context context = (Context)initialContext.lookup("java:comp/env");
+			DataSource dataSource = (DataSource)context.lookup("photo_grader");
+			con = dataSource.getConnection();
+
+			stmt = con.createStatement();
+
+			resultSet = stmt.executeQuery(query); 
+			ResultSetMetaData metaData = resultSet.getMetaData();
+
+			for(int i=1; i<=metaData.getColumnCount(); i++) {
+				names.add(metaData.getColumnLabel(i));
+			}
+		}
+		catch (javax.naming.NamingException e) {
+			System.err.println(query);
+			e.printStackTrace(System.err);
+		}
+		catch (SQLException e) {
+			System.err.println(query);
+			e.printStackTrace(System.err);
+		}
+		finally {
+			close(con, stmt, resultSet);
+		}
+
+		return names;
+	}
+
 	private static void close(Connection con, Statement stmt, ResultSet resultSet) {
 		try {
 			if(resultSet != null) resultSet.close();

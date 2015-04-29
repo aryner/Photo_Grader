@@ -27,7 +27,8 @@ import javax.servlet.http.HttpSession;
 @WebServlet(name = "Controller", urlPatterns = {
 						"/Controller","/register","/createUser","/select_study","/login",
 						"/logout","/setStudy","/createStudy","/create_study","/defineAssignment",
-						"/define_assignment","/home","/upload","/upload_pictures","/upload_table_data"
+						"/define_assignment","/home","/upload","/upload_pictures","/upload_table_data",
+						"/define_grading_questions"
 						})
 public class Controller extends HttpServlet {
 	/**
@@ -61,7 +62,10 @@ public class Controller extends HttpServlet {
 		else if(userPath.equals("/select_study")) {
 			request.setAttribute("studyNames",Query.getField("study","name",null,null));
 		}
-		else if(userPath.equals("/upload")) {
+		else if(userPath.equals("/define_grading_questions")) {
+			ArrayList<String> columns = Photo.getMetaDataKeys(((Study)session.getAttribute("study")).getPhoto_attribute_table_name());
+			Helper.unprocess(columns);
+			request.setAttribute("columns", columns);
 		}
 
 		String url = "/WEB-INF/view" + userPath + ".jsp";
