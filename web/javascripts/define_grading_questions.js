@@ -11,8 +11,8 @@ $(document).ready(function() {
 	addAnswerTypeListener(0);
 
 	$(':submit[value=Submit]').click(function(e) {
-			e.preventDefault();
 		var errors = getErrorMsg();
+		div[0].innerHTML = "";
 		if(errors.length > 0) {
 			e.preventDefault();
 			var msg = "";
@@ -26,9 +26,7 @@ $(document).ready(function() {
 });
 
 function getErrorMsg() {
-	var errors = checkForAtLeastOneOption(checkForFilledQuestions(checkGradeGroup()));
-	errors.push('<p class="error">1</p>','<p class="error">2</p>');
-	return errors;
+	return checkForFilledQuestions(checkGradeGroup());
 }
 
 function checkGradeGroup() {
@@ -48,14 +46,47 @@ function checkGradeGroup() {
 
 function checkForFilledQuestions(errors) {
 	errors = errors || [];
+	var incompleteQuestion = false;
+
+	for(var i=0; i<=questionCount && !incompleteQuestion; i++) {
+		incompleteQuestion = checkForIncompleteQuestion(i);
+	}
+
+	if(incompleteQuestion) errors.push("<p class='error'>You must fully fill out each question or uncheck some 'Ask Another Question?' boxes</p>");
 
 	return errors;
 }
 
-function checkForAtLeastOneOption(errors) {
-	errors = errors || [];
+function checkForIncompleteQuestion(index) {
+	return checkForType(index) && checkForQuestion(index) && checkForOption(index) ? false : true;
+}
 
-	return errors;
+function checkForType(index) {
+	var radios = $('input[name=type_'+index+']');
+	for(var i=0; i<radios.length; i++) {
+		if(radios[i].checked) return true;
+	}
+
+	return false;
+}
+
+function checkForQuestion(index) {
+	return $('textarea[name=question_'+index+']').val().length > 0;
+}
+
+function checkForOption(index) {
+	var checked = getCheckedRadio('input[name=type_'+index+']');
+	if(checked.value === 'text') {
+		var radios = $('input[name=text_option_'+index+']');
+
+		for(var i=0; i<3; i++) {
+			if(radios[i].checked) return true;
+		}
+		return false;
+	}
+	else {
+		return $('input[name=option_'+index+'_'+3+']').val() !== undefined;
+	}
 }
 
 function addNewQuestionListener(index) {
@@ -107,7 +138,7 @@ var newAnswerTypeListener = function(event) {
 		if(Number(optionCount) === 0) {
 			$('input[name=option_count_'+event.detail.index+']').val('1');
 			container.empty();
-			var contents = '<h4>Enter options for this question</h4><input type="text" name="option_'+event.detail.index+'_'+Number(optionCount+1)+'">';
+			var contents = '<h4>Enter options for this question (at least 2)</h4><input type="text" name="option_'+event.detail.index+'_'+Number(optionCount+1)+'">';
 			container.append(contents);
 			addOptionListener(event.detail.index, 1);
 		}
@@ -147,6 +178,14 @@ function trimQuestions(index) {
 	for(var i=questionCount; i>index; i--) {
 		$('div[name=index_'+i+']').remove();
 	}
+}
+
+function getCheckedRadio(search) {
+	var radios = $(search);
+	for(var i=0; i<radios.length; i++) {
+		if(radios[i].checked) return radios[i];
+	}
+	return null;
 }
 
 function addQuestion(index) {
