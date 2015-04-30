@@ -44,6 +44,9 @@ public class MetaData {
 	public static final int RADIO = 2;
 	public static final int CHECKBOX = 3;
 
+	public static final int META = 1;
+	public static final int GRADE = 2;
+
 	public MetaData(String name, int type, int collection) {
 		this.name = Helper.unprocess(name);
 		this.type = type;

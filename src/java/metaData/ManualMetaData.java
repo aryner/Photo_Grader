@@ -96,7 +96,7 @@ public class ManualMetaData extends Model implements MetaDataSource {
 								    "id", 
 							            "study_id='"+study_id+"'", 
 								    "id");
-		String query = "INSERT INTO check_radio_option (photo_data_id, value) VALUES ";
+		String query = "INSERT INTO check_radio_option (photo_data_id, value, meta_grade) VALUES ";
 		String postfix = "";
 
 		for(int i=0; i<names.size(); i++) {
@@ -123,7 +123,7 @@ public class ManualMetaData extends Model implements MetaDataSource {
 	private static String matchOptionsToIds(String postfix, long id, ArrayList<String> values) {
 		for(String value : values) {
 			if(postfix.length() != 0) postfix += ", ";
-			postfix += "('"+id+"', '"+Helper.process(value)+"')";
+			postfix += "('"+id+"', '"+Helper.process(value)+"', '"+MetaData.META+"')";
 		}
 		return postfix;
 	}
