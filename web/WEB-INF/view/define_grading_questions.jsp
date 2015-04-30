@@ -18,6 +18,7 @@
 	<div class="container">
 		<h3>Grade Pictures that share:</h3>
 		<input type="checkbox" name="groupBy_-1" value="-1"> File name (checking this means each picture is graded individually)
+		<input type="hidden" name="groupOptionCount" value="<%out.print(columns.size());%>">
 		<%
 		for(int i=0; i<columns.size(); i++) {
 			out.print("<br><input type='checkbox' name='groupBy_"+i+"' value='"+i+"'> "+columns.get(i));
@@ -48,6 +49,7 @@
 		<div name="generated_sections">
 		</div>
 	</div>
+	<div class="errorDiv"></div>
 	<input type="submit" value="Submit" class="btn">
 </form>
 

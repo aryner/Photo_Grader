@@ -9,7 +9,54 @@ var questionCount = 0;
 $(document).ready(function() {
 	addNewQuestionListener(0);
 	addAnswerTypeListener(0);
+
+	$(':submit[value=Submit]').click(function(e) {
+			e.preventDefault();
+		var errors = getErrorMsg();
+		if(errors.length > 0) {
+			e.preventDefault();
+			var msg = "";
+			for(var i=0; i<errors.length; i++) {
+				msg += errors[i];
+			}
+			var div = document.getElementsByClassName('errorDiv');
+			div[0].innerHTML = msg;
+		}
+	});
 });
+
+function getErrorMsg() {
+	var errors = checkForAtLeastOneOption(checkForFilledQuestions(checkGradeGroup()));
+	errors.push('<p class="error">1</p>','<p class="error">2</p>');
+	return errors;
+}
+
+function checkGradeGroup() {
+	var errors = [];
+	var groupOptionCount = Number($('input[name=groupOptionCount]').val());
+	var groupSelected = false;
+
+	for(var i=-1; i<(groupOptionCount-1) && !groupSelected; i++) {
+		if($('input[name=groupBy_'+i+']').prop('checked')) {
+			groupSelected = true;
+		}
+	}
+	if(!groupSelected) errors.push("<p class='error'>You must select how to group the pictures you will grade : 'Grade Pictures that share'</p>");
+
+	return errors;
+}
+
+function checkForFilledQuestions(errors) {
+	errors = errors || [];
+
+	return errors;
+}
+
+function checkForAtLeastOneOption(errors) {
+	errors = errors || [];
+
+	return errors;
+}
 
 function addNewQuestionListener(index) {
 	document.addEventListener('question'+index, newQuestionListener, false);

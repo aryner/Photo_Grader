@@ -28,7 +28,7 @@ import javax.servlet.http.HttpSession;
 						"/Controller","/register","/createUser","/select_study","/login",
 						"/logout","/setStudy","/createStudy","/create_study","/defineAssignment",
 						"/define_assignment","/home","/upload","/upload_pictures","/upload_table_data",
-						"/define_grading_questions"
+						"/define_grading_questions", "/defineGradingQuestions"
 						})
 public class Controller extends HttpServlet {
 	/**
@@ -162,6 +162,10 @@ public class Controller extends HttpServlet {
 		else if(userPath.equals("/upload_table_data")) {
 			ArrayList<String> errors = FileIO.upload(request,FileIO.TABLE,(Study)session.getAttribute("study"));
 			session.setAttribute("errors",errors);
+			response.sendRedirect("/Photo_Grader/home");
+			return;
+		}
+		else if(userPath.equals("/defineGradingQuestions")) {
 			response.sendRedirect("/Photo_Grader/home");
 			return;
 		}
