@@ -56,9 +56,13 @@ var newAnswerTypeListener = function(event) {
 	else {
 		var container = $('div[name=options_'+event.detail.index+']');
 		var optionCount = $('input[name=option_count_'+event.detail.index+']').val();
-		console.log("optionCount = "+optionCount);
-		if((+optionCount) === 0) {container.empty();}
-		$('input[name=option_count_'+event.detail.index+']').val(optionCount+1);
+
+		if((+optionCount) === 0) {
+			$('input[name=option_count_'+event.detail.index+']').val(1);
+			container.empty();
+			var contents = '<h4>Enter options for this question</h4><input type="text" name="option_'+event.detail.index+'_'+(optionCount+1)+'">';
+			container.append(contents);
+		}
 	}
 };
 
