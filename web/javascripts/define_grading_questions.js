@@ -11,8 +11,9 @@ $(document).ready(function() {
 	addAnswerTypeListener(0);
 
 	$(':submit[value=Submit]').click(function(e) {
+		$('input[name=questionCount]').val(questionCount+1);
+
 		var errors = getErrorMsg();
-		div[0].innerHTML = "";
 		if(errors.length > 0) {
 			e.preventDefault();
 			var msg = "";
@@ -26,7 +27,14 @@ $(document).ready(function() {
 });
 
 function getErrorMsg() {
-	return checkForFilledQuestions(checkGradeGroup());
+	return checkForName(checkForFilledQuestions(checkGradeGroup()));
+}
+
+function checkForName(errors) {
+	errors = errors || [];
+	if($('input[name=name]').val() === '') errors.push("<p class='error'>You must enter a name for this grade category</p>");
+
+	return errors;
 }
 
 function checkGradeGroup() {
