@@ -57,14 +57,44 @@ var newAnswerTypeListener = function(event) {
 		var container = $('div[name=options_'+event.detail.index+']');
 		var optionCount = $('input[name=option_count_'+event.detail.index+']').val();
 
-		if((+optionCount) === 0) {
-			$('input[name=option_count_'+event.detail.index+']').val(1);
+		if(Number(optionCount) === 0) {
+			$('input[name=option_count_'+event.detail.index+']').val('1');
 			container.empty();
-			var contents = '<h4>Enter options for this question</h4><input type="text" name="option_'+event.detail.index+'_'+(optionCount+1)+'">';
+			var contents = '<h4>Enter options for this question</h4><input type="text" name="option_'+event.detail.index+'_'+Number(optionCount+1)+'">';
 			container.append(contents);
+			addOptionListener(event.detail.index, 1);
 		}
 	}
 };
+
+function addOptionListener(questionIndex, optionIndex) {
+	$('input[name=option_'+questionIndex+'_'+optionIndex+']').on('input',function(e){
+		var optionCount = $('input[name=option_count_'+questionIndex+']').val();
+		if(this.value !== '' > 0 && Number(optionCount) === Number(optionIndex)) {
+			addOption(questionIndex, optionIndex);
+		}
+		else if(this.value === '') {
+			clearOptions(questionIndex, optionIndex, optionCount);
+		}
+	});
+}
+
+function addOption(questionIndex, optionIndex) {
+	$('input[name=option_count_'+questionIndex+']').val(optionIndex+1);
+	var container = $('div[name=options_'+questionIndex+']');
+
+	var contents = '<input type="text" style="margin-left:5px;" name="option_'+questionIndex+'_'+(optionIndex+1)+'">';
+	container.append(contents);
+	addOptionListener(questionIndex, optionIndex+1);
+}
+
+function clearOptions(questionIndex, optionIndex, optionCount) {
+	for(var i=optionCount; i>optionIndex; i--) {
+		$('input[name=option_'+questionIndex+'_'+i+']').remove();
+	}
+
+	$('input[name=option_count_'+questionIndex+']').val(optionIndex);
+}
 
 function trimQuestions(index) {
 	for(var i=questionCount; i>index; i--) {
