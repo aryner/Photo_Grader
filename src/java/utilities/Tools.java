@@ -89,4 +89,11 @@ public class Tools {
 			if(check == needle) return true;
 		return false;
 	}
+
+	public static boolean contains(ArrayList<String> haystack, String needle) {
+		for(String straw : haystack) 
+			if(needle.equals(straw))
+				return true;
+		return false;
+	}
 }

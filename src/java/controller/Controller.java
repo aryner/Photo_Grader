@@ -166,6 +166,7 @@ public class Controller extends HttpServlet {
 			return;
 		}
 		else if(userPath.equals("/defineGradingQuestions")) {
+			session.setAttribute("errors",((Study)session.getAttribute("study")).createGradeGroup(request));
 			response.sendRedirect("/Photo_Grader/home");
 			return;
 		}

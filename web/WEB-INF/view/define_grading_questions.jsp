@@ -18,7 +18,7 @@
 	<div class="container">
 		<h3>Name this grading category</h3>
 		<input type="text" name="name">
-		<h3>Grade Pictures that share:</h3>
+		<h3>Group Pictures that share:</h3>
 		<input type="checkbox" name="groupBy_-1" value="-1"> File name (checking this means each picture is graded individually)
 		<input type="hidden" name="questionCount" value="1">
 		<input type="hidden" name="groupOptionCount" value="<%out.print(columns.size());%>">

@@ -86,7 +86,7 @@ public class TableReader {
 		}
 
 		if(Tools.contains(columns, -1)) {
-			throw new UploadException(1);
+			throw new UploadException(UploadException.MISSING_COLUMNS);
 		}
 
 		return columns;

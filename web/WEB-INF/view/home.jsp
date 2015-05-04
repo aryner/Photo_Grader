@@ -27,7 +27,7 @@
 		</div>
 
 		<div class="meta-col">
-			<a href="define_grading_questions" class="btn">Define Grading Scenario</a>
+			<a href="define_grading_questions" class="btn">Define Grading Category</a>
 		</div>
 	</div>
 </div>
