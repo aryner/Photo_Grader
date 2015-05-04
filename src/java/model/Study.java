@@ -69,15 +69,23 @@ public class Study extends Model {
 	public ArrayList<String> createGradeGroup(HttpServletRequest request) {
 		ArrayList<String> errors = new ArrayList<String>();
 
-		String name = request.getParameter("name");
+		String newName = request.getParameter("name");
 		ArrayList<String> usedNames = (ArrayList)Query.getField("photo_grade_group", "name", null,null);
-		if(Tools.contains(usedNames, name)) {
+		if(Tools.contains(usedNames, newName)) {
 			errors.add("That grade category name has already been used");
 			return errors;
 		}
 
-		String query = "INSERT INTO photo_grade_group (study_id, name) VALUES ('"+this.id+"', '"+name+"')";
+		usedNames = (ArrayList)Query.getField("photo_grade_group", "grade_name", null,null);
+		String grade_name = Tools.generateTableName("grade_", usedNames);
+		String query = "INSERT INTO photo_grade_group (study_id, name, grade_name) VALUES ('"+this.id+
+			       "', '"+newName+"', '"+grade_name+"')";
 		Query.update(query);
+
+		int groupId = Integer.parseInt(Query.getField("photo_grade_group","id","study_id="+this.id+" AND name='"+newName+"'",null).get(0)+"");
+		Grade.createGroup(groupId, this.photo_attribute_table_name, request);
+		Grade.createQuestions(groupId, request);
+		Grade.createTable(groupId);
 
 		return errors;
 	}
