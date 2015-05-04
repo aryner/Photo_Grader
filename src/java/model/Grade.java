@@ -39,9 +39,30 @@ public class Grade {
 
 		Query.update(query);
 	}
+
 	public static void createQuestions(int group_id, HttpServletRequest request) {
 		int questionCount = Integer.parseInt(request.getParameter("questionCount"));
+		ArrayList<String> questions = new ArrayList<String>();
+		ArrayList<Integer> types = new ArrayList<Integer>();
+
+		for(int i=0; i<questionCount; i++) {
+			questions.add(request.getParameter("question_"+i));
+			types.add(Integer.parseInt(request.getParameter("type_"+i)));
+		}
+
+		String query = "INSERT INTO question (grade_group_id, question, q_type) VALUES ";
+		for(int i=0; i<types.size(); i++) {
+			if(i>0) query += ", ";
+			query += "('"+group_id+"', '"+questions.get(i)+"', '"+types.get(i)+"')";
+		}
+
+		Query.update(query);
+		createOptions(group_id, questions, types, request);
 	}
+
+	private static void createOptions(int group_id, ArrayList<String> questions, ArrayList<Integer> types, HttpServletRequest request) {
+	}
+
 	public static void createTable(int group_id) {
 	}
 }

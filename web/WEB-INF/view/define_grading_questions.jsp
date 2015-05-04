@@ -5,6 +5,7 @@
 --%>
 
 <%@page import="java.util.*"%>
+<%@page import="metaData.*"%>
 
 <%
 	ArrayList<String> columns = (ArrayList)request.getAttribute("columns");
@@ -31,9 +32,9 @@
 		<h3>Define questions</h3>
 		<div class="meta-col">
 			<h4>Answer type</h4>
-			<input type="radio" name="type_0" value="radio"> Radio 
-			<input type="radio" name="type_0" value="checkbox"> Check box
-			<input type="radio" name="type_0" value="text"> Text box
+			<input type="radio" name="type_0" value="<%out.print(MetaData.RADIO);%>"> Radio 
+			<input type="radio" name="type_0" value="<%out.print(MetaData.CHECKBOX);%>"> Check box
+			<input type="radio" name="type_0" value="<%out.print(MetaData.TEXT);%>"> Text box
 		</div>
 		<div class="meta-col">
 			<h4>Question</h4>

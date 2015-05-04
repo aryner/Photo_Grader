@@ -84,7 +84,8 @@ function checkForQuestion(index) {
 
 function checkForOption(index) {
 	var checked = getCheckedRadio('input[name=type_'+index+']');
-	if(checked.value === 'text') {
+	console.log(checked.value);
+	if(checked.value === '1') {
 		var radios = $('input[name=text_option_'+index+']');
 
 		for(var i=0; i<3; i++) {
@@ -129,7 +130,7 @@ var newQuestionListener = function(event) {
 };
 
 var newAnswerTypeListener = function(event) {
-	if(event.detail.type === 'text') {
+	if(event.detail.type === '1') {
 		$('input[name=option_count_'+event.detail.index+']').val(0);
 		var container = $('div[name=options_'+event.detail.index+']');
 		container.empty();
@@ -200,9 +201,9 @@ function addQuestion(index) {
 	var newQuestion = '<div name="index_'+index+'">'+
 			'<div class="meta-col">'+
 				'<h4>Answer type</h4>'+
-				'<input type="radio" name="type_'+index+'" value="radio"> Radio '+
-				'<input type="radio" name="type_'+index+'" value="checkbox"> Check box'+
-				'<input type="radio" name="type_'+index+'" value="text"> Text box'+
+				'<input type="radio" name="type_'+index+'" value="2"> Radio '+
+				'<input type="radio" name="type_'+index+'" value="3"> Check box'+
+				'<input type="radio" name="type_'+index+'" value="1"> Text box'+
 			'</div>'+
 			'<div class="meta-col">'+
 				'<h4>Question</h4>'+
