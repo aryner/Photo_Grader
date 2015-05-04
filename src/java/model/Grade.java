@@ -9,6 +9,7 @@ package model;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import SQL.*;
+import metaData.*;
 
 /**
  *
@@ -61,6 +62,25 @@ public class Grade {
 	}
 
 	private static void createOptions(int group_id, ArrayList<String> questions, ArrayList<Integer> types, HttpServletRequest request) {
+		String query = "INSERT INTO check_radio_option (photo_data_id, value, meta_grade) VALUES ";
+		String postfix = "";
+
+		for(int i=0; i<types.size(); i++) {
+			if(types.get(i)!=MetaData.TEXT) {
+				String questionId = ""+Query.getField("question","id",
+						"question='"+questions.get(i)+"' AND grade_group_id='"+group_id+"'",null).get(0);
+				if(postfix.length() > 0) postfix += ", ";
+
+				int optionCount = Integer.parseInt(request.getParameter("option_count_"+i));
+				//do this for each option of this question
+				for(int j=0; j<optionCount-1; j++) {
+					if(j>0) postfix += ", ";
+					postfix += "('"+questionId+"', '"+request.getParameter("option_"+i+"_"+(j+1))+"', '"+MetaData.GRADE+"')";
+				}
+			}
+		}
+
+		if(postfix.length() > 0) Query.update(query+postfix);
 	}
 
 	public static void createTable(int group_id) {
