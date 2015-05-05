@@ -117,4 +117,18 @@ public class Question extends Model{
 	public void setQ_type(int q_type) {
 		this.q_type = q_type;
 	}
+
+	/**
+	 * @return the label
+	 */
+	public String getLabel() {
+		return label;
+	}
+
+	/**
+	 * @param label the label to set
+	 */
+	public void setLabel(String label) {
+		this.label = label;
+	}
 }
