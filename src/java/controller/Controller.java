@@ -68,6 +68,7 @@ public class Controller extends HttpServlet {
 			request.setAttribute("columns", columns);
 		}
 		else if(userPath.equals("/select_grade_category")) {
+			request.setAttribute("categories",((Study)session.getAttribute("study")).getGradeCategoryNames());
 		}
 
 		String url = "/WEB-INF/view" + userPath + ".jsp";

@@ -90,6 +90,10 @@ public class Study extends Model {
 		return errors;
 	}
 
+	public ArrayList<String> getGradeCategoryNames() {
+		return (ArrayList)Query.getField("photo_grade_group","name","study_id="+this.id,null);
+	}
+
 	public ArrayList getExcelTableMetaData() {
 		return new TableMetaData().getMetaDataSources("study_id='"+this.id+"' AND table_type='"+MetaData.EXCEL+"'","");
 	}
