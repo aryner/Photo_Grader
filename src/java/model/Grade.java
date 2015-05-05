@@ -84,5 +84,8 @@ public class Grade {
 	}
 
 	public static void createTable(int group_id) {
+		String tableName = ""+Query.getField("photo_grade_group","gradeName","id='"+group_id+"'",null).get(0);
+		String query = "CREATE TABLE IF NOT EXISTS "+tableName+" ( id int unsigned AUTO_INCREMENT,";
+		String postFix = "PRIMARY KEY(id)) ENGINE=INnoDB";
 	}
 }
