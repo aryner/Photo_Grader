@@ -8,6 +8,8 @@ package metaData.grade;
 
 import model.*;
 import java.sql.*;
+import java.util.*;
+import SQL.*;
 
 /**
  *
@@ -18,10 +20,18 @@ public class GroupBy extends Model{
 	private int grade_group_id;
 	private String photo_attribute;
 
+	public GroupBy(){}
+
 	public GroupBy(int id, int grade_group_id, String photo_attribute) {
 		this.id = id;
 		this.grade_group_id = grade_group_id;
 		this.photo_attribute = photo_attribute;
+	}
+
+	public static ArrayList<GroupBy> getGroup(int group_id) {
+		String query = "SELECT * FROM group_by WHERE grade_group_id = "+group_id;
+
+		return (ArrayList)Query.getModel(query, new GroupBy());
 	}
 
 	@Override

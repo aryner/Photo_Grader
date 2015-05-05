@@ -7,7 +7,10 @@
 package metaData.grade;
 
 import java.sql.*;
+import SQL.*;
 import model.*;
+import java.util.*;
+import metaData.*;
 
 /**
  *
@@ -18,12 +21,24 @@ public class Question extends Model{
 	private int grade_group_id;
 	private String question;
 	private int q_type;
+	private ArrayList<String> options;
+
+	public Question() {}
 
 	public Question(int id, int grade_group_id, String question, int q_type) {
 		this.id = id;
 		this.grade_group_id = grade_group_id;
 		this.question = question;
 		this.q_type = q_type;
+
+		if(q_type == MetaData.TEXT) options = null;
+		else options = getOptions();
+	}
+
+	public static ArrayList<Question> getQuestions(int group_id) {
+		String query = "SELECT * FROM question WHERE grade_group_id = "+group_id;
+
+		return (ArrayList)Query.getModel(query, new Question());
 	}
 
 	@Override
@@ -36,6 +51,12 @@ public class Question extends Model{
 			e.printStackTrace(System.err);
 		}
 		return null;
+	}
+
+	private ArrayList<String> getOptions() {
+		return (ArrayList)Query.getField("check_radio_option","value",
+						 "photo_data_id="+this.grade_group_id+" AND meta_grade="+MetaData.GRADE,
+						 null);
 	}
 
 	/**
