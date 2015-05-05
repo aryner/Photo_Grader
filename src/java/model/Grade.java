@@ -17,7 +17,7 @@ import metaData.*;
  * @author aryner
  */
 public class Grade {
-	private static final String FILENAME = "[FILENAME]";
+	private static final String FILENAME = "_photo_file_name";
 
 	public static void createGroup(int group_id, String attr_table_name, HttpServletRequest request) {
 		int groupOptionCount = Integer.parseInt(request.getParameter("groupOptionCount"));
@@ -88,7 +88,8 @@ public class Grade {
 
 	public static void createTable(int group_id) {
 		String tableName = "grade_"+Query.getField("photo_grade_group","grade_name","id='"+group_id+"'",null).get(0);
-		String query = "CREATE TABLE IF NOT EXISTS "+tableName+" ( id int unsigned AUTO_INCREMENT,";
+		String query = "CREATE TABLE IF NOT EXISTS "+tableName+" ( "+
+				"id int unsigned AUTO_INCREMENT,grader varchar(50),";
 		String postfix = "PRIMARY KEY(id)) ENGINE=INnoDB";
 		ArrayList<GroupBy> grouping = GroupBy.getGroup(group_id);
 		ArrayList<Question> questions = Question.getQuestions(group_id);

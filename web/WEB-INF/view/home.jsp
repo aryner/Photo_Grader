@@ -29,5 +29,8 @@
 		<div class="meta-col">
 			<a href="define_grading_questions" class="btn">Define Grading Category</a>
 		</div>
+		<div class="meta-col">
+			<a href="select_grade_category" class="btn">Grade</a>
+		</div>
 	</div>
 </div>

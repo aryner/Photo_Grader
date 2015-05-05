@@ -70,7 +70,7 @@ public class Study extends Model {
 		ArrayList<String> errors = new ArrayList<String>();
 
 		String newName = request.getParameter("name");
-		ArrayList<String> usedNames = (ArrayList)Query.getField("photo_grade_group", "name", null,null);
+		ArrayList<String> usedNames = (ArrayList)Query.getField("photo_grade_group", "name", "study_id="+this.id,null);
 		if(Tools.contains(usedNames, newName)) {
 			errors.add("That grade category name has already been used");
 			return errors;

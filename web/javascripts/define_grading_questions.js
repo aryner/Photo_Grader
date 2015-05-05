@@ -42,7 +42,7 @@ function checkGradeGroup() {
 	var groupOptionCount = Number($('input[name=groupOptionCount]').val());
 	var groupSelected = false;
 
-	for(var i=-1; i<(groupOptionCount-1) && !groupSelected; i++) {
+	for(var i=-1; i<(groupOptionCount) && !groupSelected; i++) {
 		if($('input[name=groupBy_'+i+']').prop('checked')) {
 			groupSelected = true;
 		}

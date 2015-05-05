@@ -28,7 +28,7 @@ import javax.servlet.http.HttpSession;
 						"/Controller","/register","/createUser","/select_study","/login",
 						"/logout","/setStudy","/createStudy","/create_study","/defineAssignment",
 						"/define_assignment","/home","/upload","/upload_pictures","/upload_table_data",
-						"/define_grading_questions", "/defineGradingQuestions"
+						"/define_grading_questions", "/defineGradingQuestions","/select_grade_category"
 						})
 public class Controller extends HttpServlet {
 	/**
@@ -66,6 +66,8 @@ public class Controller extends HttpServlet {
 			ArrayList<String> columns = Photo.getMetaDataKeys(((Study)session.getAttribute("study")).getPhoto_attribute_table_name());
 			Helper.unprocess(columns);
 			request.setAttribute("columns", columns);
+		}
+		else if(userPath.equals("/select_grade_category")) {
 		}
 
 		String url = "/WEB-INF/view" + userPath + ".jsp";
