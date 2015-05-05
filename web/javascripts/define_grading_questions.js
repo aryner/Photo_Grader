@@ -66,7 +66,11 @@ function checkForFilledQuestions(errors) {
 }
 
 function checkForIncompleteQuestion(index) {
-	return checkForType(index) && checkForQuestion(index) && checkForOption(index) ? false : true;
+	return checkForType(index) && checkForQuestion(index) && checkForOption(index) && checkForLabel(index) ? false : true;
+}
+
+function checkForLabel(index) {
+	return $('input[name=label_'+index+']').val().length > 0;
 }
 
 function checkForType(index) {
@@ -199,6 +203,10 @@ function getCheckedRadio(search) {
 
 function addQuestion(index) {
 	var newQuestion = '<div name="index_'+index+'">'+
+			'<div class="meta-col">'+
+				'<h4>Question label</h4>'+
+				'<input type="text" name="label_'+index+'">'+
+			'</div>'+
 			'<div class="meta-col">'+
 				'<h4>Answer type</h4>'+
 				'<input type="radio" name="type_'+index+'" value="2"> Radio '+

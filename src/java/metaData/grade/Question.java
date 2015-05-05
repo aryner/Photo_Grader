@@ -19,15 +19,17 @@ import metaData.*;
 public class Question extends Model{
 	private int id;
 	private int grade_group_id;
+	private String label;
 	private String question;
 	private int q_type;
 	private ArrayList<String> options;
 
 	public Question() {}
 
-	public Question(int id, int grade_group_id, String question, int q_type) {
+	public Question(int id, int grade_group_id, String label, String question, int q_type) {
 		this.id = id;
 		this.grade_group_id = grade_group_id;
+		this.label = label;
 		this.question = question;
 		this.q_type = q_type;
 
@@ -45,7 +47,8 @@ public class Question extends Model{
 	public Question getModel(ResultSet resultSet) {
 		try {
 			return new Question(resultSet.getInt("id"),resultSet.getInt("grade_group_id"),
-					    resultSet.getString("question"),resultSet.getInt("q_type"));
+					    resultSet.getString("label"),resultSet.getString("question"),
+					    resultSet.getInt("q_type"));
 		}
 		catch (SQLException e) {
 			e.printStackTrace(System.err);

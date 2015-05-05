@@ -9,6 +9,7 @@ package model;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import SQL.*;
+import metaData.grade.*;
 import metaData.*;
 
 /**
@@ -45,16 +46,18 @@ public class Grade {
 		int questionCount = Integer.parseInt(request.getParameter("questionCount"));
 		ArrayList<String> questions = new ArrayList<String>();
 		ArrayList<Integer> types = new ArrayList<Integer>();
+		ArrayList<String> labels = new ArrayList<String>();
 
 		for(int i=0; i<questionCount; i++) {
 			questions.add(request.getParameter("question_"+i));
 			types.add(Integer.parseInt(request.getParameter("type_"+i)));
+			labels.add(request.getParameter("label_"+i));
 		}
 
-		String query = "INSERT INTO question (grade_group_id, question, q_type) VALUES ";
+		String query = "INSERT INTO question (grade_group_id, label, question, q_type) VALUES ";
 		for(int i=0; i<types.size(); i++) {
 			if(i>0) query += ", ";
-			query += "('"+group_id+"', '"+questions.get(i)+"', '"+types.get(i)+"')";
+			query += "('"+group_id+"', '"+labels.get(i)+"', '"+questions.get(i)+"', '"+types.get(i)+"')";
 		}
 
 		Query.update(query);
@@ -84,8 +87,11 @@ public class Grade {
 	}
 
 	public static void createTable(int group_id) {
-		String tableName = ""+Query.getField("photo_grade_group","gradeName","id='"+group_id+"'",null).get(0);
+		String tableName = ""+Query.getField("photo_grade_group","grade_name","id='"+group_id+"'",null).get(0);
 		String query = "CREATE TABLE IF NOT EXISTS "+tableName+" ( id int unsigned AUTO_INCREMENT,";
 		String postFix = "PRIMARY KEY(id)) ENGINE=INnoDB";
+		ArrayList<GroupBy> grouping = GroupBy.getGroup(group_id);
+		ArrayList<Question> questions = Question.getQuestions(group_id);
+
 	}
 }

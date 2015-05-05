@@ -31,6 +31,10 @@
 
 		<h3>Define questions</h3>
 		<div class="meta-col">
+			<h4>Question label</h4>
+			<input type="text" name="label_0">
+		</div>
+		<div class="meta-col">
 			<h4>Answer type</h4>
 			<input type="radio" name="type_0" value="<%out.print(MetaData.RADIO);%>"> Radio 
 			<input type="radio" name="type_0" value="<%out.print(MetaData.CHECKBOX);%>"> Check box
