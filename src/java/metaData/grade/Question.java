@@ -58,14 +58,12 @@ public class Question extends Model{
 	}
 
 	public String getHtml() {
-		switch (this.q_type) {
-			case MetaData.TEXT:
-				return Tools.getQuestionHtml(this.question, "<input type='text' name='"+this.label+"'>");
-			case MetaData.RADIO:
-				return Tools.getQuestionHtml(this.question, getRadioHtml());
-			default:
-				return Tools.getQuestionHtml(this.question, getCheckHtml());
-		}
+		return Tools.getQuestionHtml(this.question, this.q_type == MetaData.TEXT ? getTextHtml() :
+					     this.q_type == MetaData.RADIO ? getRadioHtml() : getCheckHtml());
+	}
+
+	private String getTextHtml() {
+		return "<input type='text' title='"+this.q_type+"' name='"+this.label+"'>";
 	}
 
 	private String getRadioHtml() {
