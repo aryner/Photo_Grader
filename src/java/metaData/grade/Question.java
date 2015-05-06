@@ -56,6 +56,14 @@ public class Question extends Model{
 		return null;
 	}
 
+	public String getOption(int index) {
+		return options.get(index);
+	}
+
+	public int optionSize() {
+		return options.size();
+	}
+
 	private ArrayList<String> getOptions() {
 		return (ArrayList)Query.getField("check_radio_option","value",
 						 "photo_data_id="+this.grade_group_id+" AND meta_grade="+MetaData.GRADE,

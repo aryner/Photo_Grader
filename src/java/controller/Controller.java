@@ -28,7 +28,8 @@ import javax.servlet.http.HttpSession;
 						"/Controller","/register","/createUser","/select_study","/login",
 						"/logout","/setStudy","/createStudy","/create_study","/defineAssignment",
 						"/define_assignment","/home","/upload","/upload_pictures","/upload_table_data",
-						"/define_grading_questions", "/defineGradingQuestions","/select_grade_category"
+						"/define_grading_questions", "/defineGradingQuestions","/select_grade_category",
+						"/grade","/startGrading"
 						})
 public class Controller extends HttpServlet {
 	/**
@@ -69,6 +70,8 @@ public class Controller extends HttpServlet {
 		}
 		else if(userPath.equals("/select_grade_category")) {
 			request.setAttribute("categories",((Study)session.getAttribute("study")).getGradeCategoryNames());
+		}
+		else if(userPath.equals("/grade")) {
 		}
 
 		String url = "/WEB-INF/view" + userPath + ".jsp";
@@ -172,6 +175,10 @@ public class Controller extends HttpServlet {
 			session.setAttribute("errors",((Study)session.getAttribute("study")).createGradeGroup(request));
 			response.sendRedirect("/Photo_Grader/home");
 			return;
+		}
+		else if(userPath.equals("/startGrading")) {
+			session.setAttribute("grade_group_id", ((Study)session.getAttribute("study")).getGradeGroupId(request.getParameter("category")));
+			response.sendRedirect("/Photo_Grader/grade");
 		}
 
 		String url = "/WEB-INF/view" + userPath + ".jsp";
