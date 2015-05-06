@@ -9,6 +9,7 @@ package metaData.grade;
 import java.util.*;
 import model.*;
 import java.sql.*;
+import SQL.*;
 
 /**
  *
@@ -23,6 +24,20 @@ public class GradeGroup extends Model {
 	private ArrayList<Question> questions;
 
 	public GradeGroup() {}
+
+	public GradeGroup(int id) {
+		String query = "SELECT * FROM photo_grade_group WHERE id="+id;
+
+		GradeGroup temp = (GradeGroup)Query.getModel(query,new GradeGroup()).get(0);
+
+		this.id = temp.getId();
+		this.study_id = temp.getStudy_id();
+		this.grade_name = temp.getGrade_name();
+		this.name = temp.getName();
+
+		setGroupBy();
+		setQuestions();
+	}
 
 	public GradeGroup(int id, int study_id, String grade_name, String name) {
 		this.id = id;

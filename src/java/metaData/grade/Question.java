@@ -11,6 +11,7 @@ import SQL.*;
 import model.*;
 import java.util.*;
 import metaData.*;
+import utilities.*;
 
 /**
  *
@@ -56,6 +57,33 @@ public class Question extends Model{
 		return null;
 	}
 
+	public String getHtml() {
+		switch (this.q_type) {
+			case MetaData.TEXT:
+				return Tools.getQuestionHtml(this.question, "<input type='text' name='"+this.label+"'>");
+			case MetaData.RADIO:
+				return Tools.getQuestionHtml(this.question, getRadioHtml());
+			default:
+				return Tools.getQuestionHtml(this.question, getCheckHtml());
+		}
+	}
+
+	private String getRadioHtml() {
+		String html = "";
+		for(String option : this.options) {
+			html += "<input type='radio' name='"+this.label+"' value='"+option+"'> "+option+"<br>";
+		}
+		return html;
+	}
+
+	private String getCheckHtml() {
+		String html = "";
+		for(String option : this.options) {
+			html += "<input type='checkbox' name='"+this.label+"_"+option+"' value='"+option+"'> "+option+"<br>";
+		}
+		return html;
+	}
+
 	public String getOption(int index) {
 		return options.get(index);
 	}
@@ -66,7 +94,7 @@ public class Question extends Model{
 
 	private ArrayList<String> getOptions() {
 		return (ArrayList)Query.getField("check_radio_option","value",
-						 "photo_data_id="+this.grade_group_id+" AND meta_grade="+MetaData.GRADE,
+						 "photo_data_id="+this.id+" AND meta_grade="+MetaData.GRADE,
 						 null);
 	}
 

@@ -9,6 +9,7 @@ package controller;
 import metaData.MetaData;
 import SQL.*;
 import model.*;
+import metaData.grade.*;
 import utilities.*;
 
 import java.util.*;
@@ -143,6 +144,7 @@ public class Controller extends HttpServlet {
 		else if(userPath.equals("/logout")) {
 			session.removeAttribute("user");
 			session.removeAttribute("study");
+			session.removeAttribute("grade_group");
 			response.sendRedirect("/Photo_Grader/");
 			return;
 		}
@@ -177,8 +179,10 @@ public class Controller extends HttpServlet {
 			return;
 		}
 		else if(userPath.equals("/startGrading")) {
-			session.setAttribute("grade_group_id", ((Study)session.getAttribute("study")).getGradeGroupId(request.getParameter("category")));
+			int grade_group_id = ((Study)session.getAttribute("study")).getGradeGroupId(request.getParameter("category"));
+			session.setAttribute("grade_group", new GradeGroup(grade_group_id));
 			response.sendRedirect("/Photo_Grader/grade");
+			return;
 		}
 
 		String url = "/WEB-INF/view" + userPath + ".jsp";

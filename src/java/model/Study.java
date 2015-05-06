@@ -91,7 +91,7 @@ public class Study extends Model {
 	}
 
 	public int getGradeGroupId(String name) {
-		return (Integer)Query.getField("photo_grade_group","id","study_id="+this.id+" AND name='"+name+"'",null).get(0);
+		return Integer.parseInt(""+Query.getField("photo_grade_group","id","study_id="+this.id+" AND name='"+name+"'",null).get(0));
 	}
 
 	public ArrayList<String> getGradeCategoryNames() {

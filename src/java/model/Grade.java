@@ -101,4 +101,8 @@ public class Grade {
 
 		Query.update(query+postfix);
 	}
+
+	public static String generateQuestion(Question question) {
+		return "<div class='meta-col'>"+question.getHtml()+"</div>";
+	}
 }

@@ -49,6 +49,10 @@ public class Tools {
 		return position+offset;
 	}
 
+	public static String getQuestionHtml(String question, String input) {
+		return "<div class='meta-col'><h3>"+question+"</h3>"+input+"</div>";
+	}
+
 	public static boolean hasExcelExtension(String fileName) {
 		String ext = getExtension(fileName).toLowerCase();
 

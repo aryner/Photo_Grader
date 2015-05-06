@@ -13,7 +13,7 @@ ArrayList<String> categories = (ArrayList)request.getAttribute("categories");
 if(categories != null && categories.size() > 0) {
 %>
 
-<form action="grade" method="POST">
+<form action="startGrading" method="POST">
 	<select name="category" class="btn">
 		<% for(String category : categories) { %>
 			<option value="<%out.print(category);%>"><%out.print(category);%></option>
