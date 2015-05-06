@@ -11,13 +11,51 @@ import java.util.*;
 import SQL.*;
 import metaData.grade.*;
 import metaData.*;
+import java.sql.*;
 
 /**
  *
  * @author aryner
  */
-public class Grade {
+public class Grade extends Model {
+	private int id;
+	private String grader;
+	private Map<String,String> group_meta_data;
+	private Map<String,String> question_answers;
+
 	private static final String FILENAME = "_photo_file_name";
+
+	public Grade() {}
+
+	public Grade(int id, String grader, Map<String,String> group_meta_data, Map<String,String> question_answers) {
+		this.id = id;
+		this.grader = grader;
+		this.group_meta_data = group_meta_data;
+		this.question_answers = question_answers;
+	}
+
+	@Override
+	public Grade getModel(ResultSet resultSet) {
+		try {
+			Map<String,String> groupMeta = new HashMap<String,String>();
+			Map<String,String> questions = new HashMap<String,String>();
+			ResultSetMetaData metaData = resultSet.getMetaData();
+			int colCount = metaData.getColumnCount();
+			for(int i=3; i<=colCount; i++) {
+				String colName = metaData.getColumnLabel(i);
+				if(colName.indexOf("_") == 0) 
+					groupMeta.put(colName,resultSet.getString(colName));
+				else
+					questions.put(colName,resultSet.getString(colName));
+			}
+
+			return new Grade(resultSet.getInt("id"),resultSet.getString("grader"),groupMeta,questions);
+		}
+		catch(SQLException e) {
+			e.printStackTrace(System.err);
+		}
+		return null;
+	}
 
 	public static void createGroup(int group_id, String attr_table_name, HttpServletRequest request) {
 		int groupOptionCount = Integer.parseInt(request.getParameter("groupOptionCount"));
@@ -102,7 +140,48 @@ public class Grade {
 		Query.update(query+postfix);
 	}
 
+	public static ArrayList<Grade> getGrades(String grader, String grade_table) {
+		String query = "SELECT * FROM "+grade_table+" WHERE grader='"+grader+"'";
+		return (ArrayList)Query.getModel(query, new Grade());
+	}
+
 	public static String generateQuestion(Question question) {
 		return "<div class='meta-col'>"+question.getHtml()+"</div>";
+	}
+
+	public String getGroupMetaData(String key) {
+		return group_meta_data.get(key);
+	}
+
+	public String getAnswer(String key) {
+		return question_answers.get(key);
+	}
+
+	/**
+	 * @return the id
+	 */
+	public int getId() {
+		return id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	/**
+	 * @return the grader
+	 */
+	public String getGrader() {
+		return grader;
+	}
+
+	/**
+	 * @param grader the grader to set
+	 */
+	public void setGrader(String grader) {
+		this.grader = grader;
 	}
 }
