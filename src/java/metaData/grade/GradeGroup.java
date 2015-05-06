@@ -61,15 +61,6 @@ public class GradeGroup extends Model {
 		return null;
 	}
 
-	public ArrayList<GradeGroup> getPossibleGroups() {
-		String query = "SELECT * FROM photo_grade_group GROUP BY ";
-		for(int i=0; i<groupBy.size(); i++) {
-			if(i != 0) query += ", ";
-			query += groupBy.get(i).getPhoto_attribute();
-		}
-		return (ArrayList)Query.getModel(query, new GradeGroup());
-	}
-
 	private void setGroupBy() {
 		this.groupBy = GroupBy.getGroup(this.id);
 	}

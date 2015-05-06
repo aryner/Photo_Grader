@@ -10,16 +10,46 @@ import java.util.*;
 import SQL.*;
 import utilities.*;
 import javax.servlet.http.HttpServletRequest;
+import java.sql.*;
 
 /**
  *
  * @author aryner
  */
-public class Photo {
+public class Photo extends Model{
 	private int id;
 	private String name;
 	private String path;
-	private Map fields;
+	private Map<String,Object> fields;
+
+	public Photo() {}
+
+	public Photo(int id, String name, String path, Map fields) {
+		this.id = id;
+		this.name = name;
+		this.path = path;
+		this.fields = fields;
+	}
+
+	@Override
+	public Photo getModel(ResultSet resultSet) {
+		try{
+			Map<String,Object> fields = new HashMap<String,Object>();
+			ResultSetMetaData metaData = resultSet.getMetaData();
+			int colCount = metaData.getColumnCount();
+			for(int i=4; i<colCount; i++) {
+				String colName = metaData.getColumnLabel(i);
+				fields.put(colName, resultSet.getObject(colName));
+			}
+
+			return new Photo(resultSet.getInt("id"),resultSet.getString("name"),
+					 resultSet.getString("path"),fields);
+		}
+		catch(SQLException e) {
+			e.printStackTrace(System.err);
+		}
+		return null;
+	}
 
 	public static void generateAttributes(Study study, Map<String,String> name_types) {
 		String query = "CREATE TABLE IF NOT EXISTS "+study.getPhoto_attribute_table_name()+" ("+
