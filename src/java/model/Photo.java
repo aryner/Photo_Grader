@@ -84,6 +84,19 @@ public class Photo extends Model{
 	public static ArrayList<Photo> getUngradedCombinations(GradeGroup category, String photoTable, String gradeTable, String grader) {
 		ArrayList<Photo> combinations = getPossibleCombinations(category, photoTable);
 		ArrayList<Grade> graded = Grade.getGrades(grader, gradeTable);
+
+		for(int i=combinations.size()-1; i>=0; i--) {
+			boolean match = false;
+			for(int j=0; j<graded.size() && !match; j++) {
+				if(combinationMatchesGrade(combinations.get(i),graded.get(j))) {
+					match = true;
+					combinations.remove(i);
+					graded.remove(j);
+				}
+			}
+		}
+
+		return combinations;
 	}
 
 	public static ArrayList<Photo> getPossibleCombinations(GradeGroup category, String tableName) {
@@ -95,6 +108,9 @@ public class Photo extends Model{
 		}
 
 		return (ArrayList)Query.getModel(query, new Photo());
+	}
+
+	private static boolean combinationMatchesGrade(Photo combination, Grade grade) {
 	}
 
 	/**
