@@ -50,7 +50,7 @@ public class Tools {
 	}
 
 	public static String getQuestionHtml(String question, String input) {
-		return "<div class='meta-col'><h3>"+question+"</h3>"+input+"</div>";
+		return "<div class='meta-col question'><h3>"+question+"</h3>"+input+"</div>";
 	}
 
 	public static boolean hasExcelExtension(String fileName) {

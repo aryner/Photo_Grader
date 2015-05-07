@@ -13,9 +13,11 @@ import metaData.grade.*;
 import utilities.*;
 
 import java.util.*;
+import java.io.*;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,7 +32,7 @@ import javax.servlet.http.HttpSession;
 						"/logout","/setStudy","/createStudy","/create_study","/defineAssignment",
 						"/define_assignment","/home","/upload","/upload_pictures","/upload_table_data",
 						"/define_grading_questions", "/defineGradingQuestions","/select_grade_category",
-						"/grade","/startGrading"
+						"/grade","/startGrading","/img","/submitGrade"
 						})
 public class Controller extends HttpServlet {
 	/**
@@ -76,6 +78,28 @@ public class Controller extends HttpServlet {
 		}
 		else if(userPath.equals("/grade")) {
 			request.setAttribute("photoGroup",Photo.getUngradedGroup(group, study.getPhoto_attribute_table_name(), user!=null?user.getName():null));
+			request.setAttribute("photoNumber", study.getPhotoNumber());
+		}
+		else if(userPath.equals("/img")) {
+			String name = request.getParameter("name");
+			String number = request.getParameter("number");
+			response.setContentType("image/jpeg");
+			ServletOutputStream output = response.getOutputStream();
+			FileInputStream imgStream = new FileInputStream(Constants.PIC_PATH+number+Constants.FILE_SEP+name);
+
+			BufferedInputStream bufferedIn = new BufferedInputStream(imgStream);
+			BufferedOutputStream bufferedOut = new BufferedOutputStream(output);
+
+			int nextByte;
+			while((nextByte = bufferedIn.read()) != -1) {
+				bufferedOut.write(nextByte);
+			}
+
+			bufferedIn.close();
+			imgStream.close();
+			bufferedOut.close();
+			output.close();
+			return;
 		}
 
 		String url = "/WEB-INF/view" + userPath + ".jsp";
@@ -184,6 +208,10 @@ public class Controller extends HttpServlet {
 		else if(userPath.equals("/startGrading")) {
 			int grade_group_id = ((Study)session.getAttribute("study")).getGradeGroupId(request.getParameter("category"));
 			session.setAttribute("grade_group", new GradeGroup(grade_group_id));
+			response.sendRedirect("/Photo_Grader/grade");
+			return;
+		}
+		else if(userPath.equals("/submitGrade")) {
 			response.sendRedirect("/Photo_Grader/grade");
 			return;
 		}

@@ -90,6 +90,10 @@ public class Study extends Model {
 		return errors;
 	}
 
+	public String getPhotoNumber() {
+		return photo_attribute_table_name.substring(photo_attribute_table_name.lastIndexOf("_")+1);
+	}
+
 	public int getGradeGroupId(String name) {
 		return Integer.parseInt(""+Query.getField("photo_grade_group","id","study_id="+this.id+" AND name='"+name+"'",null).get(0));
 	}

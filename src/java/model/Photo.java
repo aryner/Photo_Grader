@@ -91,10 +91,15 @@ public class Photo extends Model{
 			if(i>0) query += " AND ";
 			String key = category.getGroupBy(i).getPhoto_attribute();
 			String value = choice.getField(key);
+			if(key.equals(Grade.FILENAME)) {
+				key = "name";
+				value = choice.getName();
+			}
+
 			if(value.toLowerCase().equals("null"))
 				query += key+" IS NULL";
 			else 
-				query += key+"='"+choice.getField(key)+"'";
+				query += key+"='"+value+"'";
 		}
 
 		return (ArrayList)Query.getModel(query, new Photo());

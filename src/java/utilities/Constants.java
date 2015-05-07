@@ -14,6 +14,8 @@ public class Constants {
 	public static final String FILE_SEP = System.getProperty("file.separator");
 	public static final String PORT = System.getProperty("os.name").contains("Windows") ? "8084" : "8080";
 	public static final String HOME = System.getProperty("user.home");
+	public static final String SRC = "http://localhost:"+PORT+"/Photo_Grader/";
+	public static final String PIC_PATH = ".."+FILE_SEP+"webapps"+FILE_SEP+"Photo_Grader"+FILE_SEP+"pictures"+FILE_SEP;
 
 	public static final String TAKEN_USERNAME = "That username has areadly been taken";
 	public static final String PASSWORDS_DONT_MATCH = "Those passwords do not match";
