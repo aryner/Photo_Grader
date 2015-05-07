@@ -81,6 +81,21 @@ public class Photo extends Model{
 		return keys;
 	}
 
+	public static ArrayList<Photo> getUngradedGroup(GradeGroup category, String photoTable, String gradeTable, String grader) {
+		ArrayList<Photo> choices = getUngradedCombinations(category, photoTable, gradeTable, grader);
+		Random rand = new Random(System.currentTimeMillis());
+		Photo choice = choices.get(rand.nextInt(choices.size()));
+
+		String query = "SELECT * FROM "+photoTable+" WHERE ";
+		for(int i=0; i<category.groupBySize(); i++) {
+			if(i>0) query += ", ";
+			String key = category.getGroupBy(i).getPhoto_attribute();
+			query += key +"='"+choice.getField(key)+"'";
+		}
+
+		return (ArrayList)Query.getModel(query, new Photo());
+	}
+
 	public static ArrayList<Photo> getUngradedCombinations(GradeGroup category, String photoTable, String gradeTable, String grader) {
 		ArrayList<Photo> combinations = getPossibleCombinations(category, photoTable);
 		ArrayList<Grade> graded = Grade.getGrades(grader, gradeTable);
