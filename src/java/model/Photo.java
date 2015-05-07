@@ -88,7 +88,7 @@ public class Photo extends Model{
 		for(int i=combinations.size()-1; i>=0; i--) {
 			boolean match = false;
 			for(int j=0; j<graded.size() && !match; j++) {
-				if(combinationMatchesGrade(combinations.get(i),graded.get(j))) {
+				if(combinationMatchesGrade(combinations.get(i),graded.get(j), category)) {
 					match = true;
 					combinations.remove(i);
 					graded.remove(j);
@@ -110,7 +110,18 @@ public class Photo extends Model{
 		return (ArrayList)Query.getModel(query, new Photo());
 	}
 
-	private static boolean combinationMatchesGrade(Photo combination, Grade grade) {
+	private static boolean combinationMatchesGrade(Photo combination, Grade grade, GradeGroup category) {
+		for(int i=0; i<category.groupBySize(); i++) {
+			String attr = category.getGroupBy(i).getPhoto_attribute();
+			if(!grade.getGroupMetaData(attr).equals(combination.getField(attr)))
+				return false;
+		}
+
+		return true;
+	}
+
+	public String getField(String key) {
+		return ""+fields.get(key);
 	}
 
 	/**
