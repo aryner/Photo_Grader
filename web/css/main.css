@@ -18,13 +18,14 @@ body {
 
 #header {
 	height: 030px;
+	height: 030px;
 	background: honeydew;
 	border-bottom-style: solid;
 	border-bottom-color: mediumturquoise;
 }
 
 .tinySpacer  {
-	height: 00%;
+	height: 09%;
 	width: 100%;
 }
 
@@ -91,9 +92,8 @@ body {
 }
 
 #content {
-	margin: 10px 25px; 
-	margin-right: 0px;
-	width: 100%;
+	margin: 1% 2%; 
+	width: 098%;
 	height : 100%;
 }
 

@@ -11,6 +11,7 @@ import SQL.*;
 import utilities.*;
 import javax.servlet.http.HttpServletRequest;
 import java.sql.*;
+import metaData.grade.*;
 
 /**
  *
@@ -34,7 +35,7 @@ public class Photo extends Model{
 	@Override
 	public Photo getModel(ResultSet resultSet) {
 		try{
-			Map<String,Object> fields = new HashMap<String,Object>();
+			fields = new HashMap<String,Object>();
 			ResultSetMetaData metaData = resultSet.getMetaData();
 			int colCount = metaData.getColumnCount();
 			for(int i=4; i<colCount; i++) {
@@ -78,6 +79,22 @@ public class Photo extends Model{
 		for(int i=0; i<3; i++) keys.remove(0);
 
 		return keys;
+	}
+
+	public static ArrayList<Photo> getUngradedCombinations(GradeGroup category, String photoTable, String gradeTable, String grader) {
+		ArrayList<Photo> combinations = getPossibleCombinations(category, photoTable);
+		ArrayList<Grade> graded = Grade.getGrades(grader, gradeTable);
+	}
+
+	public static ArrayList<Photo> getPossibleCombinations(GradeGroup category, String tableName) {
+		String query = "SELECT * FROM "+tableName+" GROUP BY ";
+		for(int i=0; i<category.groupBySize(); i++) {
+			if(i>0) query += ", ";
+			String attribute = category.getGroupBy(i).getPhoto_attribute();
+			query += attribute.equals(Grade.FILENAME) ? "name" : attribute;
+		}
+
+		return (ArrayList)Query.getModel(query, new Photo());
 	}
 
 	/**

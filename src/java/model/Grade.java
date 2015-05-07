@@ -23,7 +23,7 @@ public class Grade extends Model {
 	private Map<String,String> group_meta_data;
 	private Map<String,String> question_answers;
 
-	private static final String FILENAME = "_photo_file_name";
+	public static final String FILENAME = "_photo_file_name";
 
 	public Grade() {}
 
