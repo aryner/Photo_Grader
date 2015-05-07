@@ -140,6 +140,9 @@ public class Grade extends Model {
 		Query.update(query+postfix);
 	}
 
+	public static void grade(HttpServletRequest request, Study study, GradeGroup group, User user) {
+	}
+
 	public static ArrayList<Grade> getGrades(String grader, String grade_table) {
 		String query = "SELECT * FROM "+grade_table+" WHERE grader='"+grader+"'";
 		return (ArrayList)Query.getModel(query, new Grade());

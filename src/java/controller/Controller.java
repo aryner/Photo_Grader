@@ -125,7 +125,9 @@ public class Controller extends HttpServlet {
 
 		String userPath = request.getServletPath(); 
 		HttpSession session = request.getSession(); 
-		User user;
+		User user = (User)session.getAttribute("user");
+		GradeGroup group = (GradeGroup)session.getAttribute("grade_group");
+		Study study = (Study)session.getAttribute("study");
 
 		if(userPath.equals("/createUser")) {
 			String name = request.getParameter("userName");
@@ -176,7 +178,7 @@ public class Controller extends HttpServlet {
 			return;
 		}
 		else if(userPath.equals("/defineAssignment")) {
-			Study study = Study.createStudy(request);
+			study = Study.createStudy(request);
 			MetaData.processDefinitions(study, request);
 
 			session.setAttribute("study",study);
@@ -189,29 +191,30 @@ public class Controller extends HttpServlet {
 			return;
 		}
 		else if(userPath.equals("/upload_pictures")) {
-			ArrayList<String> errors = FileIO.upload(request,FileIO.PHOTO,(Study)session.getAttribute("study"));
+			ArrayList<String> errors = FileIO.upload(request,FileIO.PHOTO,study);
 			session.setAttribute("errors",errors);
 			response.sendRedirect("/Photo_Grader/home");
 			return;
 		}
 		else if(userPath.equals("/upload_table_data")) {
-			ArrayList<String> errors = FileIO.upload(request,FileIO.TABLE,(Study)session.getAttribute("study"));
+			ArrayList<String> errors = FileIO.upload(request,FileIO.TABLE,study);
 			session.setAttribute("errors",errors);
 			response.sendRedirect("/Photo_Grader/home");
 			return;
 		}
 		else if(userPath.equals("/defineGradingQuestions")) {
-			session.setAttribute("errors",((Study)session.getAttribute("study")).createGradeGroup(request));
+			session.setAttribute("errors",study.createGradeGroup(request));
 			response.sendRedirect("/Photo_Grader/home");
 			return;
 		}
 		else if(userPath.equals("/startGrading")) {
-			int grade_group_id = ((Study)session.getAttribute("study")).getGradeGroupId(request.getParameter("category"));
+			int grade_group_id = study.getGradeGroupId(request.getParameter("category"));
 			session.setAttribute("grade_group", new GradeGroup(grade_group_id));
 			response.sendRedirect("/Photo_Grader/grade");
 			return;
 		}
 		else if(userPath.equals("/submitGrade")) {
+			Grade.grade(request, study, group, user);
 			response.sendRedirect("/Photo_Grader/grade");
 			return;
 		}
