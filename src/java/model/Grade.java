@@ -141,6 +141,28 @@ public class Grade extends Model {
 	}
 
 	public static void grade(HttpServletRequest request, Study study, GradeGroup group, User user) {
+		String query = "INSERT INTO "+group.getGrade_name()+" ";
+
+		Photo photo = new Photo(study, request.getParameter("photo"));
+		String parameters = "(grader";
+		String values = "VALUES ('"+user.getName();
+
+		for(int i=0; i<group.groupBySize(); i++) {
+			String key = group.getGroupBy(i).getPhoto_attribute();
+			parameters += ", "+key;
+			values += "', '"+photo.getField(key);
+		}
+		for(int i=0; i<group.questionSize(); i++) {
+			parameters += ", "+group.getQuestion(i).getLabel();
+			values += "', '"+getAnswer(request, group, i);
+		}
+		parameters += ") ";
+		values += "')";
+
+		Query.update(query+parameters+values);
+	}
+
+	public static String getAnswer(HttpServletRequest request, GradeGroup group, int index) {
 	}
 
 	public static ArrayList<Grade> getGrades(String grader, String grade_table) {

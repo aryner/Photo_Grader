@@ -25,6 +25,16 @@ public class Photo extends Model{
 
 	public Photo() {}
 
+	public Photo(Study study, String name) {
+		String query = "SELECT * FROM "+study.getPhoto_attribute_table_name()+" WHERE name='"+name+"'";
+		Photo temp = (Photo)Query.getModel(query,new Photo()).get(0);
+
+		this.id = temp.getId();
+		this.name = temp.getName();
+		this.path = temp.getPath();
+		this.fields = temp.getFields();
+	}
+
 	public Photo(int id, String name, String path, Map fields) {
 		this.id = id;
 		this.name = name;
