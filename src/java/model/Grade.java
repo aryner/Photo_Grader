@@ -154,7 +154,7 @@ public class Grade extends Model {
 		}
 		for(int i=0; i<group.questionSize(); i++) {
 			parameters += ", "+group.getQuestion(i).getLabel();
-			values += "', '"+getAnswer(request, group, i);
+			values += "', '"+getAnswer(request, group.getQuestion(i));
 		}
 		parameters += ") ";
 		values += "')";
@@ -162,7 +162,11 @@ public class Grade extends Model {
 		Query.update(query+parameters+values);
 	}
 
-	public static String getAnswer(HttpServletRequest request, GradeGroup group, int index) {
+	public static String getAnswer(HttpServletRequest request, Question question) {
+		if(question.getQ_type() == MetaData.CHECKBOX) {
+		}
+		//if its not a checkbox question then just get the value from the request
+		return request.getParameter(question.getLabel());
 	}
 
 	public static ArrayList<Grade> getGrades(String grader, String grade_table) {
