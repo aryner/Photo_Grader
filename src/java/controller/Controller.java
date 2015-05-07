@@ -48,6 +48,8 @@ public class Controller extends HttpServlet {
 		String userPath = request.getServletPath(); 
 		HttpSession session = request.getSession(); 
 		User user = (User)session.getAttribute("user");
+		GradeGroup group = (GradeGroup)session.getAttribute("grade_group");
+		Study study = (Study)session.getAttribute("study");
 
 		//The user is not logged in so is redirected to the index/login page
 		if(user == null && !userPath.equals("/register")) {
@@ -65,14 +67,15 @@ public class Controller extends HttpServlet {
 			request.setAttribute("studyNames",Query.getField("study","name",null,null));
 		}
 		else if(userPath.equals("/define_grading_questions")) {
-			ArrayList<String> columns = Photo.getMetaDataKeys(((Study)session.getAttribute("study")).getPhoto_attribute_table_name());
+			ArrayList<String> columns = Photo.getMetaDataKeys(study.getPhoto_attribute_table_name());
 			Helper.unprocess(columns);
 			request.setAttribute("columns", columns);
 		}
 		else if(userPath.equals("/select_grade_category")) {
-			request.setAttribute("categories",((Study)session.getAttribute("study")).getGradeCategoryNames());
+			request.setAttribute("categories",study.getGradeCategoryNames());
 		}
 		else if(userPath.equals("/grade")) {
+			request.setAttribute("photoGroup",Photo.getUngradedGroup(group, study.getPhoto_attribute_table_name(), user!=null?user.getName():null));
 		}
 
 		String url = "/WEB-INF/view" + userPath + ".jsp";

@@ -38,7 +38,7 @@ public class Photo extends Model{
 			fields = new HashMap<String,Object>();
 			ResultSetMetaData metaData = resultSet.getMetaData();
 			int colCount = metaData.getColumnCount();
-			for(int i=4; i<colCount; i++) {
+			for(int i=4; i<colCount+1; i++) {
 				String colName = metaData.getColumnLabel(i);
 				fields.put(colName, resultSet.getObject(colName));
 			}
@@ -81,24 +81,28 @@ public class Photo extends Model{
 		return keys;
 	}
 
-	public static ArrayList<Photo> getUngradedGroup(GradeGroup category, String photoTable, String gradeTable, String grader) {
-		ArrayList<Photo> choices = getUngradedCombinations(category, photoTable, gradeTable, grader);
+	public static ArrayList<Photo> getUngradedGroup(GradeGroup category, String photoTable, String grader) {
+		ArrayList<Photo> choices = getUngradedCombinations(category, photoTable, grader);
 		Random rand = new Random(System.currentTimeMillis());
 		Photo choice = choices.get(rand.nextInt(choices.size()));
 
 		String query = "SELECT * FROM "+photoTable+" WHERE ";
 		for(int i=0; i<category.groupBySize(); i++) {
-			if(i>0) query += ", ";
+			if(i>0) query += " AND ";
 			String key = category.getGroupBy(i).getPhoto_attribute();
-			query += key +"='"+choice.getField(key)+"'";
+			String value = choice.getField(key);
+			if(value.toLowerCase().equals("null"))
+				query += key+" IS NULL";
+			else 
+				query += key+"='"+choice.getField(key)+"'";
 		}
 
 		return (ArrayList)Query.getModel(query, new Photo());
 	}
 
-	public static ArrayList<Photo> getUngradedCombinations(GradeGroup category, String photoTable, String gradeTable, String grader) {
+	public static ArrayList<Photo> getUngradedCombinations(GradeGroup category, String photoTable, String grader) {
 		ArrayList<Photo> combinations = getPossibleCombinations(category, photoTable);
-		ArrayList<Grade> graded = Grade.getGrades(grader, gradeTable);
+		ArrayList<Grade> graded = Grade.getGrades(grader, category.getGrade_name());
 
 		for(int i=combinations.size()-1; i>=0; i--) {
 			boolean match = false;
