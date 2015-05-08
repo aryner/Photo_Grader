@@ -9,7 +9,7 @@
 String category = (String)request.getAttribute("category");
 ArrayList<String> lines = (ArrayList)request.getAttribute("csvLines");
 %>
-<form method="printCSV" method="POST">
+<form action="printCSV" method="POST">
 	<input type="hidden" name="category" value="<%out.print(category);%>">
 	<input type="submit" value="Print CSV to Desktop" class="btn">
 </form>

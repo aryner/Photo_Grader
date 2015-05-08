@@ -32,7 +32,8 @@ import javax.servlet.http.HttpSession;
 						"/logout","/setStudy","/createStudy","/create_study","/defineAssignment",
 						"/define_assignment","/home","/upload","/upload_pictures","/upload_table_data",
 						"/define_grading_questions", "/defineGradingQuestions","/select_grade_category",
-						"/grade","/startGrading","/img","/submitGrade","/select_CSVs","/present_CSV"
+						"/grade","/startGrading","/img","/submitGrade","/select_CSVs","/present_CSV",
+						"/printCSV"
 						})
 public class Controller extends HttpServlet {
 	/**
@@ -226,6 +227,14 @@ public class Controller extends HttpServlet {
 		else if(userPath.equals("/submitGrade")) {
 			Grade.grade(request, study, group, user);
 			response.sendRedirect("/Photo_Grader/grade");
+			return;
+		}
+		else if(userPath.equals("/printCSV")) {
+			String category = request.getParameter("category");
+			int grade_group_id = study.getGradeGroupId(request.getParameter("category"));
+			Tools.createCSV(Grade.getCSVLines(new GradeGroup(grade_group_id),study),category);
+			
+			response.sendRedirect("/Photo_Grader/home");
 			return;
 		}
 
