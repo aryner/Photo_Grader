@@ -19,16 +19,20 @@ if(photoGroup.size()>0) {
 <div class="meta-row">
 	<form action="submitGrade" method="POST">
 		<input type="hidden" name="photo" value="<%out.print(photoGroup.get(0).getName());%>">
+		<input type="hidden" name="questionCount" value="<%out.print(group.questionSize());%>">
+		<input type="hidden" name="photoCount" value="<%out.print(photoGroup.size());%>">
 		<%
 		for(int i=0; i<photoGroup.size(); i++) {
 			String src = Constants.SRC+"img?number="+photoNumber+"&name="+photoGroup.get(i).getName();
-			out.print("<img class='gradeImg' src='"+src+"'>");
+			out.print("<img class='gradeImg' name='photo_"+i+"' src='"+src+"'>");
 		}
 		%>
 		<div class="newRow"></div>
 		<%
 		for(int i=0; i<group.questionSize(); i++) {
-			out.print(group.getQuestion(i).getHtml());
+			Question question = group.getQuestion(i);
+			out.print(question.getHtml());
+			out.print("<input type='hidden' name='question_"+i+"' title='"+question.getQ_type()+"' value='"+question.optionSize()+"'>");
 		}
 		%>
 		<div class="newRow"></div>
@@ -44,3 +48,6 @@ if(photoGroup.size()>0) {
 <%
 }
 %>
+
+<script src="javascripts/jquery-1.11.1.min.js" type="text/javascript"></script>
+<script src="javascripts/grade.js" type="text/javascript"></script>

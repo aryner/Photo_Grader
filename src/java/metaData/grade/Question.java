@@ -89,7 +89,7 @@ public class Question extends Model{
 	}
 
 	public int optionSize() {
-		return options.size();
+		return options != null ? options.size() : 0;
 	}
 
 	private ArrayList<String> getOptions() {
