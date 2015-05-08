@@ -164,6 +164,18 @@ public class Grade extends Model {
 
 	public static String getAnswer(HttpServletRequest request, Question question) {
 		if(question.getQ_type() == MetaData.CHECKBOX) {
+			//get option count, cycle through adding to the result seperating by |
+			String answers = "";
+			for(int i=0; i<question.optionSize(); i++) {
+				String currBox = request.getParameter(question.getLabel()+"_"+i);
+				if(currBox != null) {
+					if(answers.length() != 0) 
+						answers += "|"+(i+1);
+					else 
+						answers += (i+1);
+				}
+			}
+			return answers;
 		}
 		//if its not a checkbox question then just get the value from the request
 		return request.getParameter(question.getLabel());

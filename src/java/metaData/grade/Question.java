@@ -76,8 +76,10 @@ public class Question extends Model{
 
 	private String getCheckHtml() {
 		String html = "";
+		int index = 0;
 		for(String option : this.options) {
-			html += "<input type='checkbox' name='"+this.label+"_"+option+"' value='"+option+"'> "+option+"<br>";
+			html += "<input type='checkbox' name='"+this.label+"_"+index+"' value='"+option+"'> "+option+"<br>";
+			index++;
 		}
 		return html;
 	}

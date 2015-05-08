@@ -17,7 +17,7 @@ if(photoGroup.size()>0) {
 <h1>Grade <%out.print(group.getName());%></h1>
 
 <div class="meta-row">
-	<form action="submitgrade" method="POST">
+	<form action="submitGrade" method="POST">
 		<input type="hidden" name="photo" value="<%out.print(photoGroup.get(0).getName());%>"
 		<%
 		for(int i=0; i<photoGroup.size(); i++) {

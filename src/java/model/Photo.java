@@ -93,6 +93,8 @@ public class Photo extends Model{
 
 	public static ArrayList<Photo> getUngradedGroup(GradeGroup category, String photoTable, String grader) {
 		ArrayList<Photo> choices = getUngradedCombinations(category, photoTable, grader);
+		if(choices.isEmpty()) return new ArrayList<Photo>();
+
 		Random rand = new Random(System.currentTimeMillis());
 		Photo choice = choices.get(rand.nextInt(choices.size()));
 
