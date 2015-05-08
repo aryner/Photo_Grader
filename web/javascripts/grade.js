@@ -15,15 +15,19 @@ $(document).ready(function() {
 function addPhotoClickListeners(photoCount) {
 	for(var i=0; i<photoCount; i++) {
 		var img = $('img[name=photo_'+i+']');
-		var src = img.prop('src');
-
-		img.click(function() {
-			$("body").append("<img class='examineImg' src='"+src+"'>");
-			$('.examineImg').fadeIn("fast");
-
-			$('.examineImg').click(function() {
-				$('.examineImg').remove();
-			});
-		});
+		addPhotoClickListener(img);
 	}
+}
+
+function addPhotoClickListener(img) {
+	var src = img.prop('src');
+
+	img.click(function() {
+		$("body").append("<img class='examineImg' src='"+src+"'>");
+		$('.examineImg').fadeIn("fast");
+
+		$('.examineImg').click(function() {
+			$('.examineImg').remove();
+		});
+	});
 }
