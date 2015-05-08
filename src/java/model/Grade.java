@@ -202,6 +202,16 @@ public class Grade extends Model {
 		}
 		lines.add(currLine);
 
+		for(Grade grade : grades) {
+			currLine = grade.getGrader();
+			for(int i=0; i<fields.size(); i++) {
+				String field = fields.get(i);
+				if(field.indexOf("_") == 0) currLine += ","+grade.getGroupMetaData(field);
+				else currLine += ","+grade.getAnswer(field);
+			}
+			lines.add(currLine);
+		}
+
 		return lines;
 	}
 
