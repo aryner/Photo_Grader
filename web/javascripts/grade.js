@@ -10,6 +10,23 @@ $(document).ready(function() {
 	var questionCount = Number($('input[name=questionCount]').val());
 
 	addPhotoClickListeners(photoCount);
+
+	$('input[type=submit][value=Submit]').click(function(e) {
+		e.preventDefault();
+
+		var errors = checkInput(questionCount);
+		if(errors.length > 0) {
+			e.preventDefault();
+
+			var errorMsg = "";
+			for(var i=0; i<errors.length; i++) {
+				errorMsg += "<span class='error'>"+errors[i]+"</span><br>";
+			}
+
+			var div = document.getElementsByClassName('errorDiv');
+			div[0].innerHTML = errorMsg;
+		}
+	});
 });
 
 function addPhotoClickListeners(photoCount) {
@@ -30,4 +47,8 @@ function addPhotoClickListener(img) {
 			$('.examineImg').remove();
 		});
 	});
+}
+
+function checkInput(questionCount) {
+	return ['blah','blah again'];
 }

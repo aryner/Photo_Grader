@@ -36,6 +36,8 @@ if(photoGroup.size()>0) {
 		}
 		%>
 		<div class="newRow"></div>
+		<div class="meta-col errorDiv"> </div>
+		<div class="newRow"></div>
 		<div class="meta-col">
 			<input type="submit" value="Submit" class="btn">
 		</div>
