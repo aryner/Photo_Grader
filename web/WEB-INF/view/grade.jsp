@@ -32,7 +32,7 @@ if(photoGroup.size()>0) {
 		for(int i=0; i<group.questionSize(); i++) {
 			Question question = group.getQuestion(i);
 			out.print(question.getHtml());
-			out.print("<input type='hidden' name='question_"+i+"' title='"+question.getQ_type()+"' value='"+question.optionSize()+"'>");
+			out.print("<input type='hidden' id='"+question.getLabel()+"' name='question_"+i+"' title='"+question.getQ_type()+"' value='"+question.optionSize()+"'>");
 		}
 		%>
 		<div class="newRow"></div>

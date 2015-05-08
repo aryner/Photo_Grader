@@ -50,5 +50,33 @@ function addPhotoClickListener(img) {
 }
 
 function checkInput(questionCount) {
-	return ['blah','blah again'];
+	var errors = [];
+
+	for(var i=0; i<questionCount; i++) {
+		var meta = $('input[name=question_'+i+']');
+		var type = Number(meta.prop('title'));
+		var optionCount = Number(meta.val());
+		var label = meta.prop('id');
+
+		var error = checkQuestion(label, type, optionCount, errors);
+		if (error !== undefined) errors.push(error);
+	}
+
+	return errors;
+}
+
+function checkQuestion(label, type, optionCount, errors) {
+	switch(type) {
+		//text
+		case 1:
+			if($('input[name='+label+']').val().length === 0)
+				return "Make sure no text inputs are left empty";
+			break;
+		//radio
+		case 2:
+			break;
+		//check
+		case 3:
+			break;
+	}
 }
