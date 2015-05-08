@@ -18,7 +18,7 @@ if(photoGroup.size()>0) {
 
 <div class="meta-row">
 	<form action="submitGrade" method="POST">
-		<input type="hidden" name="photo" value="<%out.print(photoGroup.get(0).getName());%>"
+		<input type="hidden" name="photo" value="<%out.print(photoGroup.get(0).getName());%>">
 		<%
 		for(int i=0; i<photoGroup.size(); i++) {
 			String src = Constants.SRC+"img?number="+photoNumber+"&name="+photoGroup.get(i).getName();

@@ -149,8 +149,10 @@ public class Grade extends Model {
 
 		for(int i=0; i<group.groupBySize(); i++) {
 			String key = group.getGroupBy(i).getPhoto_attribute();
+			String value = photo.getField(key);
+			if(key.equals(FILENAME)) value = photo.getName();
 			parameters += ", "+key;
-			values += "', '"+photo.getField(key);
+			values += "', '"+value;
 		}
 		for(int i=0; i<group.questionSize(); i++) {
 			parameters += ", "+group.getQuestion(i).getLabel();
