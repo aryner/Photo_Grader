@@ -183,6 +183,12 @@ public class Grade extends Model {
 		return request.getParameter(question.getLabel());
 	}
 
+	public static ArrayList<String> getCSVLines(GradeGroup category, Study study) {
+		ArrayList<String> lines = new ArrayList<String>();
+
+		return lines;
+	}
+
 	public static ArrayList<Grade> getGrades(String grader, String grade_table) {
 		String query = "SELECT * FROM "+grade_table+" WHERE grader='"+grader+"'";
 		return (ArrayList)Query.getModel(query, new Grade());

@@ -32,5 +32,8 @@
 		<div class="meta-col">
 			<a href="select_grade_category" class="btn">Grade</a>
 		</div>
+		<div class="meta-col">
+			<a href="select_CSVs" class="btn">Get CSVs</a>
+		</div>
 	</div>
 </div>

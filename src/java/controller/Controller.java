@@ -32,7 +32,7 @@ import javax.servlet.http.HttpSession;
 						"/logout","/setStudy","/createStudy","/create_study","/defineAssignment",
 						"/define_assignment","/home","/upload","/upload_pictures","/upload_table_data",
 						"/define_grading_questions", "/defineGradingQuestions","/select_grade_category",
-						"/grade","/startGrading","/img","/submitGrade"
+						"/grade","/startGrading","/img","/submitGrade","/select_CSVs","/present_CSV"
 						})
 public class Controller extends HttpServlet {
 	/**
@@ -79,6 +79,16 @@ public class Controller extends HttpServlet {
 		else if(userPath.equals("/grade")) {
 			request.setAttribute("photoGroup",Photo.getUngradedGroup(group, study.getPhoto_attribute_table_name(), user!=null?user.getName():null));
 			request.setAttribute("photoNumber", study.getPhotoNumber());
+		}
+		else if(userPath.equals("/select_CSVs")) {
+			request.setAttribute("categories",study.getGradeCategoryNames());
+		}
+		else if (userPath.equals("/present_CSV")) {
+			String category = request.getParameter("category");
+			int grade_group_id = study.getGradeGroupId(request.getParameter("category"));
+
+			request.setAttribute("category",category);
+			request.setAttribute("csvLines", Grade.getCSVLines(new GradeGroup(grade_group_id),study));
 		}
 		else if(userPath.equals("/img")) {
 			String name = request.getParameter("name");
