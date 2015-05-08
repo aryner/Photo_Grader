@@ -57,6 +57,12 @@ public class Grade extends Model {
 		return null;
 	}
 
+	public static ArrayList<Grade> getGrades(GradeGroup group) {
+		String query = "SELECT * FROM "+group.getGrade_name();
+
+		return (ArrayList)Query.getModel(query, new Grade());
+	}
+
 	public static void createGroup(int group_id, String attr_table_name, HttpServletRequest request) {
 		int groupOptionCount = Integer.parseInt(request.getParameter("groupOptionCount"));
 		ArrayList<String> columns = Photo.getMetaDataKeys(attr_table_name);
@@ -185,6 +191,16 @@ public class Grade extends Model {
 
 	public static ArrayList<String> getCSVLines(GradeGroup category, Study study) {
 		ArrayList<String> lines = new ArrayList<String>();
+		ArrayList<Grade> grades = getGrades(category);
+		ArrayList<String> fields = new ArrayList<String>();
+		fields.addAll(grades.get(0).getMetaKeys());
+		fields.addAll(grades.get(0).getQuestionKeys());
+
+		String currLine = "Grader";
+		for(String key : fields) {
+			currLine += ", "+key;
+		}
+		lines.add(currLine);
 
 		return lines;
 	}
@@ -196,6 +212,18 @@ public class Grade extends Model {
 
 	public static String generateQuestion(Question question) {
 		return "<div class='meta-col'>"+question.getHtml()+"</div>";
+	}
+
+	public ArrayList<String> getMetaKeys() {
+		ArrayList<String> keys = new ArrayList<String>();
+		keys.addAll(group_meta_data.keySet());
+		return keys;
+	}
+
+	public ArrayList<String> getQuestionKeys() {
+		ArrayList<String> keys = new ArrayList<String>();
+		keys.addAll(question_answers.keySet());
+		return keys;
 	}
 
 	public String getGroupMetaData(String key) {

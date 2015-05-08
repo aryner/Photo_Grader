@@ -13,8 +13,11 @@ ArrayList<String> lines = (ArrayList)request.getAttribute("csvLines");
 	<input type="hidden" name="category" value="<%out.print(category);%>">
 	<input type="submit" value="Print CSV to Desktop" class="btn">
 </form>
+<p>
 <%
+lines.set(0,"<b>"+lines.get(0)+"</b>");
 for(String line : lines) {
 	out.print(line+"<br>");
 }
 %>
+</p>
