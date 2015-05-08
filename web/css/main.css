@@ -148,6 +148,13 @@ body {
 	margin: 05px;
 }
 
+.examineImg {
+	position: absolute;
+	left: 55px;
+	top: 55px;
+	width: 1800px;
+}
+
 .question {
 	margin-left: 05px;
 }

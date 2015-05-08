@@ -5,6 +5,25 @@
  */
 
 
-$(document).read(function() {
+$(document).ready(function() {
+	var photoCount = Number($('input[name=photoCount]').val());
+	var questionCount = Number($('input[name=questionCount]').val());
 
+	addPhotoClickListeners(photoCount);
 });
+
+function addPhotoClickListeners(photoCount) {
+	for(var i=0; i<photoCount; i++) {
+		var img = $('img[name=photo_'+i+']');
+		var src = img.prop('src');
+
+		img.click(function() {
+			$("body").append("<img class='examineImg' src='"+src+"'>");
+			$('.examineImg').fadeIn("fast");
+
+			$('.examineImg').click(function() {
+				$('.examineImg').remove();
+			});
+		});
+	}
+}
