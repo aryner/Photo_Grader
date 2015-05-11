@@ -6,6 +6,7 @@
 
 <%@page import="java.util.*"%>
 <%@page import="metaData.*"%>
+<%@page import="metaData.grade.*"%>
 
 <%
 	ArrayList<String> columns = (ArrayList)request.getAttribute("columns");
@@ -52,8 +53,8 @@
 
 		<div class="meta-col">
 			<h4>Constraints?</h4>
-			<input type="radio" name="constraints_0" value="<%out.print(Grade.MANDATORY);%>"> Mandatory 
-			<input type="radio" name="constraints_0" value="<%out.print(Grade.OPTIONAL);%>"> Optional
+			<input type="radio" name="constraints_0" value="<%out.print(Question.MANDATORY);%>"> Mandatory 
+			<input type="radio" name="constraints_0" value="<%out.print(Question.OPTIONAL);%>"> Optional
 <!--			<input type="radio" name="constraints_0" value=""> Conditional -->
 		</div>
 

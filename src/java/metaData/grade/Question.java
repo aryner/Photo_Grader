@@ -23,16 +23,21 @@ public class Question extends Model{
 	private String label;
 	private String question;
 	private int q_type;
+	private int constraints;
 	private ArrayList<String> options;
+
+	public static final int MANDATORY = 0;
+	public static final int OPTIONAL = -1;
 
 	public Question() {}
 
-	public Question(int id, int grade_group_id, String label, String question, int q_type) {
+	public Question(int id, int grade_group_id, String label, String question, int q_type, int constraints) {
 		this.id = id;
 		this.grade_group_id = grade_group_id;
 		this.label = label;
 		this.question = question;
 		this.q_type = q_type;
+		this.constraints = constraints;
 
 		if(q_type == MetaData.TEXT) options = null;
 		else options = getOptions();
@@ -49,7 +54,7 @@ public class Question extends Model{
 		try {
 			return new Question(resultSet.getInt("id"),resultSet.getInt("grade_group_id"),
 					    resultSet.getString("label"),resultSet.getString("question"),
-					    resultSet.getInt("q_type"));
+					    resultSet.getInt("q_type"),resultSet.getInt("constraints"));
 		}
 		catch (SQLException e) {
 			e.printStackTrace(System.err);
@@ -166,5 +171,19 @@ public class Question extends Model{
 	 */
 	public void setLabel(String label) {
 		this.label = label;
+	}
+
+	/**
+	 * @return the constraints
+	 */
+	public int getConstraints() {
+		return constraints;
+	}
+
+	/**
+	 * @param constraints the constraints to set
+	 */
+	public void setConstraints(int constraints) {
+		this.constraints = constraints;
 	}
 }
