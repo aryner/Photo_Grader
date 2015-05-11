@@ -10,7 +10,7 @@ $(document).ready(function() {
 	var questionCount = Number($('input[name=questionCount]').val());
 
 	addPhotoClickListeners(photoCount);
-
+	
 	$('input[type=submit][value=Submit]').click(function(e) {
 		e.preventDefault();
 
@@ -74,6 +74,14 @@ function checkQuestion(label, type, optionCount, errors) {
 			break;
 		//radio
 		case 2:
+			var radios = document.getElementsByName(label);
+			var selected = false;
+			for(var i=0; i<optionCount && !selected; i++) {
+				if(radios[i].checked)
+					selected = true;
+			}
+			if(!selected)
+				return "Make sure each radio button question has an answer";
 			break;
 		//check
 		case 3:
