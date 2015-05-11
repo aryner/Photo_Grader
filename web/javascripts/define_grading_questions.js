@@ -219,10 +219,16 @@ function addQuestion(index) {
 			'</div>'+
 			'<input type="hidden" name="option_count_'+index+'" value="0">'+
 			'<div class="meta-col" name="options_'+index+'">'+
+			'</div><div class="newRow"></div>'+
+			'<div class="meta-col">'+
+				'<h4>Constraints?</h4>'+ 
+				'<input type="radio" name="constraints_'+index+'" value="mandatory"> Mandatory'+
+				'<input type="radio" name="constraints_'+index+'" value="optional"> Optional'+
+				'<!-- <input type="radio" name="constraints_'+index+'" value="conditional"> Conditional -->'+
 			'</div>'+
 			'<div class="newRow"></div>'+
 			'<br><br><br><input type="checkbox" name="new_question_'+index+'"> Ask Another Question?'+
-			'<div class="newRow"></div></div> ';
+			'</div><div class="newRow"></div></div> ';
 
 	$("div[name=generated_sections]").append(newQuestion);
 

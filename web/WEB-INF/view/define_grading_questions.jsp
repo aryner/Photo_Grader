@@ -50,6 +50,15 @@
 
 		<div class="newRow"></div>
 
+		<div class="meta-col">
+			<h4>Constraints?</h4>
+			<input type="radio" name="constraints_0" value="mandatory"> Mandatory 
+			<input type="radio" name="constraints_0" value="optional"> Optional
+<!--			<input type="radio" name="constraints_0" value="conditional"> Conditional -->
+		</div>
+
+		<div class="newRow"></div>
+
 		<br><br><br><input type="checkbox" name="new_question_0"> Ask Another Question?
 
 		<div class="newRow"></div>

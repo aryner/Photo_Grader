@@ -12,7 +12,6 @@ $(document).ready(function() {
 	addPhotoClickListeners(photoCount);
 	
 	$('input[type=submit][value=Submit]').click(function(e) {
-		e.preventDefault();
 
 		var errors = checkInput(questionCount);
 		if(errors.length > 0) {
