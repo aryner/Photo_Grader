@@ -231,9 +231,9 @@ function addQuestion(index) {
 			'</div><div class="newRow"></div>'+
 			'<div class="meta-col">'+
 				'<h4>Constraints?</h4>'+ 
-				'<input type="radio" name="constraints_'+index+'" value="mandatory"> Mandatory'+
-				'<input type="radio" name="constraints_'+index+'" value="optional"> Optional'+
-				'<!-- <input type="radio" name="constraints_'+index+'" value="conditional"> Conditional -->'+
+				'<input type="radio" name="constraints_'+index+'" value="0"> Mandatory'+
+				'<input type="radio" name="constraints_'+index+'" value="-1"> Optional'+
+				'<!-- <input type="radio" name="constraints_'+index+'" value="?"> Conditional -->'+
 			'</div>'+
 			'<div class="newRow"></div>'+
 			'<br><br><br><input type="checkbox" name="new_question_'+index+'"> Ask Another Question?'+

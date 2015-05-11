@@ -24,6 +24,8 @@ public class Grade extends Model {
 	private Map<String,String> question_answers;
 
 	public static final String FILENAME = "_photo_file_name";
+	public static final int MANDATORY = 0;
+	public static final int OPTIONAL = -1;
 
 	public Grade() {}
 
@@ -91,21 +93,38 @@ public class Grade extends Model {
 		ArrayList<String> questions = new ArrayList<String>();
 		ArrayList<Integer> types = new ArrayList<Integer>();
 		ArrayList<String> labels = new ArrayList<String>();
+		ArrayList<String> constraints = new ArrayList<String>();
 
 		for(int i=0; i<questionCount; i++) {
 			questions.add(request.getParameter("question_"+i));
 			types.add(Integer.parseInt(request.getParameter("type_"+i)));
 			labels.add(request.getParameter("label_"+i));
+			constraints.add(request.getParameter("constraints_"+i));
 		}
 
-		String query = "INSERT INTO question (grade_group_id, label, question, q_type) VALUES ";
+		String query = "INSERT INTO question (grade_group_id, label, question, q_type, constraints) VALUES ";
 		for(int i=0; i<types.size(); i++) {
 			if(i>0) query += ", ";
-			query += "('"+group_id+"', '"+labels.get(i)+"', '"+questions.get(i)+"', '"+types.get(i)+"')";
+			query += "('"+group_id+"', '"+labels.get(i)+"', '"+questions.get(i)+"', '"+types.get(i)+"', '"+constraints.get(i)+"')";
 		}
 
 		Query.update(query);
 		createOptions(group_id, questions, types, request);
+//		createConstraints(group_id, questions, request);
+	}
+
+	private static void createConstraints(int group_id, ArrayList<String> questions, HttpServletRequest request) {
+		/*
+		String query = "SELECT * FROM question WHERE grade_group_id="+group_id+" AND "+
+			       "constraints="+MANDATORY;
+		ArrayList<Question> questionData = (ArrayList)Query.getModel(query, new Question());
+		*/
+		//TODO
+		createSelections();
+	}
+
+	private static void createSelections() {
+		//TODO
 	}
 
 	private static void createOptions(int group_id, ArrayList<String> questions, ArrayList<Integer> types, HttpServletRequest request) {
@@ -204,8 +223,7 @@ public class Grade extends Model {
 
 		for(Grade grade : grades) {
 			currLine = grade.getGrader();
-			for(int i=0; i<fields.size(); i++) {
-				String field = fields.get(i);
+			for(String field : fields) {
 				if(field.indexOf("_") == 0) currLine += ","+grade.getGroupMetaData(field);
 				else currLine += ","+grade.getAnswer(field);
 			}

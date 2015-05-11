@@ -52,9 +52,9 @@
 
 		<div class="meta-col">
 			<h4>Constraints?</h4>
-			<input type="radio" name="constraints_0" value="mandatory"> Mandatory 
-			<input type="radio" name="constraints_0" value="optional"> Optional
-<!--			<input type="radio" name="constraints_0" value="conditional"> Conditional -->
+			<input type="radio" name="constraints_0" value="<%out.print(Grade.MANDATORY);%>"> Mandatory 
+			<input type="radio" name="constraints_0" value="<%out.print(Grade.OPTIONAL);%>"> Optional
+<!--			<input type="radio" name="constraints_0" value=""> Conditional -->
 		</div>
 
 		<div class="newRow"></div>
