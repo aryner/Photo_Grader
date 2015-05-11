@@ -66,7 +66,13 @@ function checkForFilledQuestions(errors) {
 }
 
 function checkForIncompleteQuestion(index) {
-	return checkForType(index) && checkForQuestion(index) && checkForOption(index) && checkForLabel(index) ? false : true;
+	return checkForType(index) && checkForQuestion(index) && 
+	       checkForOption(index) && checkForLabel(index) && 
+	       checkConstraint(index) ? false : true;
+}
+
+function checkConstraint(index) {
+	return oneChecked($('input[name=constraints_'+index+']'));
 }
 
 function checkForLabel(index) {
@@ -74,7 +80,10 @@ function checkForLabel(index) {
 }
 
 function checkForType(index) {
-	var radios = $('input[name=type_'+index+']');
+	return oneChecked($('input[name=type_'+index+']'));
+}
+
+function oneChecked(radios) {
 	for(var i=0; i<radios.length; i++) {
 		if(radios[i].checked) return true;
 	}
