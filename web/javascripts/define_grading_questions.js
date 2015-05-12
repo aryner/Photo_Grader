@@ -224,7 +224,7 @@ function addQuestion(index) {
 			'</div>'+
 			'<div class="meta-col">'+
 				'<h4>Question</h4>'+
-				'<textarea name="question_'+index+'" cols="40" rows="1"></textarea>'+
+				'<textarea name="question_'+index+'" cols="20" rows="1"></textarea>'+
 			'</div>'+
 			'<input type="hidden" name="option_count_'+index+'" value="0">'+
 			'<div class="meta-col" name="options_'+index+'">'+

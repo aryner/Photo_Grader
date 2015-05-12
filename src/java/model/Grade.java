@@ -104,7 +104,7 @@ public class Grade extends Model {
 		String query = "INSERT INTO question (grade_group_id, label, question, q_type, constraints) VALUES ";
 		for(int i=0; i<types.size(); i++) {
 			if(i>0) query += ", ";
-			query += "('"+group_id+"', '"+labels.get(i)+"', '"+questions.get(i)+"', '"+types.get(i)+"', '"+constraints.get(i)+"')";
+			query += "('"+group_id+"', '"+labels.get(i)+"', '"+Helper.escape(questions.get(i))+"', '"+types.get(i)+"', '"+constraints.get(i)+"')";
 		}
 
 		Query.update(query);
@@ -133,14 +133,14 @@ public class Grade extends Model {
 		for(int i=0; i<types.size(); i++) {
 			if(types.get(i)!=MetaData.TEXT) {
 				String questionId = ""+Query.getField("question","id",
-						"question='"+questions.get(i)+"' AND grade_group_id='"+group_id+"'",null).get(0);
+						"question='"+Helper.escape(questions.get(i))+"' AND grade_group_id='"+group_id+"'",null).get(0);
 				if(postfix.length() > 0) postfix += ", ";
 
 				int optionCount = Integer.parseInt(request.getParameter("option_count_"+i));
 				//do this for each option of this question
 				for(int j=0; j<optionCount-1; j++) {
 					if(j>0) postfix += ", ";
-					postfix += "('"+questionId+"', '"+request.getParameter("option_"+i+"_"+(j+1))+"', '"+MetaData.GRADE+"')";
+					postfix += "('"+questionId+"', '"+Helper.escape(request.getParameter("option_"+i+"_"+(j+1)))+"', '"+MetaData.GRADE+"')";
 				}
 			}
 		}
@@ -189,9 +189,9 @@ public class Grade extends Model {
 	}
 
 	public static String getAnswer(HttpServletRequest request, Question question) {
+		String answers = "";
 		if(question.getQ_type() == MetaData.CHECKBOX) {
 			//get option count, cycle through adding to the result seperating by |
-			String answers = "";
 			for(int i=0; i<question.optionSize(); i++) {
 				String currBox = request.getParameter(question.getLabel()+"_"+i);
 				if(currBox != null) {
@@ -204,7 +204,9 @@ public class Grade extends Model {
 			return answers;
 		}
 		//if its not a checkbox question then just get the value from the request
-		return request.getParameter(question.getLabel());
+		answers = request.getParameter(question.getLabel());
+
+		return answers == null ? "" : answers;
 	}
 
 	public static ArrayList<String> getCSVLines(GradeGroup category, Study study) {

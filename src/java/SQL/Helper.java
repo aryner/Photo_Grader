@@ -94,4 +94,12 @@ public class Helper {
 			list.set(i, unprocess(list.get(i)));
 		}
 	}
+
+	public static String escape(String string) {
+		return escapeQuotes(string);
+	}
+
+	public static String escapeQuotes(String string) {
+		return string.replace("'","''").replace("\"","\\\"");
+	}
 }

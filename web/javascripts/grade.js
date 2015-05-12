@@ -53,18 +53,22 @@ function checkInput(questionCount) {
 
 	for(var i=0; i<questionCount; i++) {
 		var meta = $('input[name=question_'+i+']');
-		var type = Number(meta.prop('title'));
 		var optionCount = Number(meta.val());
 		var label = meta.prop('id');
+		var type_constraint = meta.prop('title');
+		var type = Number(type_constraint.substring(0,type_constraint.indexOf("_")));
+		var constraint = Number(type_constraint.substring(type_constraint.indexOf("_")+1));
 
-		var error = checkQuestion(label, type, optionCount, errors);
+		var error = checkQuestion(label, type, optionCount, constraint);
 		if (error !== undefined) errors.push(error);
 	}
 
 	return errors;
 }
 
-function checkQuestion(label, type, optionCount, errors) {
+function checkQuestion(label, type, optionCount, constraint) {
+	if (constraint < 0) return;
+
 	switch(type) {
 		//text
 		case 1:

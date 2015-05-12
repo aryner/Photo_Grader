@@ -43,7 +43,7 @@
 		</div>
 		<div class="meta-col">
 			<h4>Question</h4>
-			<textarea name="question_0" cols="40" rows="1"></textarea>
+			<textarea name="question_0" cols="20" rows="1"></textarea>
 		</div>
 		<input type="hidden" name='option_count_0' value='0'>
 		<div class="meta-col" name="options_0">
