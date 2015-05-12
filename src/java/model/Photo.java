@@ -127,7 +127,6 @@ public class Photo extends Model{
 				if(combinationMatchesGrade(combinations.get(i),graded.get(j), category)) {
 					match = true;
 					combinations.remove(i);
-					graded.remove(j);
 				}
 			}
 		}
@@ -149,7 +148,9 @@ public class Photo extends Model{
 	private static boolean combinationMatchesGrade(Photo combination, Grade grade, GradeGroup category) {
 		for(int i=0; i<category.groupBySize(); i++) {
 			String attr = category.getGroupBy(i).getPhoto_attribute();
-			if(!grade.getGroupMetaData(attr).equals(combination.getField(attr)))
+			String field = attr.equals(Grade.FILENAME) ? combination.getName() : combination.getField(attr);
+
+			if(!grade.getGroupMetaData(attr).equals(field))
 				return false;
 		}
 

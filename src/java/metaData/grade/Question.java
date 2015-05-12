@@ -62,19 +62,23 @@ public class Question extends Model{
 		return null;
 	}
 
-	public String getHtml() {
+	public String getHtml(int index) {
 		return Tools.getQuestionHtml(this.question, this.q_type == MetaData.TEXT ? getTextHtml() :
-					     this.q_type == MetaData.RADIO ? getRadioHtml() : getCheckHtml());
+					     this.q_type == MetaData.RADIO ? getRadioHtml(index) : getCheckHtml());
 	}
 
 	private String getTextHtml() {
 		return "<input type='text' title='"+this.q_type+"' name='"+this.label+"'>";
 	}
 
-	private String getRadioHtml() {
+	private String getRadioHtml(int questionIndex) {
 		String html = "";
+		int index = 0;
 		for(String option : this.options) {
-			html += "<input type='radio' name='"+this.label+"' value='"+option+"'> "+option+"<br>";
+			html += "<span style='font-family:Courier' name='"+questionIndex+"_"+index+
+				"'></span><input type='radio' name='"+this.label+"' title='"+questionIndex+
+				"_"+index+"' value='"+option+"'> "+option+"<br>";
+			index++;
 		}
 		return html;
 	}

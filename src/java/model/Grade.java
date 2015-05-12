@@ -180,7 +180,7 @@ public class Grade extends Model {
 		}
 		for(int i=0; i<group.questionSize(); i++) {
 			parameters += ", "+group.getQuestion(i).getLabel();
-			values += "', '"+getAnswer(request, group.getQuestion(i));
+			values += "', '"+Helper.escape(getAnswer(request, group.getQuestion(i)));
 		}
 		parameters += ") ";
 		values += "')";
@@ -237,10 +237,6 @@ public class Grade extends Model {
 	public static ArrayList<Grade> getGrades(String grader, String grade_table) {
 		String query = "SELECT * FROM "+grade_table+" WHERE grader='"+grader+"'";
 		return (ArrayList)Query.getModel(query, new Grade());
-	}
-
-	public static String generateQuestion(Question question) {
-		return "<div class='meta-col'>"+question.getHtml()+"</div>";
 	}
 
 	public ArrayList<String> getMetaKeys() {

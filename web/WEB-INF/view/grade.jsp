@@ -31,7 +31,7 @@ if(photoGroup.size()>0) {
 		<%
 		for(int i=0; i<group.questionSize(); i++) {
 			Question question = group.getQuestion(i);
-			out.print(question.getHtml());
+			out.print(question.getHtml(i));
 			out.print("<input type='hidden' id='"+question.getLabel()+"' name='question_"+i+
 				  "' title='"+question.getQ_type()+"_"+question.getConstraints()+"' value='"+question.optionSize()+"'>");
 		}
