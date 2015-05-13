@@ -56,26 +56,41 @@ function addKeyboardGrading(questionCount) {
 	var radioQuestionIndices = getRadioQuestionIndices(questionCount);
 	var optionCounts = getOptionCounts(radioQuestionIndices);
 	var onRow = 0;
+	var keyRadios = []
 
 	for(var i=0; i<radioQuestionIndices.length; i++) {
 		if(optionCounts[i] < keyboardRows[onRow].length) {
 			for(var j=0; j<optionCounts[i]; j++) {
 				var span = document.getElementsByName(radioQuestionIndices[i]+"_"+j);
 				var key = keyboardRows[onRow].shift();
-				addKeyGrading(key, span[0].getAttribute('name'));
+				addKeyRadio(key, span[0].getAttribute('name'), keyRadios);
 				span[0].innerHTML = "<b>("+key+")</b>";
 			}
 			keyboardRows[onRow].reverse();
 			onRow = (onRow + 1) % 3;
 		}
 	}
+	setListeners(keyRadios);
 }
 
-function addKeyGrading(key, title) {
-	var input = $('input[title='+title+']');
-	$(document).bind('keypress',function(e) {
-		console.log(key);
+function setListeners(keyRadios) {
+	$(document).bind('keydown', {keys_radios : keyRadios}, function(e) {
+		var unicode = e.keyCode || e.which;
+		var key = String.fromCharCode(unicode);
+		if($(':focus').attr('type') !== 'text') { 
+			var keyRadios = e.data.keys_radios;
+
+			for(var i=0; i<keyRadios.length; i++) {
+				if(key.toLowerCase() === keyRadios[i][0]) {
+					keyRadios[i][1].prop('checked',true);
+				}
+			}
+		}
 	});
+}
+
+function addKeyRadio(key, title, keyRadios) {
+	keyRadios.push([key , $('input[title='+title+']')]);
 }
 
 function getOptionCounts(radioQuestionIndices) {
