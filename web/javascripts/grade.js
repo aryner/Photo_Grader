@@ -76,6 +76,8 @@ function addKeyboardGrading(questionCount) {
 function setListeners(keyRadios) {
 	$(document).bind('keydown', {keys_radios : keyRadios}, function(e) {
 		var unicode = e.keyCode || e.which;
+		if(unicode === 13) $(':submit[value=Submit]').click();
+
 		var key = String.fromCharCode(unicode);
 		if($(':focus').attr('type') !== 'text') { 
 			var keyRadios = e.data.keys_radios;
