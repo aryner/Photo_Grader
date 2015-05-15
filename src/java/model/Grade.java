@@ -127,7 +127,7 @@ public class Grade extends Model {
 	}
 
 	private static void createOptions(int group_id, ArrayList<String> questions, ArrayList<Integer> types, HttpServletRequest request) {
-		String query = "INSERT INTO check_radio_option (photo_data_id, value, meta_grade) VALUES ";
+		String query = "INSERT INTO check_radio_option (photo_data_id, value, meta_grade, defaultCheck) VALUES ";
 		String postfix = "";
 
 		for(int i=0; i<types.size(); i++) {
@@ -137,10 +137,12 @@ public class Grade extends Model {
 				if(postfix.length() > 0) postfix += ", ";
 
 				int optionCount = Integer.parseInt(request.getParameter("option_count_"+i));
+				int defaultIndex = request.getParameter("default_"+i) != null ? Integer.parseInt(request.getParameter("default_"+i)) : -1;
 				//do this for each option of this question
 				for(int j=0; j<optionCount-1; j++) {
 					if(j>0) postfix += ", ";
-					postfix += "('"+questionId+"', '"+Helper.escape(request.getParameter("option_"+i+"_"+(j+1)))+"', '"+MetaData.GRADE+"')";
+					postfix += "('"+questionId+"', '"+Helper.escape(request.getParameter("option_"+i+"_"+(j+1)))+"', '"+MetaData.GRADE+
+						   "', '"+((defaultIndex == j) ? Question.IS_DEFAULT : Question.IS_NOT_DEFAULT)+"')";
 				}
 			}
 		}

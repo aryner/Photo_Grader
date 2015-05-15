@@ -80,7 +80,7 @@ public class Question extends Model{
 		for(String option : this.options) {
 			html += "<span style='font-family:Courier' name='"+questionIndex+"_"+index+
 				"'></span><input type='radio' name='"+this.label+"' title='"+questionIndex+
-				"_"+index+"' value='"+option+"'> "+option+"<br>";
+				"_"+index+"' value='"+option+"'"+(index == defaultIndex ? " checked='true'" : "")+"> "+option+"<br>";
 			index++;
 		}
 		return html;
