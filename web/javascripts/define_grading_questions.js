@@ -160,7 +160,8 @@ var newAnswerTypeListener = function(event) {
 		if(Number(optionCount) === 0) {
 			$('input[name=option_count_'+event.detail.index+']').val('1');
 			container.empty();
-			var contents = '<h4>Enter options for this question (at least 2)</h4><input type="text" name="option_'+event.detail.index+'_'+Number(optionCount+1)+'">';
+			var contents = '<h4>Enter options for this question (at least 2)</h4><input type="text" name="option_'+event.detail.index+'_'+Number(optionCount+1)+'">'+
+				       '<input type="radio" name="default_'+event.detail.index+'" value="'+Number(optionCount)+'"> Default?';
 			container.append(contents);
 			addOptionListener(event.detail.index, 1);
 		}
@@ -183,7 +184,8 @@ function addOption(questionIndex, optionIndex) {
 	$('input[name=option_count_'+questionIndex+']').val(optionIndex+1);
 	var container = $('div[name=options_'+questionIndex+']');
 
-	var contents = '<input type="text" style="margin-left:5px;" name="option_'+questionIndex+'_'+(optionIndex+1)+'">';
+	var contents = '<input type="text" style="margin-left:5px;" name="option_'+questionIndex+'_'+(optionIndex+1)+'">'+
+		       '<input type="radio" name="default_'+questionIndex+'" value="'+optionIndex+'"> Default?';
 	container.append(contents);
 	addOptionListener(questionIndex, optionIndex+1);
 }

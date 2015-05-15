@@ -25,9 +25,12 @@ public class Question extends Model{
 	private int q_type;
 	private int constraints;
 	private ArrayList<String> options;
+	private int defaultIndex;
 
 	public static final int MANDATORY = 0;
 	public static final int OPTIONAL = -1;
+	public static final int IS_NOT_DEFAULT = 0;
+	public static final int IS_DEFAULT = 1;
 
 	public Question() {}
 
@@ -87,7 +90,8 @@ public class Question extends Model{
 		String html = "";
 		int index = 0;
 		for(String option : this.options) {
-			html += "<input type='checkbox' name='"+this.label+"_"+index+"' value='"+option+"'> "+option+"<br>";
+			html += "<input type='checkbox' name='"+this.label+"_"+index+"' value='"+option+
+				"'"+(index == defaultIndex ? " checked='true'" : "")+"> "+option+"<br>";
 			index++;
 		}
 		return html;
@@ -102,9 +106,17 @@ public class Question extends Model{
 	}
 
 	private ArrayList<String> getOptions() {
+		setDefault();
 		return (ArrayList)Query.getField("check_radio_option","value",
 						 "photo_data_id="+this.id+" AND meta_grade="+MetaData.GRADE,
-						 null);
+						 "id");
+	}
+
+	private void setDefault() {
+		ArrayList<Integer> defaults = (ArrayList)Query.getField("check_radio_option","defaultCheck",
+								        "photo_data_id="+this.id+" AND meta_grade="+MetaData.GRADE,
+								         "id");
+		defaultIndex = defaults.indexOf(IS_DEFAULT);
 	}
 
 	/**
@@ -189,5 +201,19 @@ public class Question extends Model{
 	 */
 	public void setConstraints(int constraints) {
 		this.constraints = constraints;
+	}
+
+	/**
+	 * @return the defaultIndex
+	 */
+	public int getDefaultIndex() {
+		return defaultIndex;
+	}
+
+	/**
+	 * @param defaultIndex the defaultIndex to set
+	 */
+	public void setDefaultIndex(int defaultIndex) {
+		this.defaultIndex = defaultIndex;
 	}
 }
