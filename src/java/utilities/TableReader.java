@@ -58,7 +58,93 @@ public class TableReader {
 	}
 	
 	private static void extractCSVData(Study study, ArrayList<String> errors) {
-		//TODO
+		try {
+			ArrayList<TableMetaData> meta = study.getCSVTableMetaData();
+			Scanner lineScanner = new Scanner(new File(FileIO.TEMP_DIR+FileIO.CSV_FILE));
+			Scanner cellScanner = new Scanner(lineScanner.nextLine());
+			ArrayList<String> fieldNames = new ArrayList<String>();
+			int identifierIndex = csvHeaders(cellScanner, meta, fieldNames);
+			ArrayList<String> updates = new ArrayList<String>();
+			for(String fieldName : fieldNames) updates.add("");
+
+			while (lineScanner.hasNextLine()) {
+				updateUpdateLines(lineScanner, fieldNames, identifierIndex, updates);
+			}
+			endCSVUpdate(fieldNames, identifierIndex, updates);
+
+			String queryPrefix = "UPDATE "+Helper.process(study.getPhoto_attribute_table_name())+ " SET ";
+			for(String update : updates)  {
+				if(update.length() > 0) {
+					Query.update(queryPrefix+update);
+				}
+			}
+		}
+		catch (FileNotFoundException e) {
+			e.printStackTrace(System.err);
+			errors.add("The file was not found");
+		}
+	}
+
+	private static void updateUpdateLines(Scanner lineScanner, ArrayList<String> fieldNames, int index, ArrayList<String> updates) {
+		Scanner cellScanner = new Scanner(lineScanner.nextLine());
+		cellScanner.useDelimiter(",");
+		String currentUpdate;
+		ArrayList<String> values = getCSVLine(cellScanner);
+
+		for(int i=0; i<fieldNames.size(); i++) {
+			if (i != index) {
+				currentUpdate = updates.get(i);
+				if (currentUpdate.length() == 0) {
+					currentUpdate += Helper.process(fieldNames.get(i)) + " = case "+Helper.process(fieldNames.get(index));
+				}
+
+				currentUpdate += " WHEN '"+values.get(index)+"' THEN '"+values.get(i)+"'";
+				updates.set(i,currentUpdate);
+			}
+		}
+	}
+
+	private static void endCSVUpdate(ArrayList<String> fieldNames, int index, ArrayList<String> updates){
+		for(int i=0; i<fieldNames.size(); i++) {
+			if(i != index) {
+				String currentUpdate = updates.get(i);
+				currentUpdate += " ELSE "+Helper.process(fieldNames.get(i))+" END";
+				updates.set(i,currentUpdate);
+			}
+		}
+	}
+
+	private static ArrayList<String> getCSVLine(Scanner line) {
+		line.useDelimiter(",");
+		ArrayList<String> values = new ArrayList<String>();
+		while (line.hasNext()) {
+			values.add(line.next());
+		}
+
+		return values;
+	}
+
+	private static int csvHeaders(Scanner headerLine, ArrayList<TableMetaData> meta, ArrayList<String> fieldNames) {
+		headerLine.useDelimiter(",");
+		int index = 0;
+		boolean identifierFound = false;
+
+		while(headerLine.hasNext()) {
+			String colName = headerLine.next();
+			for(TableMetaData datum : meta) {
+				if(Helper.unprocess(datum.getCol_name()).equals(colName)) {
+					fieldNames.add(datum.getName());
+					break;
+				}
+				else if(Helper.unprocess(datum.getIdentifier_col()).equals(colName)) {
+					fieldNames.add(datum.getIdentifier());
+					identifierFound = true;
+					break;
+				}
+			}
+			if(!identifierFound) index++;
+		}
+		return index;
 	}
 
 	private static String getUpdate(XSSFSheet sheet, int [] columns, ArrayList<TableMetaData> meta, ArrayList<String> errors, int col) {

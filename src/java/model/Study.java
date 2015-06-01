@@ -106,6 +106,10 @@ public class Study extends Model {
 		return new TableMetaData().getMetaDataSources("study_id='"+this.id+"' AND table_type='"+MetaData.EXCEL+"'","");
 	}
 
+	public ArrayList getCSVTableMetaData() {
+		return new TableMetaData().getMetaDataSources("study_id='"+this.id+"' AND table_type='"+MetaData.CSV+"'","");
+	}
+
 	public boolean usesTableMetaData() {
 		return !Query.getField("photo_data_by_table","name","study_id='"+this.id+"'",null).isEmpty();
 	}
