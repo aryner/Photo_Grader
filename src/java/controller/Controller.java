@@ -6,7 +6,7 @@
 
 package controller;
 
-import metaData.MetaData;
+import metaData.*;
 import SQL.*;
 import model.*;
 import metaData.grade.*;
@@ -33,7 +33,7 @@ import javax.servlet.http.HttpSession;
 						"/define_assignment","/home","/upload","/upload_pictures","/upload_table_data",
 						"/define_grading_questions", "/defineGradingQuestions","/select_grade_category",
 						"/grade","/startGrading","/img","/submitGrade","/select_CSVs","/present_CSV",
-						"/printCSV"
+						"/printCSV","/assign_manual_meta"
 						})
 public class Controller extends HttpServlet {
 	/**
@@ -65,6 +65,13 @@ public class Controller extends HttpServlet {
 
 			request.setAttribute("studyName",request.getParameter("studyName"));
 			request.setAttribute("metaData",metaData);
+		}
+		else if(userPath.equals("/assign_manual_meta")) {
+			ArrayList<Photo> photos = (ArrayList)Query.getModel("SELECT * FROM "+study.getPhoto_attribute_table_name(), new Photo());
+			ArrayList<ManualMetaData> manualMetaData = (ArrayList)Query.getModel("SELECT * FROM photo_data_by_manual WHERE study_id="+study.getId(),new ManualMetaData());
+
+			request.setAttribute("photos",photos);
+			request.setAttribute("manualMetaData",manualMetaData);
 		}
 		else if(userPath.equals("/select_study")) {
 			request.setAttribute("studyNames",Query.getField("study","name",null,null));

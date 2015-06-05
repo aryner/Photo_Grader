@@ -114,6 +114,11 @@ public class Study extends Model {
 		return !Query.getField("photo_data_by_table","name","study_id='"+this.id+"'",null).isEmpty();
 	}
 
+	public boolean hasManualMetaData() {
+		String query = "SELECT * FROM photo_data_by_manual WHERE study_id='"+id+"'";
+		return Query.getCount(query,new ManualMetaData()) > 0;
+	}
+
 	/**
 	 * @return the id
 	 */

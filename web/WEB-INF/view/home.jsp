@@ -9,6 +9,7 @@
 
 <%
 	User user = (User)session.getAttribute("user");
+	Study study = (Study)session.getAttribute("study");
 
 	ArrayList<String> errors = (ArrayList)session.getAttribute("errors");
 	if(errors != null && !errors.isEmpty()) {
@@ -35,5 +36,14 @@
 		<div class="meta-col">
 			<a href="select_CSVs" class="btn">Get CSVs</a>
 		</div>
+		<%
+		if(study.hasManualMetaData()) {
+		%>
+		<div class="meta-col">
+			<a href="assign_manual_meta" class="btn">Assign Manual meta-data</a>
+		</div>
+		<%
+		}
+		%>
 	</div>
 </div>

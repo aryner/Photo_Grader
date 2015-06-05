@@ -22,4 +22,5 @@ public interface MetaDataSource {
 	);
 
 	public ArrayList<Model> getMetaDataSources(String where, String order);
+	public String getName();
 }

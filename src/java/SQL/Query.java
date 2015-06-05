@@ -91,6 +91,9 @@ public class Query {
 		return result;
 	}
 
+	public static int getCount(String query, Model model) {
+		return getModel(query,model).size();
+	}
 
 	public static void update(String query) {
 		Connection con = null;

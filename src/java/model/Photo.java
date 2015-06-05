@@ -11,6 +11,7 @@ import SQL.*;
 import utilities.*;
 import javax.servlet.http.HttpServletRequest;
 import java.sql.*;
+import metaData.*;
 import metaData.grade.*;
 
 /**
@@ -155,6 +156,26 @@ public class Photo extends Model{
 		}
 
 		return true;
+	}
+
+	public boolean hasMissingMetaData(ArrayList<MetaDataSource> meta) {
+		ArrayList<String> names = new ArrayList<String>();
+		for(MetaDataSource datum : meta) {
+			names.add(datum.getName());
+		}
+
+		return hasMissingMetaDataByName(names);
+	}
+
+	public boolean hasMissingMetaDataByName(ArrayList<String> columnNames) {
+		boolean result = false;
+		for(String columnName : columnNames) {
+			if(fields.get(columnName) == null) {
+				result = true;
+			}
+		}
+
+		return result;
 	}
 
 	public String getField(String key) {
