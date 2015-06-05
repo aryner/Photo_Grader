@@ -178,6 +178,33 @@ public class Photo extends Model{
 		return result;
 	}
 
+	public static String assignManualMeta(HttpServletRequest request, String table_name) {
+		String id = request.getParameter("photo_id");
+		Photo photo = (Photo)Query.getModel("SELECT * FROM "+table_name+" WHERE id="+id,new Photo()).get(0);
+		ArrayList<Photo> prevNext = photo.getPrevNext(table_name);
+
+		if(request.getParameter("prev") != null) {
+			return "manually_assign_meta-data?id="+prevNext.get(0).getId();
+		}
+		if(request.getParameter("next") != null) {
+			return "manually_assign_meta-data?id="+prevNext.get(1).getId();
+		}
+
+		return "manually_assign_meta-data?id="+photo.getId();
+	}
+
+	public ArrayList<Photo> getPrevNext(String tableName) {
+		ArrayList<Photo> result = new ArrayList<Photo>();
+		String query = "SELECT * FROM "+tableName+" WHERE id < "+id+" ORDER BY id DESC LIMIT 1";
+		ArrayList<Photo> temp = (ArrayList)Query.getModel(query, this);
+		result.add(temp.isEmpty()?null:temp.get(0));
+		query = "SELECT * FROM "+tableName+" WHERE id > "+id+" ORDER BY id LIMIT 1";
+		temp = (ArrayList)Query.getModel(query, this);
+		result.add(temp.isEmpty()?null:temp.get(0));
+
+		return result;
+	}
+
 	public String getField(String key) {
 		return ""+fields.get(key);
 	}

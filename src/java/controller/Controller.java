@@ -33,7 +33,7 @@ import javax.servlet.http.HttpSession;
 						"/define_assignment","/home","/upload","/upload_pictures","/upload_table_data",
 						"/define_grading_questions", "/defineGradingQuestions","/select_grade_category",
 						"/grade","/startGrading","/img","/submitGrade","/select_CSVs","/present_CSV",
-						"/printCSV","/assign_manual_meta"
+						"/printCSV","/assign_manual_meta","/manually_assign_meta-data","/setManualMetaData"
 						})
 public class Controller extends HttpServlet {
 	/**
@@ -71,6 +71,17 @@ public class Controller extends HttpServlet {
 			ArrayList<ManualMetaData> manualMetaData = (ArrayList)Query.getModel("SELECT * FROM photo_data_by_manual WHERE study_id="+study.getId(),new ManualMetaData());
 
 			request.setAttribute("photos",photos);
+			request.setAttribute("manualMetaData",manualMetaData);
+		}
+		else if(userPath.equals("/manually_assign_meta-data")) {
+			int photoID = Integer.parseInt(request.getParameter("id"));
+			Photo photo = (Photo)Query.getModel("SELECT * FROM "+study.getPhoto_attribute_table_name()+" WHERE id='"+photoID+"'",new Photo()).get(0);
+			ArrayList<ManualMetaData> manualMetaData = (ArrayList)Query.getModel("SELECT * FROM photo_data_by_manual WHERE study_id="+study.getId(),new ManualMetaData());
+			ArrayList<Photo> prevNext = photo.getPrevNext(study.getPhoto_attribute_table_name());
+
+			request.setAttribute("prevNext",prevNext);
+			request.setAttribute("photoNumber", study.getPhotoNumber());
+			request.setAttribute("photo",photo);
 			request.setAttribute("manualMetaData",manualMetaData);
 		}
 		else if(userPath.equals("/select_study")) {
@@ -193,6 +204,12 @@ public class Controller extends HttpServlet {
 			session.removeAttribute("study");
 			session.removeAttribute("grade_group");
 			response.sendRedirect("/Photo_Grader/");
+			return;
+		}
+		else if(userPath.equals("/setManualMetaData")) {
+			String redirect = Photo.assignManualMeta(request,study.getPhoto_attribute_table_name());
+
+			response.sendRedirect(redirect);
 			return;
 		}
 		else if(userPath.equals("/defineAssignment")) {

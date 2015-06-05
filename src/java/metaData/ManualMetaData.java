@@ -35,6 +35,7 @@ public class ManualMetaData extends Model implements MetaDataSource {
 		this.study_id = study_id;
 		this.name = Helper.unprocess(name);
 		this.input_type = input_type;
+		setOptions();
 	}
 
 	@Override
@@ -62,7 +63,6 @@ public class ManualMetaData extends Model implements MetaDataSource {
 				resultSet.getInt("id"),resultSet.getInt("study_id"),
 				resultSet.getString("name"),resultSet.getInt("input_type")
 			);
-			datum.setOptions();
 
 			return datum;
 		} catch(SQLException e) {
@@ -148,6 +148,30 @@ public class ManualMetaData extends Model implements MetaDataSource {
 		Helper.unprocess(this.options);
 	}
 
+	public String getHtml(){
+		//once the description field is implemented it will replace 'name' here
+		String html = "<div class='meta-col question'><h3>"+name+"</h3>";
+
+		switch(input_type) {
+			case TEXT:
+				html += "<input type='text' name='"+name+"'>";
+				break;
+			case RADIO:
+				for(String option : options) {
+					html += "<input type='radio' name='"+name+"' value='"+option+"'>"+option+"<br>";
+				}
+				break;
+			case CHECKBOX:
+				for(String option : options) {
+					html += "<input type='checkbox' name='"+name+"_"+option+"' value='"+option+"'>"+option+"<br>";
+				}
+				break;
+		}
+		html += "</div>";
+
+		return html;
+	}
+
 	/**
 	 * @return the id
 	 */
@@ -179,6 +203,7 @@ public class ManualMetaData extends Model implements MetaDataSource {
 	/**
 	 * @return the name
 	 */
+	@Override
 	public String getName() {
 		return name;
 	}
