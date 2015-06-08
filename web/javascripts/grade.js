@@ -56,7 +56,7 @@ function addKeyboardGrading(questionCount) {
 	var radioQuestionIndices = getRadioQuestionIndices(questionCount);
 	var optionCounts = getOptionCounts(radioQuestionIndices);
 	var onRow = 0;
-	var keyRadios = []
+	var keyRadios = [];
 
 	for(var i=0; i<radioQuestionIndices.length; i++) {
 		if(optionCounts[i] < keyboardRows[onRow].length) {
@@ -110,7 +110,7 @@ function getRadioQuestionIndices(questionCount) {
 
 	for(var i=0; i<questionCount; i++) {
 		if(isRadioQuestion(i)) {
-			radioQuestionIndices.push(i)
+			radioQuestionIndices.push(i);
 		}
 	}
 

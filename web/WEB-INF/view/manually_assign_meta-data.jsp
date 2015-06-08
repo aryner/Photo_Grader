@@ -20,16 +20,18 @@ ArrayList<Photo> prevNext = (ArrayList)request.getAttribute("prevNext");
 <%
 String src = Constants.SRC+"img?number="+photoNumber+"&name="+photo.getName();
 out.print("<img class='gradeImg' src='"+src+"'>");
-
 %>
 <div class="newRow"></div>
 <form action="setManualMetaData" method="POST">
 	<input type="hidden" name="photo_id" value="<%out.print(photo.getId());%>">
+	<input type="hidden" name="meta_count" value="<%out.print(manualMetaData.size());%>">
 	<%
+	int index = 0;
 	for(ManualMetaData meta : manualMetaData) {
 		out.print("<div class='meta-col question'>");
-		out.print(meta.getHtml());
+		out.print(meta.getHtml(index));
 		out.print("</div>");
+		index++;
 	}
 	%>
 	<div class="newRow"></div>
@@ -47,3 +49,6 @@ out.print("<img class='gradeImg' src='"+src+"'>");
 	</div>
 </form>
 </div>
+
+<script src="javascripts/jquery-1.11.1.min.js" type="text/javascript"></script>
+<script src="javascripts/manually_assign.js" type="text/javascript"></script>

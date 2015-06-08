@@ -148,22 +148,25 @@ public class ManualMetaData extends Model implements MetaDataSource {
 		Helper.unprocess(this.options);
 	}
 
-	public String getHtml(){
+	public String getHtml(int index){
 		//once the description field is implemented it will replace 'name' here
 		String html = "<div class='meta-col question'><h3>"+name+"</h3>";
 
+		int optionNumber = 0;
 		switch(input_type) {
 			case TEXT:
-				html += "<input type='text' name='"+name+"'>";
+				html += "<input type='text' class='"+index+"' name='"+name+"' title='"+TEXT+"'>";
 				break;
 			case RADIO:
 				for(String option : options) {
-					html += "<input type='radio' name='"+name+"' value='"+option+"'>"+option+"<br>";
+					html += "<span class='span_"+optionNumber+"_"+index+"'></span><input type='radio' class='"+index+"' id='"+optionNumber+"' name='"+name+"' title='"+RADIO+"' value='"+option+"'>"+option+"<br>";
+					optionNumber++;
 				}
 				break;
 			case CHECKBOX:
 				for(String option : options) {
-					html += "<input type='checkbox' name='"+name+"_"+option+"' value='"+option+"'>"+option+"<br>";
+					html += "<span class='span_"+optionNumber+"_"+index+"'></span><input type='checkbox' class='"+index+"' id='"+optionNumber+"' name='"+name+"_"+option+"' title='"+CHECKBOX+"' value='"+option+"'>"+option+"<br>";
+					optionNumber++;
 				}
 				break;
 		}

@@ -67,7 +67,7 @@ public class Controller extends HttpServlet {
 			request.setAttribute("metaData",metaData);
 		}
 		else if(userPath.equals("/assign_manual_meta")) {
-			ArrayList<Photo> photos = (ArrayList)Query.getModel("SELECT * FROM "+study.getPhoto_attribute_table_name(), new Photo());
+			ArrayList<Photo> photos = (ArrayList)Query.getModel("SELECT * FROM "+study.getPhoto_attribute_table_name()+" ORDER BY id", new Photo());
 			ArrayList<ManualMetaData> manualMetaData = (ArrayList)Query.getModel("SELECT * FROM photo_data_by_manual WHERE study_id="+study.getId(),new ManualMetaData());
 
 			request.setAttribute("photos",photos);
