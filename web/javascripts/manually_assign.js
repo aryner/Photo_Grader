@@ -17,13 +17,15 @@ $(document).ready(function(){
 	$(document).bind('keydown', function(e) {
 		var unicode = e.keyCode || e.which;
 
-		//right arrow
-		if(unicode === 37) {
-			$(':submit[name=prev]').click();
-		}
-		//left arrow
-		if(unicode === 39) {
-			$(':submit[name=next]').click();
+		if($(':focus').attr('type') !== 'text') { 
+			//right arrow
+			if(unicode === 37) {
+				$(':submit[name=prev]').click();
+			}
+			//left arrow
+			if(unicode === 39) {
+				$(':submit[name=next]').click();
+			}
 		}
 	});
 });
