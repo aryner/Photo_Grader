@@ -155,17 +155,20 @@ public class ManualMetaData extends Model implements MetaDataSource {
 		int optionNumber = 0;
 		switch(input_type) {
 			case TEXT:
+				html += "<input type='hidden' name='meta_"+index+"' value='"+TEXT+"_0'>";
 				html += "<input type='text' class='"+index+"' name='"+name+"' title='"+TEXT+"'>";
 				break;
 			case RADIO:
+				html += "<input type='hidden' name='meta_"+index+"' value='"+RADIO+"_"+options.size()+"'>";
 				for(String option : options) {
 					html += "<span class='span_"+optionNumber+"_"+index+"'></span><input type='radio' class='"+index+"' id='"+optionNumber+"' name='"+name+"' title='"+RADIO+"' value='"+option+"'>"+option+"<br>";
 					optionNumber++;
 				}
 				break;
 			case CHECKBOX:
+				html += "<input type='hidden' name='meta_"+index+"' value='"+CHECKBOX+"_"+options.size()+"'>";
 				for(String option : options) {
-					html += "<span class='span_"+optionNumber+"_"+index+"'></span><input type='checkbox' class='"+index+"' id='"+optionNumber+"' name='"+name+"_"+option+"' title='"+CHECKBOX+"' value='"+option+"'>"+option+"<br>";
+					html += "<span class='span_"+optionNumber+"_"+index+"'></span><input type='checkbox' class='"+index+"' id='"+optionNumber+"' name='"+name+"_"+optionNumber+"' title='"+CHECKBOX+"' value='"+option+"'>"+option+"<br>";
 					optionNumber++;
 				}
 				break;
