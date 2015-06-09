@@ -16,7 +16,7 @@ ArrayList<ManualMetaData> manualMetaData = (ArrayList)request.getAttribute("manu
 
 for(Photo photo : photos) {
 	out.print("<a href='manually_assign_meta-data?id="+photo.getId()+"'>");
-	out.print(photo.getName()+" "+(photo.hasMissingMetaData((ArrayList)manualMetaData)?" ***":"")+" <br>");
+	out.print((photo.hasMissingMetaData((ArrayList)manualMetaData)?"*** ":" &nbsp&nbsp&nbsp&nbsp&nbsp")+photo.getName()+" <br>");
 	out.print("</a>");
 }
 %>

@@ -170,7 +170,7 @@ public class Photo extends Model{
 	public boolean hasMissingMetaDataByName(ArrayList<String> columnNames) {
 		boolean result = false;
 		for(String columnName : columnNames) {
-			if(fields.get(columnName) == null) {
+			if(fields.get(Helper.process(columnName)) == null) {
 				result = true;
 			}
 		}

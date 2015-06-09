@@ -16,6 +16,10 @@ body {
 	font-size : small;
 }
 
+a {
+	text-decoration: none;
+}
+
 #header {
 	height: 030px;
 	height: 030px;
