@@ -29,7 +29,7 @@ out.print("<img class='gradeImg' src='"+src+"'>");
 	int index = 0;
 	for(ManualMetaData meta : manualMetaData) {
 		out.print("<div class='meta-col question'>");
-		out.print(meta.getHtml(index));
+		out.print(meta.getHtml(photo,index));
 		out.print("</div>");
 		index++;
 	}

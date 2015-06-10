@@ -148,27 +148,30 @@ public class ManualMetaData extends Model implements MetaDataSource {
 		Helper.unprocess(this.options);
 	}
 
-	public String getHtml(int index){
+	public String getHtml(Photo photo, int index){
 		//once the description field is implemented it will replace 'name' here
 		String html = "<div class='meta-col question'><h3>"+name+"</h3>";
+		String field = photo.getField(Helper.process(name));
 
 		int optionNumber = 0;
 		switch(input_type) {
 			case TEXT:
 				html += "<input type='hidden' name='meta_"+index+"' value='"+TEXT+"_0'>";
-				html += "<input type='text' class='"+index+"' name='"+name+"' title='"+TEXT+"'>";
+				html += "<input type='text' class='"+index+"' name='"+name+"' "+(name!=null?"value='"+field+"'":"")+" title='"+TEXT+"'>";
 				break;
 			case RADIO:
 				html += "<input type='hidden' name='meta_"+index+"' value='"+RADIO+"_"+options.size()+"'>";
 				for(String option : options) {
-					html += "<span class='span_"+optionNumber+"_"+index+"'></span><input type='radio' class='"+index+"' id='"+optionNumber+"' name='"+name+"' title='"+RADIO+"' value='"+option+"'>"+option+"<br>";
+					html += "<span class='span_"+optionNumber+"_"+index+"'></span><input type='radio' class='"+index+"' id='"+
+						optionNumber+"' name='"+name+"' title='"+RADIO+"' value='"+option+"' "+(field!=null&&field.equals(option)?"checked":"")+">"+option+"<br>";
 					optionNumber++;
 				}
 				break;
 			case CHECKBOX:
 				html += "<input type='hidden' name='meta_"+index+"' value='"+CHECKBOX+"_"+options.size()+"'>";
 				for(String option : options) {
-					html += "<span class='span_"+optionNumber+"_"+index+"'></span><input type='checkbox' class='"+index+"' id='"+optionNumber+"' name='"+name+"_"+optionNumber+"' title='"+CHECKBOX+"' value='"+option+"'>"+option+"<br>";
+					html += "<span class='span_"+optionNumber+"_"+index+"'></span><input type='checkbox' class='"+index+"' id='"+
+						optionNumber+"' name='"+name+"_"+optionNumber+"' title='"+CHECKBOX+"' value='"+option+"'>"+option+"<br>";
 					optionNumber++;
 				}
 				break;
