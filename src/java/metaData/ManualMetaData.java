@@ -152,12 +152,13 @@ public class ManualMetaData extends Model implements MetaDataSource {
 		//once the description field is implemented it will replace 'name' here
 		String html = "<div class='meta-col question'><h3>"+name+"</h3>";
 		String field = photo.getField(Helper.process(name));
+		field = (field.equals("null")?"":field);
 
 		int optionNumber = 0;
 		switch(input_type) {
 			case TEXT:
 				html += "<input type='hidden' name='meta_"+index+"' value='"+TEXT+"_0'>";
-				html += "<input type='text' class='"+index+"' name='"+name+"' "+(name!=null?"value='"+field+"'":"")+" title='"+TEXT+"'>";
+				html += "<input type='text' class='"+index+"' name='"+name+"' "+(field!=null?"value='"+field+"'":"")+" title='"+TEXT+"'>";
 				break;
 			case RADIO:
 				html += "<input type='hidden' name='meta_"+index+"' value='"+RADIO+"_"+options.size()+"'>";
@@ -168,10 +169,12 @@ public class ManualMetaData extends Model implements MetaDataSource {
 				}
 				break;
 			case CHECKBOX:
+				ArrayList<String> fields = new ArrayList<String>(Arrays.asList(field.split("\\|")));
 				html += "<input type='hidden' name='meta_"+index+"' value='"+CHECKBOX+"_"+options.size()+"'>";
 				for(String option : options) {
 					html += "<span class='span_"+optionNumber+"_"+index+"'></span><input type='checkbox' class='"+index+"' id='"+
-						optionNumber+"' name='"+name+"_"+optionNumber+"' title='"+CHECKBOX+"' value='"+option+"'>"+option+"<br>";
+						optionNumber+"' name='"+name+"_"+optionNumber+"' title='"+CHECKBOX+"' value='"+
+						option+"' "+(fields.contains(option)?"checked":"")+">"+option+"<br>";
 					optionNumber++;
 				}
 				break;
@@ -179,6 +182,15 @@ public class ManualMetaData extends Model implements MetaDataSource {
 		html += "</div>";
 
 		return html;
+	}
+
+	public static ArrayList<String> getNames(ArrayList<ManualMetaData> data) {
+		ArrayList<String> names = new ArrayList<String>();
+		for(ManualMetaData datum : data) {
+			names.add(datum.getName());
+		}
+
+		return names;
 	}
 
 	/**

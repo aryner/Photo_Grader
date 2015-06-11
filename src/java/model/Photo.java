@@ -167,6 +167,17 @@ public class Photo extends Model{
 		return hasMissingMetaDataByName(names);
 	}
 
+	public boolean hasMissingMetaData(ArrayList<MetaDataSource> meta, ArrayList<String> fromList) {
+		ArrayList<String> names = new ArrayList<String>();
+		for(MetaDataSource datum : meta) {
+			if(fromList.contains(datum.getName())) {
+				names.add(datum.getName());
+			}
+		}
+
+		return hasMissingMetaDataByName(names);
+	}
+
 	public boolean hasMissingMetaDataByName(ArrayList<String> columnNames) {
 		boolean result = false;
 		for(String columnName : columnNames) {
