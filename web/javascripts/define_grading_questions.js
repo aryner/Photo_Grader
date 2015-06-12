@@ -32,7 +32,11 @@ function getErrorMsg() {
 
 function checkForName(errors) {
 	errors = errors || [];
-	if($('input[name=name]').val() === '') errors.push("<p class='error'>You must enter a name for this grade category</p>");
+	var usersInputName = $('input[name=name]').val().trim();
+	if(usersInputName === '') errors.push("<p class='error'>You must enter a name for this grade category</p>");
+
+	var usedNames = getUsedNames();
+	if(arrayContains(usedNames,usersInputName)) errors.push("<p class='error'>That grading category name has already been used for this study</p>");
 
 	return errors;
 }
@@ -109,6 +113,15 @@ function checkForOption(index) {
 	else {
 		return $('input[name=option_'+index+'_'+3+']').val() !== undefined;
 	}
+}
+
+function getUsedNames() {
+	var usedNamesCount = Number($("input[name='used_count']").val());
+	var usedNames = [];
+	for (var i=0; i<usedNamesCount; i++) {
+		usedNames.push($('input[name=used_'+i+']').val());
+	}
+	return usedNames;
 }
 
 function addNewQuestionListener(index) {
@@ -245,4 +258,11 @@ function addQuestion(index) {
 
 	addNewQuestionListener(index);
 	addAnswerTypeListener(index);
+}
+
+function arrayContains(array, string) {
+	for (var i=0; i<array.length; i++) {
+		if(array[i] === string) return true;
+	}
+	return false;
 }

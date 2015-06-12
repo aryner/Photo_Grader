@@ -89,8 +89,10 @@ public class Controller extends HttpServlet {
 		}
 		else if(userPath.equals("/define_grading_questions")) {
 			ArrayList<String> columns = Photo.getMetaDataKeys(study.getPhoto_attribute_table_name());
+			ArrayList<String> usedNames = GradeGroup.getUsedNames(study.getId());
 			Helper.unprocess(columns);
 			request.setAttribute("columns", columns);
+			request.setAttribute("usedNames", usedNames);
 		}
 		else if(userPath.equals("/select_grade_category")) {
 			request.setAttribute("categories",study.getGradeCategoryNames());

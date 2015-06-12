@@ -10,13 +10,19 @@
 
 <%
 	ArrayList<String> columns = (ArrayList)request.getAttribute("columns");
-
+	ArrayList<String> usedNames = (ArrayList)request.getAttribute("usedNames");
 %>
 
 
 <h1> Define Grading questions </h1>
 
 <form action="defineGradingQuestions" method="POST">
+	<input type="hidden" name="used_count" value="<%out.print(usedNames.size());%>">
+	<%
+	for(int i=0; i<usedNames.size(); i++) {
+		out.print("<input type='hidden' name='used_"+i+"' value='"+usedNames.get(i)+"'>");
+	}
+	%>
 	<div class="container">
 		<h3>Name this grading category</h3>
 		<input type="text" name="name">

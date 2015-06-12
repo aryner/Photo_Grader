@@ -6,6 +6,7 @@
 
 $(document).ready(function() {
 	$(':Submit[value=Submit]').click(function(e) {
+		e.preventDefault();
 		var excelCount = Number($('input[name=excelCount]').val());
 		var csvCount = Number($('input[name=csvCount]').val());
 

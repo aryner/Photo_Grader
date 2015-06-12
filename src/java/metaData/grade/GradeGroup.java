@@ -61,6 +61,18 @@ public class GradeGroup extends Model {
 		return null;
 	}
 
+	public static ArrayList<String> getUsedNames(int studyId) {
+		String query = "SELECT * FROM photo_grade_group WHERE study_id='"+studyId+"'";
+		ArrayList<GradeGroup> groups = (ArrayList)Query.getModel(query,new GradeGroup());
+		ArrayList<String> usedNames = new ArrayList<String>();
+
+		for(GradeGroup group : groups) {
+			usedNames.add(group.getName());
+		}
+
+		return usedNames;
+	}
+
 	private void setGroupBy() {
 		this.groupBy = GroupBy.getGroup(this.id);
 	}
