@@ -271,3 +271,4 @@ if(manual > 0) {
 <script src="javascripts/jquery-1.11.1.min.js" type="text/javascript"></script>
 <script src="javascripts/define_name_assignment.js" type="text/javascript"></script>
 <script src="javascripts/define_manual_assignment.js" type="text/javascript"></script>
+<script src="javascripts/define_table_assignment.js" type="text/javascript"></script>
