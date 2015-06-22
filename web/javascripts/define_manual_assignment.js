@@ -21,6 +21,7 @@ $(document).ready(function() {
 	$(':Submit[value=Submit]').click(function(e) {
 		var errors = getManualErrors();
 		if(errors.length > 0) {
+			console.log('error in manual assignment');
 			console.log('errors = '+errors);
 			console.log('errros.length = '+errors.length);
 			e.preventDefault();

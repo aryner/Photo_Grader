@@ -6,12 +6,12 @@
 
 $(document).ready(function() {
 	$(':Submit[value=Submit]').click(function(e) {
-		e.preventDefault();
 		var excelCount = Number($('input[name=excelCount]').val());
 		var csvCount = Number($('input[name=csvCount]').val());
 
 		var errors = getTableErrors(excelCount, csvCount);
 		if(errors.length > 0) {
+			console.log('error in table assignment');
 			console.log('errors = '+errors);
 			console.log('errros.length = '+errors.length);
 			e.preventDefault();

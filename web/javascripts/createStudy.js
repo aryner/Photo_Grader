@@ -27,9 +27,7 @@ function errorsCheck(name, names, index) {
 }
 
 function incompleteRow(name, index) {
-	var type = $('input[name=type'+index+'][value=1]').prop('checked') 
-		|| $('input[name=type'+index+'][value=2]').prop('checked')
-		|| $('input[name=type'+index+'][value=3]').prop('checked');
+	var type = true;
 
 	var collect = $('input[name=collect'+index+'][value=1]').prop('checked')
 		|| $('input[name=collect'+index+'][value=2]').prop('checked')

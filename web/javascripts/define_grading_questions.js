@@ -15,6 +15,7 @@ $(document).ready(function() {
 
 		var errors = getErrorMsg();
 		if(errors.length > 0) {
+			console.log('error in grading questions');
 			e.preventDefault();
 			var msg = "";
 			for(var i=0; i<errors.length; i++) {

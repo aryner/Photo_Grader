@@ -59,7 +59,7 @@ public class MetaData {
 		for(int i=0; i<maxCount; i++) {
 			String name = request.getParameter("name"+i);
 			if(name != null && !name.equals("")) {
-				int type = Integer.parseInt(request.getParameter("type"+i));
+				int type = STRING;
 				int collect = Integer.parseInt(request.getParameter("collect"+i));
 				metaData.add(new MetaData(name,type,collect));
 			}

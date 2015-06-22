@@ -30,12 +30,6 @@ int number_fields = Integer.parseInt(request.getParameter("number"));
 		<b>(<%out.print(i+1);%>)</b> Meta-data descriptor(name): <input type="text" name="name<%out.print(i);%>" autocomplete="off">
 	</div>
 	<div class="meta-col">
-		Type of data:<br>
-		<input type="radio" name="type<%out.print(i);%>" value="<%out.print(MetaData.INTEGER);%>">Integer 
-		<input type="radio" name="type<%out.print(i);%>" value="<%out.print(MetaData.DECIMAL);%>">Decimal 
-		<input type="radio" name="type<%out.print(i);%>" value="<%out.print(MetaData.STRING);%>">String 
-	</div>
-	<div class="meta-col">
 		How will the data be collected?<br>
 		<input type="radio" name="collect<%out.print(i);%>" value="<%out.print(MetaData.NAME);%>">Photo name 
 		<input type="radio" name="collect<%out.print(i);%>" value="<%out.print(MetaData.EXCEL);%>">Excel file 
