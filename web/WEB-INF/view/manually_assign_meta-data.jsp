@@ -16,6 +16,7 @@ ArrayList<Photo> prevNext = (ArrayList)request.getAttribute("prevNext");
 %>
 
 <h1><%out.print(photo.getName());%></h1>
+<p><a href="/Photo_Grader/assign_manual_meta">Back to the assign meta-data page</a></p>
 <div class="meta-row">
 <%
 String src = Constants.SRC+"img?number="+photoNumber+"&name="+photo.getName();

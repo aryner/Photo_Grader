@@ -66,8 +66,8 @@ public class Photo extends Model{
 	public static void generateAttributes(Study study, Map<String,String> name_types) {
 		String query = "CREATE TABLE IF NOT EXISTS "+study.getPhoto_attribute_table_name()+" ("+
 				"id int unsigned AUTO_INCREMENT, "+
-				"name varchar(40), "+
-				"path varchar(50), ";
+				"name varchar(100), "+
+				"path varchar(100), ";
 		String postfix = "PRIMARY KEY(id)) ENGINE=INnoDB";
 		String fields = "";
 
