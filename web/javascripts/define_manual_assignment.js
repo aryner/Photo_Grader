@@ -158,6 +158,9 @@ function addRadioOrCheckListener(index,count) {
 			if((count+1) === option_counts[index]) {
 				addRadioOrCheck(index);
 			}
+			if(this.value.length>30) {
+				this.value = this.value.substring(0,30);
+			}
 		}
 		else {
 			clearOptions(index,count+1);

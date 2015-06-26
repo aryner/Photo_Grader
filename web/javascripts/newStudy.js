@@ -9,6 +9,11 @@ $(document).ready(function() {
 	$('input[type=text][name=number]').on('input', function() {
 		this.value = this.value.replace(/[^0-9]/g,'');
 	});
+	$('input[type=text][name=name]').on('input', function() {
+		if(this.value.length > 90) {
+			this.value = this.value.substring(0,90);
+		}
+	});
 
 	$(":submit[name=newStudy]").on('click',function(e){
 		var name = $('input[type=text][name=name]').val();

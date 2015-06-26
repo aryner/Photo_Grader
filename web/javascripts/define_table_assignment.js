@@ -5,10 +5,11 @@
  */
 
 $(document).ready(function() {
-	$(':Submit[value=Submit]').click(function(e) {
-		var excelCount = Number($('input[name=excelCount]').val());
-		var csvCount = Number($('input[name=csvCount]').val());
+	var excelCount = Number($('input[name=excelCount]').val());
+	var csvCount = Number($('input[name=csvCount]').val());
+	setTableTextLimits(excelCount,csvCount);
 
+	$(':Submit[value=Submit]').click(function(e) {
 		var errors = getTableErrors(excelCount, csvCount);
 		if(errors.length > 0) {
 			console.log('error in table assignment');
@@ -25,6 +26,27 @@ $(document).ready(function() {
 		}
 	});
 });
+
+function setTableTextLimits(excelCount,csvCount) {
+	if(excelCount > 0) {
+		for(var i=0; i<excelCount+1; i++) {
+			setTextLimit('excel_column_'+i);
+		}
+	}
+	if(csvCount > 0) {
+		for(var i=0; i<csvCount+1; i++) {
+			setTextLimit('csv_column_'+i);
+		}
+	}
+}
+
+function setTextLimit(name) {
+	$('input[name='+name+']').on('input', function() {
+		if(this.value.length > 30) {
+			this.value = this.value.substring(0,30);
+		}
+	});
+}
 
 function getTableErrors(excelCount, csvCount) {
 	var errors = [];

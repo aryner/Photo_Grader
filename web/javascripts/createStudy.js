@@ -5,6 +5,9 @@
  */
 
 $(document).ready(function() {
+	var maxCount = +($('input[type=hidden][name=maxCount]').val());
+	setTextLimits(maxCount);
+
 	$(':submit[value=Submit]').on('click',function(e) {
 		var maxCount = +($('input[type=hidden][name=maxCount]').val());
 		var focus = false;
@@ -21,6 +24,16 @@ $(document).ready(function() {
 		}
 	});
 });
+
+function setTextLimits(maxCount) {
+	for(var i=0; i<maxCount; i++) {
+		$('input[type=text][name=name'+i+']').on('input', function() {
+			if(this.value.length > 30) {
+				this.value = this.value.substring(0,30);
+			}
+		});
+	}
+}
 
 function errorsCheck(name, names, index) {
 	return (invalidName(name, index) || repeatName(names, name, index) || incompleteRow(name, index));

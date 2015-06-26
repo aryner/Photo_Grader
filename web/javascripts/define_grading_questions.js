@@ -7,6 +7,8 @@
 var questionCount = 0;
 
 $(document).ready(function() {
+	setTextLimit('name');
+
 	addNewQuestionListener(0);
 	addAnswerTypeListener(0);
 
@@ -26,6 +28,14 @@ $(document).ready(function() {
 		}
 	});
 });
+
+function setTextLimit(name) {
+	$('input[name='+name+']').on('input', function() {
+		if(this.value.length > 30) {
+			this.value = this.value.substring(0,30);
+		}
+	});
+}
 
 function getErrorMsg() {
 	return checkForName(checkForFilledQuestions(checkGradeGroup()));

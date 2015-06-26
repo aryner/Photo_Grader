@@ -34,3 +34,6 @@
 		<input type="submit" value="submit" class="btn">
 	</p>
 </form>
+
+<script src="javascripts/jquery-1.11.1.min.js" type="text/javascript"></script>
+<script src="javascripts/register.js" type="text/javascript"></script>
