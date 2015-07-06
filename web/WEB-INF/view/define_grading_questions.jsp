@@ -13,7 +13,6 @@
 	ArrayList<String> usedNames = (ArrayList)request.getAttribute("usedNames");
 %>
 
-
 <h1> Define Grading questions </h1>
 
 <form action="defineGradingQuestions" method="POST">
@@ -61,7 +60,6 @@
 			<h4>Constraints?</h4>
 			<input type="radio" name="constraints_0" value="<%out.print(Question.MANDATORY);%>"> Mandatory 
 			<input type="radio" name="constraints_0" value="<%out.print(Question.OPTIONAL);%>"> Optional
-<!--			<input type="radio" name="constraints_0" value=""> Conditional -->
 		</div>
 
 		<div class="newRow"></div>

@@ -154,6 +154,29 @@ function addAnswerTypeListener(index) {
 	}
 }
 
+function addConditionalListener(index) {
+	//name = constraints_index
+	document.addEventListener('condition'+index, newConditionListener, false);
+	var radios = $('input[name=constraints_'+index+']');
+	for(var i=0; i<radios.length; i++) {
+		radios[i].onclick = function() {
+			var event = new CustomEvent('condition'+index, {'detail':{'index':index, 'checked':this.checked, 'type':Number(this.value)}});
+			document.dispatchEvent(event);
+		};
+	}
+}
+
+var newConditionListener = function(event) {
+	if(event.detail.checked && event.detail.type > 0) {
+		//add html to get information to make this a conditional question
+		console.log('checked');
+	}
+	else {
+		//remove html from previously checked condition
+		console.log('not checked');
+	}
+};
+
 var newQuestionListener = function(event) {
 	if(event.detail.checked) {
 		questionCount++;
@@ -259,7 +282,7 @@ function addQuestion(index) {
 				'<h4>Constraints?</h4>'+ 
 				'<input type="radio" name="constraints_'+index+'" value="0"> Mandatory'+
 				'<input type="radio" name="constraints_'+index+'" value="-1"> Optional'+
-				'<!-- <input type="radio" name="constraints_'+index+'" value="?"> Conditional -->'+
+				'<input type="radio" name="constraints_'+index+'" value="1"> Conditional'+
 			'</div>'+
 			'<div class="newRow"></div>'+
 			'<br><br><br><input type="checkbox" name="new_question_'+index+'"> Ask Another Question?'+
@@ -269,6 +292,7 @@ function addQuestion(index) {
 
 	addNewQuestionListener(index);
 	addAnswerTypeListener(index);
+	addConditionalListener(index);
 }
 
 function arrayContains(array, string) {
