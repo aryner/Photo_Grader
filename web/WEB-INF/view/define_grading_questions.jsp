@@ -36,6 +36,7 @@
 		%>
 
 		<h3>Define questions</h3>
+		<h3>Question 1</h3>
 		<div class="meta-col">
 			<h4>Question label</h4>
 			<input type="text" name="label_0">

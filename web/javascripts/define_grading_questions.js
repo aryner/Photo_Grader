@@ -160,22 +160,11 @@ function addConditionalListener(index) {
 	var radios = $('input[name=constraints_'+index+']');
 	for(var i=0; i<radios.length; i++) {
 		radios[i].onclick = function() {
-			var event = new CustomEvent('condition'+index, {'detail':{'index':index, 'checked':this.checked, 'type':Number(this.value)}});
+			var event = new CustomEvent('condition'+index, {'detail':{'index':Number(index), 'checked':this.checked, 'type':Number(this.value)}});
 			document.dispatchEvent(event);
 		};
 	}
 }
-
-var newConditionListener = function(event) {
-	if(event.detail.checked && event.detail.type > 0) {
-		//add html to get information to make this a conditional question
-		console.log('checked');
-	}
-	else {
-		//remove html from previously checked condition
-		console.log('not checked');
-	}
-};
 
 var newQuestionListener = function(event) {
 	if(event.detail.checked) {
@@ -214,6 +203,44 @@ var newAnswerTypeListener = function(event) {
 		}
 	}
 };
+
+var newConditionListener = function(event) {
+	if(event.detail.checked && event.detail.type > 0) {
+		//add html to get information to make this a conditional question
+		var conditionedOn = getConditionedOnOptions(event.detail.index);
+		var html = "<div class='meta-col'><h4>Conditional on which?</h4>";
+		for(var i=0; i<conditionedOn.length; i++) {
+			html += '<input type="radio" name="dependent_'+event.detail.index+'" vaule="'+event.detail.index+'">';
+			html += ' <span id="con_'+event.detail.index+'_'+i+'">'+conditionedOn[i].val()+'</span> ';
+		}
+		html += "</div>";
+
+		document.getElementById('conditioned_'+event.detail.index).innerHTML = html;
+		addLabelChangeListeners(event, conditionedOn);
+	}
+	else {
+		//remove html from previously checked condition
+		// (?) and remove event listener?
+	}
+};
+
+function getConditionedOnOptions(index) {
+	var names = [];
+	for(var i=0; i<index; i++) {
+		names.push($('input[name=label_'+i+']'));
+	}
+
+	return names;
+}
+
+function addLabelChangeListeners(event, conditionedOn) {
+	for(var i=0; i<conditionedOn.length; i++) {
+		conditionedOn[i].on('input', function () {
+			var span = document.getElementById('con_'+event.detail.index+'_'+this.name.substring(this.name.indexOf("_")+1));
+			span.innerHTML = this.value;
+		});
+	}
+}
 
 function addOptionListener(questionIndex, optionIndex) {
 	$('input[name=option_'+questionIndex+'_'+optionIndex+']').on('input',function(e){
@@ -261,6 +288,7 @@ function getCheckedRadio(search) {
 
 function addQuestion(index) {
 	var newQuestion = '<div name="index_'+index+'">'+
+			'<h3>Question '+(index+1)+'</h3>'+
 			'<div class="meta-col">'+
 				'<h4>Question label</h4>'+
 				'<input type="text" name="label_'+index+'">'+
@@ -284,6 +312,7 @@ function addQuestion(index) {
 				'<input type="radio" name="constraints_'+index+'" value="-1"> Optional'+
 				'<input type="radio" name="constraints_'+index+'" value="1"> Conditional'+
 			'</div>'+
+			'<div id="conditioned_'+index+'"></div>'+
 			'<div class="newRow"></div>'+
 			'<br><br><br><input type="checkbox" name="new_question_'+index+'"> Ask Another Question?'+
 			'</div><div class="newRow"></div></div> ';
