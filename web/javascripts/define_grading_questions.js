@@ -166,6 +166,40 @@ function addConditionalListener(index) {
 	}
 }
 
+//"<div class='meta-col' name='constraint_options_"+event.detail.index+"'></div>";
+//1-text,2-radio,3-check
+function addConditionedOnSelectedListener(event, conditionedOn) {
+	var radios = document.getElementsByName("dependent_"+event.detail.index);
+	for(var i=0; i<radios.length; i++) {
+		radios[i].onchange = function() {
+			var constraint_index = Number(this.value.substring(this.value.indexOf("_")+1));
+			var type_radios = document.getElementsByName('type_'+constraint_index);
+			for(var i=0; i<type_radios.length; i++) {
+				if(type_radios[i].checked) {
+					if(type_radios[i].value > 1) {
+						//check/radio
+						generateConstraintOptions(event.detail.index, constraint_index);
+					}
+					else {
+						//text
+					}
+				}
+			}
+		};
+	}
+}
+
+function generateConstraintOptions(index, constraint_index) {
+	var option_count = Number(document.getElementsByName('option_count_'+constraint_index)[0].value)-1;
+	var html = "<h4>Check options conditional for this question</h4>";
+	for(var i=0; i<option_count; i++) {
+		var option = document.getElementsByName('option_'+constraint_index+'_'+(i+1))[0];
+		html += "<input type='checkbox' name='constraint_option_"+index+"_"+i+"' value='"+option.name+"'>"+option.value+"<br>"
+	}
+
+	document.getElementsByName("constraint_options_"+index)[0].innerHTML = html;
+}
+
 var newQuestionListener = function(event) {
 	if(event.detail.checked) {
 		questionCount++;
@@ -210,17 +244,19 @@ var newConditionListener = function(event) {
 		var conditionedOn = getConditionedOnOptions(event.detail.index);
 		var html = "<div class='meta-col'><h4>Conditional on which?</h4>";
 		for(var i=0; i<conditionedOn.length; i++) {
-			html += '<input type="radio" name="dependent_'+event.detail.index+'" vaule="'+event.detail.index+'">';
+			html += '<input type="radio" name="dependent_'+event.detail.index+'" value="'+conditionedOn[i].attr('name')+'">';
 			html += ' <span id="con_'+event.detail.index+'_'+i+'">'+conditionedOn[i].val()+'</span> ';
 		}
-		html += "</div>";
+		html += "</div><div class='meta-col' name='constraint_options_"+event.detail.index+"'></div>";
 
 		document.getElementById('conditioned_'+event.detail.index).innerHTML = html;
 		addLabelChangeListeners(event, conditionedOn);
+		addConditionedOnSelectedListener(event, conditionedOn);
 	}
 	else {
 		//remove html from previously checked condition
 		// (?) and remove event listener?
+		document.getElementById('conditioned_'+event.detail.index).innerHTML = "";
 	}
 };
 
