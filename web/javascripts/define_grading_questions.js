@@ -166,8 +166,6 @@ function addConditionalListener(index) {
 	}
 }
 
-//"<div class='meta-col' name='constraint_options_"+event.detail.index+"'></div>";
-//1-text,2-radio,3-check
 function addConditionedOnSelectedListener(event, conditionedOn) {
 	var radios = document.getElementsByName("dependent_"+event.detail.index);
 	for(var i=0; i<radios.length; i++) {
@@ -182,6 +180,7 @@ function addConditionedOnSelectedListener(event, conditionedOn) {
 					}
 					else {
 						//text
+						gennerateConstraintRange(event.detail.index, constraint_index);
 					}
 				}
 			}
@@ -194,8 +193,21 @@ function generateConstraintOptions(index, constraint_index) {
 	var html = "<h4>Check options conditional for this question</h4>";
 	for(var i=0; i<option_count; i++) {
 		var option = document.getElementsByName('option_'+constraint_index+'_'+(i+1))[0];
-		html += "<input type='checkbox' name='constraint_option_"+index+"_"+i+"' value='"+option.name+"'>"+option.value+"<br>"
+		html += "<input type='checkbox' name='constraint_option_"+index+"_"+i+"' value='"+option.name+"'>"+option.value+"<br>";
 	}
+
+	document.getElementsByName("constraint_options_"+index)[0].innerHTML = html;
+}
+
+function gennerateConstraintRange(index, constraint_index) {
+	var type = document.getElementsByName('text_option_'+constraint_index);
+	for(var i=0; i<3; i++) {
+		if(type[i].checked) {
+			type = type[i];
+			break;
+		}
+	}
+	var html = "<h4></h4>";
 
 	document.getElementsByName("constraint_options_"+index)[0].innerHTML = html;
 }

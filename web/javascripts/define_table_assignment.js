@@ -77,7 +77,8 @@ function checkForColNames(count, type, errors) {
 }
 
 function invalidColumnName(name) {
-	if(name.length === 0 || (!name.match(/^[a-zA-z]/) || name.match(/[^a-zA-Z0-9]/))) {
+	if(name.length === 0 || (!name.match(/^[a-zA-z]/) || name.match(/[^a-zA-Z0-9 ]/))) {
+		console.log(name);
 		return true;
 	}
 	return false;
