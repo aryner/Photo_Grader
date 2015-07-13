@@ -307,7 +307,7 @@ function addOption(questionIndex, optionIndex) {
 	var container = $('div[name=options_'+questionIndex+']');
 
 	var contents = '<input type="text" style="margin-left:5px;" name="option_'+questionIndex+'_'+(optionIndex+1)+'">'+
-		       '<input type="radio" name="default_'+questionIndex+'" value="'+optionIndex+'"> Default?';
+		       '<input type="radio" name="default_'+questionIndex+'" value="'+optionIndex+'"> <span id="span_'+questionIndex+'_'+optionIndex+'"> Default?</span>';
 	container.append(contents);
 	addOptionListener(questionIndex, optionIndex+1);
 }
@@ -315,6 +315,8 @@ function addOption(questionIndex, optionIndex) {
 function clearOptions(questionIndex, optionIndex, optionCount) {
 	for(var i=optionCount; i>optionIndex; i--) {
 		$('input[name=option_'+questionIndex+'_'+i+']').remove();
+		$('input[name=default_'+questionIndex+'][value='+(i-1)+']').remove();
+		$('#span_'+questionIndex+'_'+(i-1)).remove();
 	}
 
 	$('input[name=option_count_'+questionIndex+']').val(optionIndex);
