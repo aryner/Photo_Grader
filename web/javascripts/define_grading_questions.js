@@ -203,13 +203,31 @@ function gennerateConstraintRange(index, constraint_index) {
 	var type = document.getElementsByName('text_option_'+constraint_index);
 	for(var i=0; i<3; i++) {
 		if(type[i].checked) {
-			type = type[i];
+			type = type[i].value;
 			break;
 		}
 	}
-	var html = "<h4></h4>";
 
-	document.getElementsByName("constraint_options_"+index)[0].innerHTML = html;
+	var html = "";
+	if(type === 'text') {
+		document.getElementsByName("constraint_options_"+index)[0].innerHTML = html;
+	}
+	else {
+		html = "<h4>Enter the range conditional for this question</h4>"+
+		       "<input type='text' name='constraint_from_"+index+"'> - "+
+		       "<input type='text' name='constraint_to_"+index+"'>";
+
+		document.getElementsByName("constraint_options_"+index)[0].innerHTML = html;
+		
+		if(type === 'int') {
+			intsOnlyEnforcer(document.getElementsByName('constraint_from_'+index)[0]);
+			intsOnlyEnforcer(document.getElementsByName('constraint_to_'+index)[0]);
+		}
+		else {
+			numsOnlyEnforcer(document.getElementsByName('constraint_from_'+index)[0]);
+			numsOnlyEnforcer(document.getElementsByName('constraint_to_'+index)[0]);
+		}
+	}
 }
 
 var newQuestionListener = function(event) {
@@ -379,4 +397,18 @@ function arrayContains(array, string) {
 		if(array[i] === string) return true;
 	}
 	return false;
+}
+
+function intsOnlyEnforcer(input) {
+	input.oninput = function() {
+		this.value = this.value.replace(/[^0-9]/,'');
+	};
+}
+
+function numsOnlyEnforcer(input) {
+	input.oninput = function() {
+		while (this.value.length > 0 && !this.value.match(/^[0-9]*[\\\.]?[0-9]*$/,'')) {
+			this.value = this.value.substring(0,this.value.length-1);
+		}
+	};
 }
