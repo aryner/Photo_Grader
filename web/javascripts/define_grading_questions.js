@@ -208,12 +208,16 @@ function gennerateConstraintRange(index, constraint_index) {
 		}
 	}
 
-	var html = "";
 	if(type === 'text') {
+		var html = "<h4>Describe how this question is conditional</h4>"+
+			   "exactly<input type='radio' name='constraint_text_0_"+index+"' value='exactly'>"+
+			   "contains<input type='radio' name='constraint_text_0_"+index+"' value='contains'>&nbsp&nbsp&nbsp"+
+			   "case sensitive<input type='checkbox' name='constraint_case_0_"+index+"' value='case_sensitive'>";
 		document.getElementsByName("constraint_options_"+index)[0].innerHTML = html;
+		//use function to add input and button with listener for other possible conditionals
 	}
 	else {
-		html = "<h4>Enter the range conditional for this question</h4>"+
+		var html = "<h4>Enter the range conditional for this question</h4>"+
 		       "<input type='text' name='constraint_from_"+index+"'> - "+
 		       "<input type='text' name='constraint_to_"+index+"'>";
 
