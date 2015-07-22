@@ -188,6 +188,18 @@ function addConditionedOnSelectedListener(event, conditionedOn) {
 	}
 }
 
+function addOtherTextListener(index, count) {
+	var check = document.getElementById('other_text_'+index+'_'+count);
+	check.onchange = function() {
+		if(this.checked) {
+			//add new text constraint
+		}
+		else {
+			//remove any text restraints after this one
+		}
+	};
+}
+
 function generateConstraintOptions(index, constraint_index) {
 	var option_count = Number(document.getElementsByName('option_count_'+constraint_index)[0].value)-1;
 	var html = "<h4>Check options conditional for this question</h4>";
@@ -209,12 +221,15 @@ function gennerateConstraintRange(index, constraint_index) {
 	}
 
 	if(type === 'text') {
-		var html = "<h4>Describe how this question is conditional</h4>"+
+		var html = "<div id='text_0'><h4>Describe how this question is conditional</h4>"+
 			   "exactly<input type='radio' name='constraint_text_0_"+index+"' value='exactly'>"+
 			   "contains<input type='radio' name='constraint_text_0_"+index+"' value='contains'>&nbsp&nbsp&nbsp"+
-			   "case sensitive<input type='checkbox' name='constraint_case_0_"+index+"' value='case_sensitive'>";
+			   "case sensitive?<input type='checkbox' name='constraint_case_0_"+index+"' value='case_sensitive'>"+
+		   	   "<br><br><input type='text' name='constraint_text_"+index+"'>"+
+			   "Other text?<input type='checkbox' id='other_text_"+index+"_0' name='other_text_"+index+"_0'></div>";
 		document.getElementsByName("constraint_options_"+index)[0].innerHTML = html;
-		//use function to add input and button with listener for other possible conditionals
+		//use function to add listener for other possible conditionals
+		addOtherTextListener(index, 0);
 	}
 	else {
 		var html = "<h4>Enter the range conditional for this question</h4>"+
