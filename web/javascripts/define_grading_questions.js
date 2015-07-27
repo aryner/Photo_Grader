@@ -124,16 +124,37 @@ function checkForConstraints(index) {
 	}
 
 	if (constraintType > 1)
-		return checkConditionalOnRadioCheck(index,constraintIndex,constraintType);
-	return checkConditionalOnText(index,constraintIndex,constraintType);
+		return checkConditionalOnRadioCheck(index,constraintIndex);
+	return checkConditionalOnText(index,constraintIndex);
 }
 
-function checkConditionalOnRadioCheck(index,constraintIndex,contraintType) {
+function checkConditionalOnRadioCheck(index,constraintIndex) {
 	//STUB
+	var atLeastOneChecked = false;
+	var i = 0;
+	var option = $('input[name=constraint_option_'+index+'_'+i+']')[0];
+
+	while (option !== undefined && !atLeastOneChecked) {
+		if(option.checked) atLeastOneChecked = true;
+
+		i++;
+		option = $('input[name=constraint_option_'+index+'_'+i+']')[0];
+	}
+	return atLeastOneChecked;
 }
 
-function checkDonditionalOnText(index,constraintIndex,constraintType) {
-	//STUB
+function checkDonditionalOnText(index,constraintIndex) {
+	var constraintType = $('input[name=text_option_'+constraintIndex+']').val();
+
+	if(constraintType === 'text') {
+		var radios = $('input[name=constraint_text_0_'+index+']');
+
+		return $('input[name=constraint_text_'+index+']').val().length > 0 && oneChecked(radios);
+	}
+	else {
+		return $('input[name=constraint_from_'+index+']').val().length > 0 &&
+			$('input[name=constraint_to_'+index+']').val().length > 0;
+	}
 }
 
 function checkForLabel(index) {
@@ -471,7 +492,7 @@ function intsOnlyEnforcer(input) {
 
 function numsOnlyEnforcer(input) {
 	input.oninput = function() {
-		while (this.value.length > 0 && !this.value.match(/^[0-9]*[\\\.]?[0-9]*$/,'')) {
+		while (this.value.length > 0 && !this.value.match(/^[0-9]+[\\\.]?[0-9]*$/,'')) {
 			this.value = this.value.substring(0,this.value.length-1);
 		}
 	};
