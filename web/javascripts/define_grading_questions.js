@@ -13,6 +13,7 @@ $(document).ready(function() {
 	addAnswerTypeListener(0);
 
 	$(':submit[value=Submit]').click(function(e) {
+		e.preventDefault();
 		$('input[name=questionCount]').val(questionCount+1);
 
 		var errors = getErrorMsg();
@@ -25,6 +26,10 @@ $(document).ready(function() {
 			}
 			var div = document.getElementsByClassName('errorDiv');
 			div[0].innerHTML = msg;
+		}
+		else {
+			var div = document.getElementsByClassName('errorDiv');
+			div[0].innerHTML = "";
 		}
 	});
 });
@@ -87,7 +92,48 @@ function checkForIncompleteQuestion(index) {
 }
 
 function checkConstraint(index) {
-	return oneChecked($('input[name=constraints_'+index+']'));
+	var constraint = oneChecked($('input[name=constraints_'+index+']'));
+	if (!constraint) return constraint;
+
+	var constraintType;
+	var radios = $('input[name=constraints_'+index+']');
+	for (var i=0; i<radios.length; i++) {
+		if(radios[i].checked) {
+			constraintType = Numnber(radios[i]);
+		}
+	}
+	if (constraintType < 1) return constraint;
+	//if constraintType == 1 then check for 'conditional on which?' etc...
+	return checkForConstraints(index);
+}
+
+function checkForConstraints(index) {
+	var radios = $('input[name=dependent_'+index);
+	var checkedRadio = null;
+	for (var i=0; i<radios.length; i++) {
+		if(radios[i].checked) checkedRadio = radios[i].val();
+	}
+	if (checkedRadio === null) return false;
+
+	var constraintIndex = Number(checkedRadio.substr(checkedRadio.indexOf("_")+1));
+	var constraintRadios = $('input[name=type_'+constraintIndex+']');
+	var constraintType = 2;
+	for (var i=0; i<constraintRadios.length; i++) {
+		if(constraintRadios[i].checked)
+			constraintType = Number(constraintRadios[i].val());
+	}
+
+	if (constraintType > 1)
+		return checkConditionalOnRadioCheck(index,constraintIndex,constraintType);
+	return checkConditionalOnText(index,constraintIndex,constraintType);
+}
+
+function checkConditionalOnRadioCheck(index,constraintIndex,contraintType) {
+	//STUB
+}
+
+function checkDonditionalOnText(index,constraintIndex,constraintType) {
+	//STUB
 }
 
 function checkForLabel(index) {
@@ -112,7 +158,6 @@ function checkForQuestion(index) {
 
 function checkForOption(index) {
 	var checked = getCheckedRadio('input[name=type_'+index+']');
-	console.log(checked.value);
 	if(checked.value === '1') {
 		var radios = $('input[name=text_option_'+index+']');
 
@@ -229,7 +274,7 @@ function gennerateConstraintRange(index, constraint_index) {
 			   "</div>";
 		document.getElementsByName("constraint_options_"+index)[0].innerHTML = html;
 		//use function to add listener for other possible conditionals
-		addOtherTextListener(index, 0);
+		// addOtherTextListener(index, 0);
 	}
 	else {
 		var html = "<h4>Enter the range conditional for this question</h4>"+
