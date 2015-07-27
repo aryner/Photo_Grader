@@ -226,7 +226,7 @@ function gennerateConstraintRange(index, constraint_index) {
 			   "contains<input type='radio' name='constraint_text_0_"+index+"' value='contains'>&nbsp&nbsp&nbsp"+
 			   "case sensitive?<input type='checkbox' name='constraint_case_0_"+index+"' value='case_sensitive'>"+
 		   	   "<br><br><input type='text' name='constraint_text_"+index+"'>"+
-			   "Other text?<input type='checkbox' id='other_text_"+index+"_0' name='other_text_"+index+"_0'></div>";
+			   "</div>";
 		document.getElementsByName("constraint_options_"+index)[0].innerHTML = html;
 		//use function to add listener for other possible conditionals
 		addOtherTextListener(index, 0);
