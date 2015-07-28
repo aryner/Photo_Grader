@@ -17,6 +17,7 @@ $(document).ready(function() {
 		$('input[name=questionCount]').val(questionCount+1);
 
 		var errors = getErrorMsg();
+		console.log(errors.length);
 		if(errors.length > 0) {
 			console.log('error in grading questions');
 			e.preventDefault();
@@ -86,9 +87,11 @@ function checkForFilledQuestions(errors) {
 }
 
 function checkForIncompleteQuestion(index) {
-	return checkForType(index) && checkForQuestion(index) && 
+	var result = checkForType(index) && checkForQuestion(index) && 
 	       checkForOption(index) && checkForLabel(index) && 
 	       checkConstraint(index) ? false : true;
+
+        return result;
 }
 
 function checkConstraint(index) {
@@ -99,37 +102,44 @@ function checkConstraint(index) {
 	var radios = $('input[name=constraints_'+index+']');
 	for (var i=0; i<radios.length; i++) {
 		if(radios[i].checked) {
-			constraintType = Numnber(radios[i]);
+			constraintType = Number(radios[i].value);
 		}
 	}
 	if (constraintType < 1) return constraint;
 	//if constraintType == 1 then check for 'conditional on which?' etc...
-	return checkForConstraints(index);
+	var result = checkForConstraints(index);
+
+	return result;
 }
 
 function checkForConstraints(index) {
-	var radios = $('input[name=dependent_'+index);
+	var radios = $('input[name=dependent_'+index+']');
 	var checkedRadio = null;
 	for (var i=0; i<radios.length; i++) {
-		if(radios[i].checked) checkedRadio = radios[i].val();
+		if(radios[i].checked) checkedRadio = radios[i].value;
 	}
-	if (checkedRadio === null) return false;
+	if (checkedRadio === null) {
+		return false;
+	}
 
 	var constraintIndex = Number(checkedRadio.substr(checkedRadio.indexOf("_")+1));
 	var constraintRadios = $('input[name=type_'+constraintIndex+']');
 	var constraintType = 2;
 	for (var i=0; i<constraintRadios.length; i++) {
 		if(constraintRadios[i].checked)
-			constraintType = Number(constraintRadios[i].val());
+			constraintType = Number(constraintRadios[i].value);
 	}
 
-	if (constraintType > 1)
-		return checkConditionalOnRadioCheck(index,constraintIndex);
-	return checkConditionalOnText(index,constraintIndex);
+	if (constraintType > 1) {
+		var result1 = checkConditionalOnRadioCheck(index,constraintIndex);
+		return result1;
+	}
+	var result = checkConditionalOnText(index,constraintIndex);
+
+	return result;
 }
 
 function checkConditionalOnRadioCheck(index,constraintIndex) {
-	//STUB
 	var atLeastOneChecked = false;
 	var i = 0;
 	var option = $('input[name=constraint_option_'+index+'_'+i+']')[0];
@@ -140,12 +150,19 @@ function checkConditionalOnRadioCheck(index,constraintIndex) {
 		i++;
 		option = $('input[name=constraint_option_'+index+'_'+i+']')[0];
 	}
-	return atLeastOneChecked;
+	var result = atLeastOneChecked;
+
+	return result;
 }
 
-function checkDonditionalOnText(index,constraintIndex) {
-	var constraintType = $('input[name=text_option_'+constraintIndex+']').val();
-
+function checkConditionalOnText(index,constraintIndex) {
+	var constraintTypes = $('input[name=text_option_'+constraintIndex+']');
+	var constraintType;
+	for (var i=0; i<constraintTypes.length; i++) {
+		if (constraintTypes[i].checked)
+			constraintType = constraintTypes[i].value;
+	}
+	
 	if(constraintType === 'text') {
 		var radios = $('input[name=constraint_text_0_'+index+']');
 
