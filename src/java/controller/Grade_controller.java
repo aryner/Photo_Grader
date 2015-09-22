@@ -24,7 +24,7 @@ import metaData.grade.GradeGroup;
  *
  * @author aryner
  */
-@WebServlet(name = "Controller.User_controller", urlPatterns = {
+@WebServlet(name = "Controller.Grade_controller", urlPatterns = {
 								"/select_grade_category","/grade","/startGrading","/submitGrade",
 								})
 public class Grade_controller extends HttpServlet {

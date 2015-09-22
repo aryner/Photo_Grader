@@ -13,11 +13,9 @@ import metaData.grade.*;
 import utilities.*;
 
 import java.util.*;
-import java.io.*;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,11 +26,10 @@ import javax.servlet.http.HttpSession;
  * @author aryner
  */
 @WebServlet(name = "Controller", urlPatterns = {
-						"/Controller","/defineAssignment","/define_assignment","/home","/upload",
-						"/upload_pictures","/upload_table_data","/define_grading_questions", 
+						"/Controller","/home",
+						"/define_grading_questions", 
 						"/defineGradingQuestions",
-						"/img","/select_CSVs","/present_CSV","/printCSV",
-						"/assign_manual_meta","/manually_assign_meta-data","/setManualMetaData"
+						"/select_CSVs","/present_CSV","/printCSV",
 						})
 public class Controller extends HttpServlet {
 	/**
@@ -58,31 +55,6 @@ public class Controller extends HttpServlet {
 			response.sendRedirect("/Photo_Grader/index.jsp");
 			return;
 		}
-		else if(userPath.equals("/define_assignment")) {
-			ArrayList<MetaData> metaData = new ArrayList<MetaData>();
-			MetaData.makeLists(request, metaData);
-
-			request.setAttribute("studyName",request.getParameter("studyName"));
-			request.setAttribute("metaData",metaData);
-		}
-		else if(userPath.equals("/assign_manual_meta")) {
-			ArrayList<Photo> photos = (ArrayList)Query.getModel("SELECT * FROM "+study.getPhoto_attribute_table_name()+" ORDER BY id", new Photo());
-			ArrayList<ManualMetaData> manualMetaData = (ArrayList)Query.getModel("SELECT * FROM photo_data_by_manual WHERE study_id="+study.getId(),new ManualMetaData());
-
-			request.setAttribute("photos",photos);
-			request.setAttribute("manualMetaData",manualMetaData);
-		}
-		else if(userPath.equals("/manually_assign_meta-data")) {
-			int photoID = Integer.parseInt(request.getParameter("id"));
-			Photo photo = (Photo)Query.getModel("SELECT * FROM "+study.getPhoto_attribute_table_name()+" WHERE id='"+photoID+"'",new Photo()).get(0);
-			ArrayList<ManualMetaData> manualMetaData = (ArrayList)Query.getModel("SELECT * FROM photo_data_by_manual WHERE study_id="+study.getId(),new ManualMetaData());
-			ArrayList<Photo> prevNext = photo.getPrevNext(study.getPhoto_attribute_table_name());
-
-			request.setAttribute("prevNext",prevNext);
-			request.setAttribute("photoNumber", study.getPhotoNumber());
-			request.setAttribute("photo",photo);
-			request.setAttribute("manualMetaData",manualMetaData);
-		}
 		else if(userPath.equals("/define_grading_questions")) {
 			ArrayList<String> columns = Photo.getMetaDataKeys(study.getPhoto_attribute_table_name());
 			ArrayList<String> usedNames = GradeGroup.getUsedNames(study.getId());
@@ -99,27 +71,6 @@ public class Controller extends HttpServlet {
 
 			request.setAttribute("category",category);
 			request.setAttribute("csvLines", Grade.getCSVLines(new GradeGroup(grade_group_id),study));
-		}
-		else if(userPath.equals("/img")) {
-			String name = request.getParameter("name");
-			String number = request.getParameter("number");
-			response.setContentType("image/jpeg");
-			ServletOutputStream output = response.getOutputStream();
-			FileInputStream imgStream = new FileInputStream(Constants.PIC_PATH+number+Constants.FILE_SEP+name);
-
-			BufferedInputStream bufferedIn = new BufferedInputStream(imgStream);
-			BufferedOutputStream bufferedOut = new BufferedOutputStream(output);
-
-			int nextByte;
-			while((nextByte = bufferedIn.read()) != -1) {
-				bufferedOut.write(nextByte);
-			}
-
-			bufferedIn.close();
-			imgStream.close();
-			bufferedOut.close();
-			output.close();
-			return;
 		}
 
 		String url = "/WEB-INF/view" + userPath + ".jsp";
@@ -149,34 +100,7 @@ public class Controller extends HttpServlet {
 		GradeGroup group = (GradeGroup)session.getAttribute("grade_group");
 		Study study = (Study)session.getAttribute("study");
 
-		if(userPath.equals("/setManualMetaData")) {
-			ArrayList<ManualMetaData> manualMetaData = (ArrayList)Query.getModel("SELECT * FROM photo_data_by_manual WHERE study_id="+study.getId(),new ManualMetaData());
-			String redirect = Photo.assignManualMeta(request,study.getPhoto_attribute_table_name(),manualMetaData);
-
-			response.sendRedirect(redirect);
-			return;
-		}
-		else if(userPath.equals("/defineAssignment")) {
-			study = Study.createStudy(request);
-			MetaData.processDefinitions(study, request);
-
-			session.setAttribute("study",study);
-			response.sendRedirect("/Photo_Grader/home");
-			return;
-		}
-		else if(userPath.equals("/upload_pictures")) {
-			ArrayList<String> errors = FileIO.upload(request,FileIO.PHOTO,study);
-			session.setAttribute("errors",errors);
-			response.sendRedirect("/Photo_Grader/home");
-			return;
-		}
-		else if(userPath.equals("/upload_table_data")) {
-			ArrayList<String> errors = FileIO.upload(request,FileIO.TABLE,study);
-			session.setAttribute("errors",errors);
-			response.sendRedirect("/Photo_Grader/home");
-			return;
-		}
-		else if(userPath.equals("/defineGradingQuestions")) {
+		if(userPath.equals("/defineGradingQuestions")) {
 			session.setAttribute("errors",study.createGradeGroup(request));
 			response.sendRedirect("/Photo_Grader/home");
 			return;
