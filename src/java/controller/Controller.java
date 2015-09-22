@@ -28,12 +28,12 @@ import javax.servlet.http.HttpSession;
  * @author aryner
  */
 @WebServlet(name = "Controller", urlPatterns = {
-						"/Controller","/register","/createUser","/select_study","/login",
-						"/logout","/setStudy","/createStudy","/create_study","/defineAssignment",
-						"/define_assignment","/home","/upload","/upload_pictures","/upload_table_data",
-						"/define_grading_questions", "/defineGradingQuestions","/select_grade_category",
-						"/grade","/startGrading","/img","/submitGrade","/select_CSVs","/present_CSV",
-						"/printCSV","/assign_manual_meta","/manually_assign_meta-data","/setManualMetaData"
+						"/Controller","/register","/select_study","/setStudy","/createStudy",
+						"/create_study","/defineAssignment","/define_assignment","/home","/upload",
+						"/upload_pictures","/upload_table_data","/define_grading_questions", 
+						"/defineGradingQuestions","/select_grade_category","/grade","/startGrading",
+						"/img","/submitGrade","/select_CSVs","/present_CSV","/printCSV",
+						"/assign_manual_meta","/manually_assign_meta-data","/setManualMetaData"
 						})
 public class Controller extends HttpServlet {
 	/**
@@ -160,55 +160,7 @@ public class Controller extends HttpServlet {
 		GradeGroup group = (GradeGroup)session.getAttribute("grade_group");
 		Study study = (Study)session.getAttribute("study");
 
-		if(userPath.equals("/createUser")) {
-			String name = request.getParameter("userName");
-			String password = request.getParameter("password");
-			String rePassword = request.getParameter("rePassword");
-			String type = request.getParameter("graderType");
-
-			if(password.equals(rePassword)){
-				user = User.register(name, password);
-
-				if(user == null) {
-					session.setAttribute("error", Constants.TAKEN_USERNAME);
-					response.sendRedirect("/Photo_Grader/register");
-					return;
-				}
-				else { 
-					session.setAttribute("user", user); 
-					response.sendRedirect("/Photo_Grader/select_study"); 
-					return;
-				} 
-			}
-			else {
-				session.setAttribute("error", Constants.PASSWORDS_DONT_MATCH);
-				response.sendRedirect("/Photo_Grader/register"); 
-				return;
-			}
-		}
-		else if(userPath.equals("/login")) {
-			String name = request.getParameter("userName");
-			String password = request.getParameter("password");
-			user = User.login(name, password);
-
-			if(user == null) {
-				session.setAttribute("error", Constants.INCORRECT_NAME_PASS);
-				response.sendRedirect("/Photo_Grader/"); 
-				return;
-			}
-
-			session.setAttribute("user",user);
-			response.sendRedirect("/Photo_Grader/select_study"); 
-			return;
-		}
-		else if(userPath.equals("/logout")) {
-			session.removeAttribute("user");
-			session.removeAttribute("study");
-			session.removeAttribute("grade_group");
-			response.sendRedirect("/Photo_Grader/");
-			return;
-		}
-		else if(userPath.equals("/setManualMetaData")) {
+		if(userPath.equals("/setManualMetaData")) {
 			ArrayList<ManualMetaData> manualMetaData = (ArrayList)Query.getModel("SELECT * FROM photo_data_by_manual WHERE study_id="+study.getId(),new ManualMetaData());
 			String redirect = Photo.assignManualMeta(request,study.getPhoto_attribute_table_name(),manualMetaData);
 

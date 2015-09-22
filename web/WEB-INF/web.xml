@@ -4,6 +4,14 @@
         <param-name>file-upload</param-name>
         <param-value>/webapps/Photo_Grader/</param-value>
     </context-param>
+    <servlet>
+        <servlet-name>User_controller</servlet-name>
+        <servlet-class>controller.User_controller</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>User_controller</servlet-name>
+        <url-pattern>/User_controller</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>
             30
