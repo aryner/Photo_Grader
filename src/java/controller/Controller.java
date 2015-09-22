@@ -36,8 +36,7 @@ public class Controller extends HttpServlet {
 	 */
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-		throws ServletException, IOException {
-
+			throws ServletException, IOException {
 		String userPath = request.getServletPath(); 
 		HttpSession session = request.getSession(); 
 		User user = (User)session.getAttribute("user");
@@ -79,8 +78,7 @@ public class Controller extends HttpServlet {
 	 */
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-		throws ServletException, IOException {
-
+			throws ServletException, IOException {
 		String userPath = request.getServletPath(); 
 		HttpSession session = request.getSession(); 
 		User user = (User)session.getAttribute("user");

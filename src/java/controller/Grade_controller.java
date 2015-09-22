@@ -41,12 +41,11 @@ public class Grade_controller extends HttpServlet {
 	 */
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-		throws ServletException, IOException {
+			throws ServletException, IOException {
 		String userPath = request.getServletPath(); 
 		HttpSession session = request.getSession(); 
 		User user = (User)session.getAttribute("user");
 		Study study = (Study)session.getAttribute("study");
-		GradeGroup group = (GradeGroup)session.getAttribute("grade_group");
 
 		//The user is not logged in so is redirected to the index/login page
 		if(user == null) {
@@ -57,6 +56,7 @@ public class Grade_controller extends HttpServlet {
 			request.setAttribute("categories",study.getGradeCategoryNames());
 		}
 		else if(userPath.equals("/grade")) {
+			GradeGroup group = (GradeGroup)session.getAttribute("grade_group");
 			request.setAttribute("photoGroup",Photo.getUngradedGroup(group, study.getPhoto_attribute_table_name(), user.getName()));
 			request.setAttribute("photoNumber", study.getPhotoNumber());
 		}
@@ -93,14 +93,14 @@ public class Grade_controller extends HttpServlet {
 	 */
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-		throws ServletException, IOException {
+			throws ServletException, IOException {
 		String userPath = request.getServletPath(); 
 		HttpSession session = request.getSession(); 
-		User user = (User)session.getAttribute("user");
 		Study study = (Study)session.getAttribute("study");
-		GradeGroup group = (GradeGroup)session.getAttribute("grade_group");
 
 		if(userPath.equals("/submitGrade")) {
+			GradeGroup group = (GradeGroup)session.getAttribute("grade_group");
+			User user = (User)session.getAttribute("user");
 			Grade.grade(request, study, group, user);
 			response.sendRedirect("/Photo_Grader/grade");
 			return;
