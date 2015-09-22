@@ -22,7 +22,7 @@ import javax.servlet.annotation.WebServlet;
  */
 
 @WebServlet(name = "Controller.User_controller", urlPatterns = {
-								"/createUser","/login","/logout",
+								"/createUser","/login","/logout","/register"
 								})
 public class User_controller extends HttpServlet {
 
@@ -37,6 +37,15 @@ public class User_controller extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 		throws ServletException, IOException {
+		String userPath = request.getServletPath(); 
+
+		String url = "/WEB-INF/view" + userPath + ".jsp";
+
+		try {
+			request.getRequestDispatcher(url).forward(request, response);
+		} catch (IOException ex){
+			ex.printStackTrace(System.err);
+		}
 	}
 
 	/**

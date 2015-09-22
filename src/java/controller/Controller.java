@@ -28,7 +28,7 @@ import javax.servlet.http.HttpSession;
  * @author aryner
  */
 @WebServlet(name = "Controller", urlPatterns = {
-						"/Controller","/register","/select_study","/setStudy","/createStudy",
+						"/Controller","/select_study","/setStudy","/createStudy",
 						"/create_study","/defineAssignment","/define_assignment","/home","/upload",
 						"/upload_pictures","/upload_table_data","/define_grading_questions", 
 						"/defineGradingQuestions","/select_grade_category","/grade","/startGrading",
@@ -55,7 +55,7 @@ public class Controller extends HttpServlet {
 		Study study = (Study)session.getAttribute("study");
 
 		//The user is not logged in so is redirected to the index/login page
-		if(user == null && !userPath.equals("/register")) {
+		if(user == null) {
 			response.sendRedirect("/Photo_Grader/index.jsp");
 			return;
 		}
