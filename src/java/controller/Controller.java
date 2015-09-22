@@ -28,8 +28,7 @@ import javax.servlet.http.HttpSession;
  * @author aryner
  */
 @WebServlet(name = "Controller", urlPatterns = {
-						"/Controller","/select_study","/setStudy","/createStudy",
-						"/create_study","/defineAssignment","/define_assignment","/home","/upload",
+						"/Controller","/defineAssignment","/define_assignment","/home","/upload",
 						"/upload_pictures","/upload_table_data","/define_grading_questions", 
 						"/defineGradingQuestions","/select_grade_category","/grade","/startGrading",
 						"/img","/submitGrade","/select_CSVs","/present_CSV","/printCSV",
@@ -84,9 +83,6 @@ public class Controller extends HttpServlet {
 			request.setAttribute("photo",photo);
 			request.setAttribute("manualMetaData",manualMetaData);
 		}
-		else if(userPath.equals("/select_study")) {
-			request.setAttribute("studyNames",Query.getField("study","name",null,null));
-		}
 		else if(userPath.equals("/define_grading_questions")) {
 			ArrayList<String> columns = Photo.getMetaDataKeys(study.getPhoto_attribute_table_name());
 			ArrayList<String> usedNames = GradeGroup.getUsedNames(study.getId());
@@ -98,7 +94,7 @@ public class Controller extends HttpServlet {
 			request.setAttribute("categories",study.getGradeCategoryNames());
 		}
 		else if(userPath.equals("/grade")) {
-			request.setAttribute("photoGroup",Photo.getUngradedGroup(group, study.getPhoto_attribute_table_name(), user!=null?user.getName():null));
+			request.setAttribute("photoGroup",Photo.getUngradedGroup(group, study.getPhoto_attribute_table_name(), user.getName()));
 			request.setAttribute("photoNumber", study.getPhotoNumber());
 		}
 		else if(userPath.equals("/select_CSVs")) {
@@ -172,11 +168,6 @@ public class Controller extends HttpServlet {
 			MetaData.processDefinitions(study, request);
 
 			session.setAttribute("study",study);
-			response.sendRedirect("/Photo_Grader/home");
-			return;
-		}
-		else if(userPath.equals("/setStudy")) {
-			session.setAttribute("study",Study.getStudyByName(request.getParameter("name")));
 			response.sendRedirect("/Photo_Grader/home");
 			return;
 		}
