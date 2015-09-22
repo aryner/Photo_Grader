@@ -12,6 +12,10 @@
         <servlet-name>Study_controller</servlet-name>
         <servlet-class>controller.Study_controller</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>Grade_controller</servlet-name>
+        <servlet-class>controller.Grade_controller</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>User_controller</servlet-name>
         <url-pattern>/User_controller</url-pattern>
@@ -19,6 +23,10 @@
     <servlet-mapping>
         <servlet-name>Study_controller</servlet-name>
         <url-pattern>/Study_controller</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Grade_controller</servlet-name>
+        <url-pattern>/Grade_controller</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

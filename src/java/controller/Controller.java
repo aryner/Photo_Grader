@@ -30,8 +30,8 @@ import javax.servlet.http.HttpSession;
 @WebServlet(name = "Controller", urlPatterns = {
 						"/Controller","/defineAssignment","/define_assignment","/home","/upload",
 						"/upload_pictures","/upload_table_data","/define_grading_questions", 
-						"/defineGradingQuestions","/select_grade_category","/grade","/startGrading",
-						"/img","/submitGrade","/select_CSVs","/present_CSV","/printCSV",
+						"/defineGradingQuestions",
+						"/img","/select_CSVs","/present_CSV","/printCSV",
 						"/assign_manual_meta","/manually_assign_meta-data","/setManualMetaData"
 						})
 public class Controller extends HttpServlet {
@@ -89,13 +89,6 @@ public class Controller extends HttpServlet {
 			Helper.unprocess(columns);
 			request.setAttribute("columns", columns);
 			request.setAttribute("usedNames", usedNames);
-		}
-		else if(userPath.equals("/select_grade_category")) {
-			request.setAttribute("categories",study.getGradeCategoryNames());
-		}
-		else if(userPath.equals("/grade")) {
-			request.setAttribute("photoGroup",Photo.getUngradedGroup(group, study.getPhoto_attribute_table_name(), user.getName()));
-			request.setAttribute("photoNumber", study.getPhotoNumber());
 		}
 		else if(userPath.equals("/select_CSVs")) {
 			request.setAttribute("categories",study.getGradeCategoryNames());
@@ -186,17 +179,6 @@ public class Controller extends HttpServlet {
 		else if(userPath.equals("/defineGradingQuestions")) {
 			session.setAttribute("errors",study.createGradeGroup(request));
 			response.sendRedirect("/Photo_Grader/home");
-			return;
-		}
-		else if(userPath.equals("/startGrading")) {
-			int grade_group_id = study.getGradeGroupId(request.getParameter("category"));
-			session.setAttribute("grade_group", new GradeGroup(grade_group_id));
-			response.sendRedirect("/Photo_Grader/grade");
-			return;
-		}
-		else if(userPath.equals("/submitGrade")) {
-			Grade.grade(request, study, group, user);
-			response.sendRedirect("/Photo_Grader/grade");
 			return;
 		}
 		else if(userPath.equals("/printCSV")) {
