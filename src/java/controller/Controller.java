@@ -6,13 +6,10 @@
 
 package controller;
 
-import metaData.*;
-import SQL.*;
 import model.*;
 import metaData.grade.*;
 import utilities.*;
 
-import java.util.*;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -26,10 +23,7 @@ import javax.servlet.http.HttpSession;
  * @author aryner
  */
 @WebServlet(name = "Controller", urlPatterns = {
-						"/Controller","/home",
-						"/define_grading_questions", 
-						"/defineGradingQuestions",
-						"/select_CSVs","/present_CSV","/printCSV",
+						"/Controller","/home","/select_CSVs","/present_CSV","/printCSV"
 						})
 public class Controller extends HttpServlet {
 	/**
@@ -54,13 +48,6 @@ public class Controller extends HttpServlet {
 		if(user == null) {
 			response.sendRedirect("/Photo_Grader/index.jsp");
 			return;
-		}
-		else if(userPath.equals("/define_grading_questions")) {
-			ArrayList<String> columns = Photo.getMetaDataKeys(study.getPhoto_attribute_table_name());
-			ArrayList<String> usedNames = GradeGroup.getUsedNames(study.getId());
-			Helper.unprocess(columns);
-			request.setAttribute("columns", columns);
-			request.setAttribute("usedNames", usedNames);
 		}
 		else if(userPath.equals("/select_CSVs")) {
 			request.setAttribute("categories",study.getGradeCategoryNames());
@@ -100,12 +87,7 @@ public class Controller extends HttpServlet {
 		GradeGroup group = (GradeGroup)session.getAttribute("grade_group");
 		Study study = (Study)session.getAttribute("study");
 
-		if(userPath.equals("/defineGradingQuestions")) {
-			session.setAttribute("errors",study.createGradeGroup(request));
-			response.sendRedirect("/Photo_Grader/home");
-			return;
-		}
-		else if(userPath.equals("/printCSV")) {
+		if(userPath.equals("/printCSV")) {
 			String category = request.getParameter("category");
 			int grade_group_id = study.getGradeGroupId(request.getParameter("category"));
 			Tools.createCSV(Grade.getCSVLines(new GradeGroup(grade_group_id),study),category);

@@ -6,6 +6,7 @@
 
 package controller;
 
+import java.util.ArrayList;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -18,6 +19,7 @@ import model.User;
 import model.Study;
 import model.Grade;
 import model.Photo;
+import SQL.Helper;
 import metaData.grade.GradeGroup;
 
 /**
@@ -26,6 +28,7 @@ import metaData.grade.GradeGroup;
  */
 @WebServlet(name = "Controller.Grade_controller", urlPatterns = {
 								"/select_grade_category","/grade","/startGrading","/submitGrade",
+								"/define_grading_questions","/defineGradingQuestions"
 								})
 public class Grade_controller extends HttpServlet {
 	/**
@@ -45,7 +48,12 @@ public class Grade_controller extends HttpServlet {
 		Study study = (Study)session.getAttribute("study");
 		GradeGroup group = (GradeGroup)session.getAttribute("grade_group");
 
-		if(userPath.equals("/select_grade_category")) {
+		//The user is not logged in so is redirected to the index/login page
+		if(user == null) {
+			response.sendRedirect("/Photo_Grader/index.jsp");
+			return;
+		}
+		else if(userPath.equals("/select_grade_category")) {
 			request.setAttribute("categories",study.getGradeCategoryNames());
 		}
 		else if(userPath.equals("/grade")) {
@@ -57,6 +65,13 @@ public class Grade_controller extends HttpServlet {
 			session.setAttribute("grade_group", new GradeGroup(grade_group_id));
 			response.sendRedirect("/Photo_Grader/grade");
 			return;
+		}
+		else if(userPath.equals("/define_grading_questions")) {
+			ArrayList<String> columns = Photo.getMetaDataKeys(study.getPhoto_attribute_table_name());
+			ArrayList<String> usedNames = GradeGroup.getUsedNames(study.getId());
+			Helper.unprocess(columns);
+			request.setAttribute("columns", columns);
+			request.setAttribute("usedNames", usedNames);
 		}
 
 		String url = "/WEB-INF/view" + userPath + ".jsp";
@@ -88,6 +103,11 @@ public class Grade_controller extends HttpServlet {
 		if(userPath.equals("/submitGrade")) {
 			Grade.grade(request, study, group, user);
 			response.sendRedirect("/Photo_Grader/grade");
+			return;
+		}
+		else if(userPath.equals("/defineGradingQuestions")) {
+			session.setAttribute("errors",study.createGradeGroup(request));
+			response.sendRedirect("/Photo_Grader/home");
 			return;
 		}
 

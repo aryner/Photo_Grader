@@ -16,13 +16,14 @@ import javax.servlet.http.HttpSession;
 
 import SQL.Query;
 import model.Study;
+import model.User;
 
 /**
  *
  * @author aryner
  */
 @WebServlet(name = "Controller.Study_controller", urlPatterns = {
-								"/select_study","/setStudy","/createStudy","/create_study",
+								"/select_study","/setStudy","/createStudy","/create_study"
 								})
 public class Study_controller extends HttpServlet {
 	/**
@@ -37,8 +38,15 @@ public class Study_controller extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 		throws ServletException, IOException {
 		String userPath = request.getServletPath(); 
+		HttpSession session = request.getSession(); 
+		User user = (User)session.getAttribute("user");
 
-		if(userPath.equals("/select_study")) {
+		//The user is not logged in so is redirected to the index/login page
+		if(user == null) {
+			response.sendRedirect("/Photo_Grader/index.jsp");
+			return;
+		}
+		else if(userPath.equals("/select_study")) {
 			request.setAttribute("studyNames",Query.getField("study","name",null,null));
 		}
 

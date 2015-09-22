@@ -39,6 +39,14 @@ public class User_controller extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 		throws ServletException, IOException {
 		String userPath = request.getServletPath(); 
+		HttpSession session = request.getSession(); 
+		User user = (User)session.getAttribute("user");
+
+		//The user is not logged in so is redirected to the index/login page
+		if(user == null && !userPath.equals("/register")) {
+			response.sendRedirect("/Photo_Grader/index.jsp");
+			return;
+		}
 
 		String url = "/WEB-INF/view" + userPath + ".jsp";
 

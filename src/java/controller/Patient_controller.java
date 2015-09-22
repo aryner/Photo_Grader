@@ -18,6 +18,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpSession;
 
 import model.Study;
+import model.User;
 import model.Photo;
 import metaData.MetaData;
 import metaData.ManualMetaData;
@@ -49,8 +50,14 @@ public class Patient_controller extends HttpServlet {
 		String userPath = request.getServletPath(); 
 		HttpSession session = request.getSession(); 
 		Study study = (Study)session.getAttribute("study");
+		User user = (User)session.getAttribute("user");
 
-		if(userPath.equals("/define_assignment")) {
+		//The user is not logged in so is redirected to the index/login page
+		if(user == null) {
+			response.sendRedirect("/Photo_Grader/index.jsp");
+			return;
+		}
+		else if(userPath.equals("/define_assignment")) {
 			ArrayList<MetaData> metaData = new ArrayList<MetaData>();
 			MetaData.makeLists(request, metaData);
 
