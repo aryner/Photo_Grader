@@ -6,11 +6,16 @@
 
 package controller;
 
-import model.*;
-import metaData.grade.*;
-import utilities.*;
+import model.Study;
+import model.User;
+import model.Grade;
+
+import metaData.grade.GradeGroup;
+
+import utilities.Tools;
 
 import java.io.IOException;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -40,7 +45,6 @@ public class Controller extends HttpServlet {
 		String userPath = request.getServletPath(); 
 		HttpSession session = request.getSession(); 
 		User user = (User)session.getAttribute("user");
-		GradeGroup group = (GradeGroup)session.getAttribute("grade_group");
 		Study study = (Study)session.getAttribute("study");
 
 		//The user is not logged in so is redirected to the index/login page
@@ -81,8 +85,6 @@ public class Controller extends HttpServlet {
 			throws ServletException, IOException {
 		String userPath = request.getServletPath(); 
 		HttpSession session = request.getSession(); 
-		User user = (User)session.getAttribute("user");
-		GradeGroup group = (GradeGroup)session.getAttribute("grade_group");
 		Study study = (Study)session.getAttribute("study");
 
 		if(userPath.equals("/printCSV")) {

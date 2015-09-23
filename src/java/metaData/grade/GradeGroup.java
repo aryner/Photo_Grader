@@ -23,6 +23,8 @@ public class GradeGroup extends Model {
 	private ArrayList<GroupBy> groupBy;
 	private ArrayList<Question> questions;
 
+	public static final String TABLE_NAME = "photo_grade_group";
+
 	public GradeGroup() {}
 
 	public GradeGroup(int id) {

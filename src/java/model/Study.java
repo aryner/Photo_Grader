@@ -6,12 +6,21 @@
 
 package model;
 
-import SQL.*;
-import utilities.*;
-import java.util.*;
-import java.sql.*;
+import java.util.ArrayList;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import javax.servlet.http.HttpServletRequest;
-import metaData.*;
+
+import SQL.Query;
+import SQL.Helper;
+
+import utilities.Tools;
+
+import metaData.TableMetaData;
+import metaData.ManualMetaData;
+import metaData.MetaData;
+import metaData.grade.GradeGroup;
 
 /**
  *
@@ -70,19 +79,19 @@ public class Study extends Model {
 		ArrayList<String> errors = new ArrayList<String>();
 
 		String newName = request.getParameter("name");
-		ArrayList<String> usedNames = (ArrayList)Query.getField("photo_grade_group", "name", "study_id="+this.id,null);
+		ArrayList<String> usedNames = (ArrayList)Query.getField(GradeGroup.TABLE_NAME, "name", "study_id="+this.id,null);
 		if(Tools.contains(usedNames, newName)) {
 			errors.add("That grade category name has already been used");
 			return errors;
 		}
 
-		usedNames = (ArrayList)Query.getField("photo_grade_group", "grade_name", null,null);
+		usedNames = (ArrayList)Query.getField(GradeGroup.TABLE_NAME, "grade_name", null,null);
 		String grade_name = Tools.generateTableName("grade_", usedNames);
 		String query = "INSERT INTO photo_grade_group (study_id, name, grade_name) VALUES ('"+this.id+
 			       "', '"+newName+"', '"+grade_name+"')";
 		Query.update(query);
 
-		int groupId = Integer.parseInt(Query.getField("photo_grade_group","id","study_id="+this.id+" AND name='"+newName+"'",null).get(0)+"");
+		int groupId = Integer.parseInt(Query.getField(GradeGroup.TABLE_NAME,"id","study_id="+this.id+" AND name='"+newName+"'",null).get(0)+"");
 		Grade.createGroup(groupId, this.photo_attribute_table_name, request);
 		Grade.createQuestions(groupId, request);
 		Grade.createTable(groupId);
@@ -95,11 +104,11 @@ public class Study extends Model {
 	}
 
 	public int getGradeGroupId(String name) {
-		return Integer.parseInt(""+Query.getField("photo_grade_group","id","study_id="+this.id+" AND name='"+name+"'",null).get(0));
+		return Integer.parseInt(""+Query.getField(GradeGroup.TABLE_NAME,"id","study_id="+this.id+" AND name='"+name+"'",null).get(0));
 	}
 
 	public ArrayList<String> getGradeCategoryNames() {
-		return (ArrayList)Query.getField("photo_grade_group","name","study_id="+this.id,null);
+		return (ArrayList)Query.getField(GradeGroup.TABLE_NAME,"name","study_id="+this.id,null);
 	}
 
 	public ArrayList getExcelTableMetaData() {
