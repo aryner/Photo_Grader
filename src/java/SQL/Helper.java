@@ -6,11 +6,18 @@
 
 package SQL;
 
-import model.*;
 import java.util.*;
-import metaData.*;
-import utilities.*;
-import java.io.*;
+
+import java.io.File;
+
+import model.Study;
+
+import metaData.MetaData;
+import metaData.PhotoNameMetaData;
+
+import utilities.FileIO;
+import utilities.Tools;
+import utilities.Constants;
 
 /**
  *

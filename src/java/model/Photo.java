@@ -6,13 +6,27 @@
 
 package model;
 
-import java.util.*;
-import SQL.*;
-import utilities.*;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Random;
+import java.util.Enumeration;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+
 import javax.servlet.http.HttpServletRequest;
-import java.sql.*;
-import metaData.*;
-import metaData.grade.*;
+
+import SQL.Query;
+import SQL.Helper;
+
+import utilities.FileIO;
+
+import metaData.MetaDataSource;
+import metaData.ManualMetaData;
+
+import metaData.grade.GradeGroup;
 
 /**
  *

@@ -6,10 +6,13 @@
 
 package metaData.grade;
 
-import model.*;
-import java.sql.*;
-import java.util.*;
-import SQL.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+import model.Model;
+
+import SQL.Query;
 
 /**
  *
