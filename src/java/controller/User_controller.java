@@ -7,13 +7,15 @@
 package controller;
 
 import java.io.IOException;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import utilities.Constants;
 import javax.servlet.annotation.WebServlet;
+
+import utilities.Constants;
 
 import model.User;
 
@@ -77,25 +79,9 @@ public class User_controller extends HttpServlet {
 			String rePassword = request.getParameter("rePassword");
 			String type = request.getParameter("graderType");
 
-			if(password.equals(rePassword)){
-				User user = User.register(name, password);
+			response.sendRedirect(User.createUser(name, password, rePassword, type, session));
 
-				if(user == null) {
-					session.setAttribute("error", Constants.TAKEN_USERNAME);
-					response.sendRedirect("/Photo_Grader/register");
-					return;
-				}
-				else { 
-					session.setAttribute("user", user); 
-					response.sendRedirect("/Photo_Grader/select_study"); 
-					return;
-				} 
-			}
-			else {
-				session.setAttribute("error", Constants.PASSWORDS_DONT_MATCH);
-				response.sendRedirect("/Photo_Grader/register"); 
-				return;
-			}
+			return;
 		}
 		else if(userPath.equals("/login")) {
 			String name = request.getParameter("userName");

@@ -6,9 +6,16 @@
 
 package model;
 
-import java.sql.*;
-import java.util.*;
-import SQL.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+import javax.servlet.http.HttpSession;
+
+import SQL.Query;
+import SQL.Helper;
+
+import utilities.Constants;
 
 /**
  *
@@ -41,6 +48,25 @@ public class User extends Model {
 		}
 
 		return null;
+	}
+
+	public static String createUser(String name, String password, String rePassword, String type, HttpSession session) {
+		if(password.equals(rePassword)) {
+			User user = User.register(name, password);
+
+			if (user == null) {
+				session.setAttribute("error", Constants.TAKEN_USERNAME);
+				return "/Photo_Grader/register";
+			}
+			else {
+				session.setAttribute("user", user); 
+				return "/Photo_Grader/select_study";
+			}
+		}
+		else {
+			session.setAttribute("error", Constants.PASSWORDS_DONT_MATCH);
+			return "/Photo_Grader/register";
+		}
 	}
 
 	public static User register(String name, String password) {

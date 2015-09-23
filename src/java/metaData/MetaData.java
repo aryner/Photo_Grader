@@ -6,10 +6,16 @@
 
 package metaData;
 
-import model.*;
-import SQL.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
+
 import javax.servlet.http.HttpServletRequest;
+
+import model.Study;
+import model.Photo;
+
+import SQL.Helper;
 
 /**
  *
@@ -59,9 +65,8 @@ public class MetaData {
 		for(int i=0; i<maxCount; i++) {
 			String name = request.getParameter("name"+i);
 			if(name != null && !name.equals("")) {
-				int type = STRING;
 				int collect = Integer.parseInt(request.getParameter("collect"+i));
-				metaData.add(new MetaData(name,type,collect));
+				metaData.add(new MetaData(name,STRING,collect));
 			}
 		}
 	}

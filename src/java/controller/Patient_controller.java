@@ -7,8 +7,11 @@
 package controller;
 
 import java.util.ArrayList;
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.IOException;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -20,9 +23,12 @@ import javax.servlet.http.HttpSession;
 import model.Study;
 import model.User;
 import model.Photo;
+
 import metaData.MetaData;
 import metaData.ManualMetaData;
+
 import SQL.Query;
+
 import utilities.Constants;
 import utilities.FileIO;
 
