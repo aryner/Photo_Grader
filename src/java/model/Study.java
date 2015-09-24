@@ -20,7 +20,9 @@ import utilities.Tools;
 import metaData.TableMetaData;
 import metaData.ManualMetaData;
 import metaData.MetaData;
+
 import metaData.grade.GradeGroup;
+import metaData.grade.Question;
 
 /**
  *
@@ -93,7 +95,7 @@ public class Study extends Model {
 
 		int groupId = Integer.parseInt(Query.getField(GradeGroup.TABLE_NAME,"id","study_id="+this.id+" AND name='"+newName+"'",null).get(0)+"");
 		Grade.createGroup(groupId, this.photo_attribute_table_name, request);
-		Grade.createQuestions(groupId, request);
+		Question.createQuestions(groupId, request);
 		Grade.createTable(groupId);
 
 		return errors;
