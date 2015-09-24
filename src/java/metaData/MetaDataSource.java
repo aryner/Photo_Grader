@@ -6,8 +6,8 @@
 
 package metaData;
 
-import java.util.*;
-import model.*;
+import java.util.ArrayList;
+import model.Model;
 import javax.servlet.http.HttpServletRequest;
 
 /**

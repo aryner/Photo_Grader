@@ -6,11 +6,16 @@
 
 package metaData;
 
+import java.util.ArrayList;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
-import SQL.*;
-import model.*;
-import java.sql.*;
+
+import model.Model;
+
+import SQL.Query;
+import SQL.Helper;
 
 /**
  *
@@ -24,6 +29,8 @@ public class TableMetaData extends Model implements MetaDataSource {
 	private String identifier; //name of the photo attribute used as an identifier
 	private String identifier_col;
 	private int table_type;
+	
+	private static final String TABLE_NAME = "photo_data_by_table";
 
 	public TableMetaData() { }
 
@@ -79,7 +86,7 @@ public class TableMetaData extends Model implements MetaDataSource {
 
 	public static void updateDB(ArrayList<TableMetaData> metaData) {
 		if(metaData.isEmpty()) return;
-		String query = "INSERT INTO photo_data_by_table (study_id, name, "+
+		String query = "INSERT INTO "+TABLE_NAME+" (study_id, name, "+
 				"col_name, identifier, identifier_col, table_type) "+
 				"VALUES ";
 		String postfix = "";

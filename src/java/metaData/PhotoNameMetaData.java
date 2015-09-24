@@ -8,12 +8,18 @@ package metaData;
 
 
 
-import java.util.*;
-import java.sql.*;
-import SQL.*;
-import model.*;
-import utilities.*;
+import java.util.ArrayList;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import javax.servlet.http.HttpServletRequest;
+
+import model.Model;
+
+import SQL.Query;
+import SQL.Helper;
+
+import utilities.Tools;
 
 /**
  *
@@ -29,6 +35,8 @@ public class PhotoNameMetaData extends Model implements MetaDataSource {
 	private int ends;
 	private String start_flag;
 	private String end_flag;
+
+	private static final String TABLE_NAME = "photo_data_by_name";
 
 	public static final int START = 1;
 	public static final int END = 2;
@@ -76,7 +84,7 @@ public class PhotoNameMetaData extends Model implements MetaDataSource {
 
 	@Override
 	public ArrayList<Model> getMetaDataSources(String where, String order){
-		String query = "SELECT * FROM photo_data_by_name "+(where.length()>0?"WHERE "+where:"")+(order.length()>0?" ORDER BY "+order:"");
+		String query = "SELECT * FROM "+TABLE_NAME+(where.length()>0?" WHERE "+where:"")+(order.length()>0?" ORDER BY "+order:"");
 		return Query.getModel(query, this);
 	}
 
@@ -99,7 +107,7 @@ public class PhotoNameMetaData extends Model implements MetaDataSource {
 
 	public static void updateDB(ArrayList<PhotoNameMetaData> metaData) {
 		if(metaData.isEmpty()) return;
-		String query = "INSERT INTO photo_data_by_name (study_id, name, "+
+		String query = "INSERT INTO "+TABLE_NAME+" (study_id, name, "+
 				"position, used, starts, ends, start_flag, end_flag) "+
 				"VALUES ";
 		String postfix = "";
@@ -174,7 +182,6 @@ public class PhotoNameMetaData extends Model implements MetaDataSource {
 				currIndex = endIndex;
 			}
 			else if(endIndex != -2) {
-				//error
 				errors.add(name+" does not conform to the defined file name meta-data");
 			}
 		}
