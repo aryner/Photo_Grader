@@ -136,7 +136,7 @@ public class Patient_controller extends HttpServlet {
 
 		if(userPath.equals("/setManualMetaData")) {
 			ArrayList<ManualMetaData> manualMetaData = (ArrayList)Query.getModel("SELECT * FROM photo_data_by_manual WHERE study_id="+study.getId(),new ManualMetaData());
-			String redirect = Photo.assignManualMeta(request,study.getPhoto_attribute_table_name(),manualMetaData);
+			String redirect = ManualMetaData.assignManualMeta(request,study.getPhoto_attribute_table_name(),manualMetaData);
 
 			response.sendRedirect(redirect);
 			return;

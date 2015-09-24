@@ -203,55 +203,7 @@ public class Photo extends Model{
 		return result;
 	}
 
-	public static String assignManualMeta(HttpServletRequest request, String table_name, ArrayList<ManualMetaData> metaData) {
-		String id = request.getParameter("photo_id");
-		Photo photo = (Photo)Query.getModel("SELECT * FROM "+table_name+" WHERE id="+id,new Photo()).get(0);
-		String queryStart = "UPDATE "+table_name+" SET ";
-		String queryEnd = " WHERE id='"+photo.getId()+"'";
-		Map<String,String> queryUpdates = new HashMap<String,String>();
-
-		Enumeration params = request.getParameterNames();
-		while(params.hasMoreElements()) {
-			String value = "";
-			String key = "";
-			String curr = (String)params.nextElement();
-			for(ManualMetaData datum : metaData) {
-				key = datum.getName();
-				if(key.equals(curr)) {
-					value = request.getParameter(curr);
-					if(value.isEmpty()) continue;
-					value = " "+Helper.process(key)+"='"+value+"'";
-					break;
-				}
-				else if(curr.contains(key+"_")) {
-					if(queryUpdates.keySet().contains(key)) {
-						value = queryUpdates.get(key);
-						value = value.substring(0,value.length()-1)+"|"+request.getParameter(curr)+"'";
-						break;
-					}
-					else {
-						value = " "+Helper.process(key)+"='"+request.getParameter(curr)+"'";
-						break;
-					}
-				}
-			}
-			if(!value.isEmpty()) {
-				queryUpdates.put(key, value);
-			}
-		}
-		if(!queryUpdates.isEmpty()) {
-			Iterator<String> i = queryUpdates.values().iterator();
-			String queryUpdate = i.next(); 
-			while(i.hasNext()) {
-				queryUpdate += ","+i.next();
-			}
-			Query.update(queryStart+queryUpdate+queryEnd);
-		}
-
-		return getSubmitLink(request,table_name,photo);
-	}
-
-	private static String getSubmitLink(HttpServletRequest request, String table_name, Photo photo) {
+	public static String getSubmitLink(HttpServletRequest request, String table_name, Photo photo) {
 
 		ArrayList<Photo> prevNext = photo.getPrevNext(table_name);
 

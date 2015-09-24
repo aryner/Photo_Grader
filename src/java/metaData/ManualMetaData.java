@@ -8,6 +8,10 @@ package metaData;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Enumeration;
+import java.util.Iterator;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -79,6 +83,68 @@ public class ManualMetaData extends Model implements MetaDataSource {
 		}
 
 		return null;
+	}
+
+	public static String assignManualMeta(HttpServletRequest request, String table_name, ArrayList<ManualMetaData> metaData) {
+		String id = request.getParameter("photo_id");
+		Photo photo = (Photo)Query.getModel("SELECT * FROM "+table_name+" WHERE id="+id,new Photo()).get(0);
+		String queryStart = "UPDATE "+table_name+" SET ";
+		String queryEnd = " WHERE id='"+photo.getId()+"'";
+		Map<String,String> queryUpdates = new HashMap<String,String>();
+
+		Enumeration params = request.getParameterNames();
+		while(params.hasMoreElements()) {
+			KeyValuePair keyValue = new ManualMetaData().getKeyValuePair((String)params.nextElement(), metaData, request, queryUpdates);
+			if(!keyValue.isEmpty()) {
+				queryUpdates.put(keyValue.getKey(), keyValue.getValue());
+			}
+		}
+		if(!queryUpdates.isEmpty()) {
+			Iterator<String> i = queryUpdates.values().iterator();
+			String queryUpdate = i.next(); 
+			while(i.hasNext()) {
+				queryUpdate += ","+i.next();
+			}
+			Query.update(queryStart+queryUpdate+queryEnd);
+		}
+
+		return Photo.getSubmitLink(request,table_name,photo);
+	}
+
+	private KeyValuePair getKeyValuePair(
+			String curr, ArrayList<ManualMetaData> metaData, 
+			HttpServletRequest request, Map<String,String> queryUpdates
+		) {
+		KeyValuePair keyValue = new KeyValuePair(null,null);
+		for(ManualMetaData datum : metaData) {
+			keyValue = checkForKeyValuePair(datum, curr, request, queryUpdates);
+			if (keyValue != null) break;
+		}
+
+		return keyValue;
+	}
+
+	private KeyValuePair checkForKeyValuePair(ManualMetaData datum, String curr, HttpServletRequest request, Map<String,String> queryUpdates) {
+		String value = "";
+		String key;
+
+		key = datum.getName();
+		if(key.equals(curr)) {
+			value = request.getParameter(curr);
+			if(value.isEmpty()) return null;
+			value = " "+Helper.process(key)+"='"+value+"'";
+		}
+		else if(curr.contains(key+"_")) {
+			if(queryUpdates.keySet().contains(key)) {
+				value = queryUpdates.get(key);
+				value = value.substring(0,value.length()-1)+"|"+request.getParameter(curr)+"'";
+			}
+			else {
+				value = " "+Helper.process(key)+"='"+request.getParameter(curr)+"'";
+			}
+		}
+
+		return new KeyValuePair(key,value);
 	}
 
 	public static void updateDB(ArrayList<ManualMetaData> metaData) {
@@ -260,5 +326,27 @@ public class ManualMetaData extends Model implements MetaDataSource {
 	 */
 	public void setInput_type(int input_type) {
 		this.input_type = input_type;
+	}
+
+	private class KeyValuePair {
+		private final String key;
+		private final String value;
+
+		public KeyValuePair(String key, String value) {
+			this.key = key;
+			this.value = value;
+		}
+
+		public boolean isEmpty() {
+			return value == null || key == null;
+		}
+
+		public String getKey() {
+			return key;
+		}
+
+		public String getValue() {
+			return value;
+		}
 	}
 }
