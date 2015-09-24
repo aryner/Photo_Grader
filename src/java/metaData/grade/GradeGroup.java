@@ -10,9 +10,15 @@ import java.util.ArrayList;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.servlet.http.HttpServletRequest;
+
 import model.Model;
+import model.Study;
+import model.Grade;
 
 import SQL.Query;
+
+import utilities.Tools;
 
 /**
  *
@@ -64,6 +70,30 @@ public class GradeGroup extends Model {
 			e.printStackTrace(System.err);
 		}
 		return null;
+	}
+
+	public static ArrayList<String> createGradeGroup(HttpServletRequest request, Study study) {
+		ArrayList<String> errors = new ArrayList<String>();
+
+		String newName = request.getParameter("name");
+		ArrayList<String> usedNames = (ArrayList)Query.getField(GradeGroup.TABLE_NAME, "name", "study_id="+study.getId(),null);
+		if(Tools.contains(usedNames, newName)) {
+			errors.add("That grade category name has already been used");
+			return errors;
+		}
+
+		usedNames = (ArrayList)Query.getField(GradeGroup.TABLE_NAME, "grade_name", null,null);
+		String grade_name = Tools.generateTableName("grade_", usedNames);
+		String query = "INSERT INTO photo_grade_group (study_id, name, grade_name) VALUES ('"+study.getId()+
+			       "', '"+newName+"', '"+grade_name+"')";
+		Query.update(query);
+
+		int groupId = Integer.parseInt(Query.getField(GradeGroup.TABLE_NAME,"id","study_id="+study.getId()+" AND name='"+newName+"'",null).get(0)+"");
+		Grade.createGroup(groupId, study.getPhoto_attribute_table_name(), request);
+		Question.createQuestions(groupId, request);
+		Grade.createTable(groupId);
+
+		return errors;
 	}
 
 	public static ArrayList<String> getUsedNames(int studyId) {

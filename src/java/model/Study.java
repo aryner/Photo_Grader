@@ -22,7 +22,6 @@ import metaData.ManualMetaData;
 import metaData.MetaData;
 
 import metaData.grade.GradeGroup;
-import metaData.grade.Question;
 
 /**
  *
@@ -75,30 +74,6 @@ public class Study extends Model {
 
 		newStudy = "SELECT * FROM study WHERE name='"+Helper.process(name)+"'";
 		return (Study)Query.getModel(newStudy, new Study()).get(0);
-	}
-
-	public ArrayList<String> createGradeGroup(HttpServletRequest request) {
-		ArrayList<String> errors = new ArrayList<String>();
-
-		String newName = request.getParameter("name");
-		ArrayList<String> usedNames = (ArrayList)Query.getField(GradeGroup.TABLE_NAME, "name", "study_id="+this.id,null);
-		if(Tools.contains(usedNames, newName)) {
-			errors.add("That grade category name has already been used");
-			return errors;
-		}
-
-		usedNames = (ArrayList)Query.getField(GradeGroup.TABLE_NAME, "grade_name", null,null);
-		String grade_name = Tools.generateTableName("grade_", usedNames);
-		String query = "INSERT INTO photo_grade_group (study_id, name, grade_name) VALUES ('"+this.id+
-			       "', '"+newName+"', '"+grade_name+"')";
-		Query.update(query);
-
-		int groupId = Integer.parseInt(Query.getField(GradeGroup.TABLE_NAME,"id","study_id="+this.id+" AND name='"+newName+"'",null).get(0)+"");
-		Grade.createGroup(groupId, this.photo_attribute_table_name, request);
-		Question.createQuestions(groupId, request);
-		Grade.createTable(groupId);
-
-		return errors;
 	}
 
 	public String getPhotoNumber() {

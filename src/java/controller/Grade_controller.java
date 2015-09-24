@@ -100,7 +100,7 @@ public class Grade_controller extends HttpServlet {
 			return;
 		}
 		else if(userPath.equals("/defineGradingQuestions")) {
-			session.setAttribute("errors",study.createGradeGroup(request));
+			session.setAttribute("errors",GradeGroup.createGradeGroup(request,study));
 			response.sendRedirect("/Photo_Grader/home");
 			return;
 		}
