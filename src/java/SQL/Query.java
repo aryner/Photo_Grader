@@ -6,40 +6,43 @@
 
 package SQL;
 
-import java.sql.*;
-import java.util.*; 
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.Connection;
+import java.sql.Statement;
+import java.sql.SQLException;
+import java.util.ArrayList; 
+
 import javax.naming.Context; 
 import javax.sql.DataSource;
 import javax.naming.InitialContext; 
-import model.*;
+import javax.naming.NamingException;
+
+import model.Model;
 
 /**
  *
  * @author aryner
  */
 public class Query {
+	private static final String CONTEXT = "java:comp/env";
+	private static final String DATASOURCE = "photo_grader";
+	private static final int UPDATE = 0;
+	private static final int QUERY = 1;
 
 	public static ArrayList<Model> getModel(String query, Model model) {
 		ArrayList<Model> result = new ArrayList<Model>();
-		Connection con = null;
-		Statement stmt = null;
-		ResultSet resultSet = null;
+		SQLResult sqlResult = null;
 
 		try {
-			InitialContext initialContext = new InitialContext();
-			Context context = (Context)initialContext.lookup("java:comp/env");
-			DataSource dataSource = (DataSource)context.lookup("photo_grader");
-			con = dataSource.getConnection();
-
-			stmt = con.createStatement();
-
-			resultSet = stmt.executeQuery(query); 
+			sqlResult = new Query().getResult(query,QUERY);
+			ResultSet resultSet = sqlResult.getResultSet();
 
 			while(resultSet.next()) {
 				result.add(model.getModel(resultSet));
 			}
 		}
-		catch (javax.naming.NamingException e) {
+		catch (NamingException e) {
 			System.err.println(query);
 			e.printStackTrace(System.err);
 		}
@@ -48,7 +51,7 @@ public class Query {
 			e.printStackTrace(System.err);
 		}
 		finally {
-			close(con, stmt, resultSet);
+			if (sqlResult != null) sqlResult.close();
 		}
 
 		return result;
@@ -56,21 +59,13 @@ public class Query {
 
 	public static ArrayList<Object> getField(String table, String field, String where, String order) {
 		ArrayList<Object> result = new ArrayList<Object>();
-		Connection con = null;
-		Statement stmt = null;
-		ResultSet resultSet = null;
+		SQLResult sqlResult = null;
 
 		try {
-			InitialContext initialContext = new InitialContext();
-			Context context = (Context)initialContext.lookup("java:comp/env");
-			DataSource dataSource = (DataSource)context.lookup("photo_grader");
-			con = dataSource.getConnection();
-
-			stmt = con.createStatement();
-
 			String query = "SELECT "+field+" FROM "+table+(where != null ? " WHERE "+where : "")+
 					(order != null ? " ORDER BY "+order : "");
-			resultSet = stmt.executeQuery(query); 
+			sqlResult = new Query().getResult(query,QUERY);
+			ResultSet resultSet = sqlResult.getResultSet();
 
 			while(resultSet.next()) {
 				Object obj = resultSet.getObject(field);
@@ -78,14 +73,14 @@ public class Query {
 				else result.add(obj);
 			}
 		}
-		catch (javax.naming.NamingException e) {
+		catch (NamingException e) {
 			e.printStackTrace(System.err);
 		}
 		catch (SQLException e) {
 			e.printStackTrace(System.err);
 		}
 		finally {
-			close(con, stmt, resultSet);
+			if (sqlResult != null) sqlResult.close();
 		}
 
 		return result;
@@ -96,20 +91,12 @@ public class Query {
 	}
 
 	public static void update(String query) {
-		Connection con = null;
-		Statement stmt = null;
+		SQLResult sqlResult = null;
 		
 		try {
-			InitialContext initialContext = new InitialContext();
-			Context context = (Context)initialContext.lookup("java:comp/env");
-			DataSource dataSource = (DataSource)context.lookup("photo_grader");
-			con = dataSource.getConnection();
-
-			stmt = con.createStatement();
-
-			stmt.executeUpdate(query);
+			sqlResult = new Query().getResult(query,UPDATE);
 		}
-		catch (javax.naming.NamingException e) {
+		catch (NamingException e) {
 			System.err.println(query);
 			e.printStackTrace(System.err);
 		}
@@ -118,32 +105,24 @@ public class Query {
 			e.printStackTrace(System.err);
 		}
 		finally {
-			close(con, stmt, null);
+			if (sqlResult != null) sqlResult.close();
 		}
 	}
 
 	public static ArrayList<String> getColumnNames(String query) {
 		ArrayList<String> names = new ArrayList<String>();
-		Connection con = null;
-		Statement stmt = null;
-		ResultSet resultSet = null;
+		SQLResult sqlResult = null;
 
 		try {
-			InitialContext initialContext = new InitialContext();
-			Context context = (Context)initialContext.lookup("java:comp/env");
-			DataSource dataSource = (DataSource)context.lookup("photo_grader");
-			con = dataSource.getConnection();
-
-			stmt = con.createStatement();
-
-			resultSet = stmt.executeQuery(query); 
+			sqlResult = new Query().getResult(query,QUERY);
+			ResultSet resultSet = sqlResult.getResultSet();
 			ResultSetMetaData metaData = resultSet.getMetaData();
 
 			for(int i=1; i<=metaData.getColumnCount(); i++) {
 				names.add(metaData.getColumnLabel(i));
 			}
 		}
-		catch (javax.naming.NamingException e) {
+		catch (NamingException e) {
 			System.err.println(query);
 			e.printStackTrace(System.err);
 		}
@@ -152,7 +131,7 @@ public class Query {
 			e.printStackTrace(System.err);
 		}
 		finally {
-			close(con, stmt, resultSet);
+			if (sqlResult != null) sqlResult.close();
 		}
 
 		return names;
@@ -166,6 +145,44 @@ public class Query {
 		}
 		catch (SQLException e) {
 			e.printStackTrace(System.err);
+		}
+	}
+
+	private SQLResult getResult(String query, int method) throws SQLException, NamingException {
+		InitialContext initialContext = new InitialContext();
+		Context context = (Context)initialContext.lookup(CONTEXT);
+		DataSource dataSource = (DataSource)context.lookup(DATASOURCE);
+		Connection con = dataSource.getConnection();
+
+		Statement stmt = con.createStatement();
+
+		if (method == QUERY) {
+			ResultSet resultSet = stmt.executeQuery(query); 
+			return new SQLResult(resultSet, stmt, con);
+		}
+		else {
+			stmt.executeUpdate(query);
+			return new SQLResult(null, stmt, con);
+		}
+	}
+
+	private class SQLResult {
+		private final ResultSet resultSet;
+		private final Statement stmt;
+		private final Connection con;
+
+		public SQLResult(ResultSet resultSet, Statement stmt, Connection con) {
+			this.resultSet = resultSet;
+			this.stmt = stmt;
+			this.con = con;
+		}
+
+		public ResultSet getResultSet() {
+			return resultSet;
+		}
+
+		public void close() {
+			Query.close(con,stmt,resultSet);
 		}
 	}
 }
