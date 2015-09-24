@@ -6,11 +6,18 @@
 
 package metaData;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
-import SQL.*;
-import java.sql.*;
-import model.*;
+
+import model.Model;
+import model.Photo;
+
+import SQL.Query;
+import SQL.Helper;
 
 /**
  *
@@ -26,6 +33,8 @@ public class ManualMetaData extends Model implements MetaDataSource {
 	public static final int TEXT = MetaData.TEXT;
 	public static final int RADIO = MetaData.RADIO;
 	public static final int CHECKBOX = MetaData.CHECKBOX;
+
+	private static final String TABLE_NAME = "photo_data_by_manual";
 
 	public ManualMetaData() {
 	}
@@ -52,7 +61,7 @@ public class ManualMetaData extends Model implements MetaDataSource {
 
 	@Override
 	public ArrayList<Model> getMetaDataSources(String where, String order){
-		String query = "SELECT * FROM photo_data_by_manual "+(where.length()>0?"WHERE "+where:"")+(order.length()>0?" ORDER BY "+order:"");
+		String query = "SELECT * FROM "+TABLE_NAME+(where.length()>0?" WHERE "+where:"")+(order.length()>0?" ORDER BY "+order:"");
 		return Query.getModel(query, this);
 	}
 
@@ -74,7 +83,7 @@ public class ManualMetaData extends Model implements MetaDataSource {
 
 	public static void updateDB(ArrayList<ManualMetaData> metaData) {
 		if(metaData.isEmpty()) return;
-		String query = "INSERT INTO photo_data_by_manual (id, study_id, name, input_type) VALUES ";
+		String query = "INSERT INTO "+TABLE_NAME+" (id, study_id, name, input_type) VALUES ";
 
 		for(int i=0; i<metaData.size(); i++) {
 			if(i > 0) query += ", ";
@@ -136,6 +145,8 @@ public class ManualMetaData extends Model implements MetaDataSource {
 		this.options = new ArrayList<String>();
 		int col = 0;
 		String option = request.getParameter((position)+"_option_"+col);
+		//The last 'option' is empty because an extra one is always generated so 
+		// the user can add more.  So we ignore the last 'option'
 		while (option != null && !option.equals("")) {
 			this.options.add(option);
 			col++;
@@ -158,13 +169,14 @@ public class ManualMetaData extends Model implements MetaDataSource {
 		switch(input_type) {
 			case TEXT:
 				html += "<input type='hidden' name='meta_"+index+"' value='"+TEXT+"_0'>";
-				html += "<input type='text' class='"+index+"' name='"+name+"' "+(field!=null?"value='"+field+"'":"")+" title='"+TEXT+"'>";
+				html += "<input type='text' class='"+index+"' name='"+name+"' "+(!field.equals("")?"value='"+field+"'":"")+" title='"+TEXT+"'>";
 				break;
 			case RADIO:
 				html += "<input type='hidden' name='meta_"+index+"' value='"+RADIO+"_"+options.size()+"'>";
 				for(String option : options) {
 					html += "<span class='span_"+optionNumber+"_"+index+"'></span><input type='radio' class='"+index+"' id='"+
-						optionNumber+"' name='"+name+"' title='"+RADIO+"' value='"+option+"' "+(field!=null&&field.equals(option)?"checked":"")+">"+option+"<br>";
+						optionNumber+"' name='"+name+"' title='"+RADIO+"' value='"+option+"' "+
+						(!field.equals("")&&field.equals(option)?"checked":"")+">"+option+"<br>";
 					optionNumber++;
 				}
 				break;
