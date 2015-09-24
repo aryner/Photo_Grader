@@ -12,7 +12,7 @@ import model.Grade;
 
 import metaData.grade.GradeGroup;
 
-import utilities.Tools;
+import utilities.FileIO;
 
 import java.io.IOException;
 
@@ -90,7 +90,7 @@ public class Controller extends HttpServlet {
 		if(userPath.equals("/printCSV")) {
 			String category = request.getParameter("category");
 			int grade_group_id = study.getGradeGroupId(request.getParameter("category"));
-			Tools.createCSV(Grade.getCSVLines(new GradeGroup(grade_group_id),study),category);
+			FileIO.createCSV(Grade.getCSVLines(new GradeGroup(grade_group_id),study),category);
 			
 			response.sendRedirect("/Photo_Grader/home");
 			return;

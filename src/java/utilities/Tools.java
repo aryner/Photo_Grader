@@ -8,8 +8,6 @@ package utilities;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
@@ -18,32 +16,6 @@ import java.util.regex.Matcher;
  * @author aryner
  */
 public class Tools {
-	public static void createCSV(ArrayList<String> csv, String fileName) {
-		int count = 0;
-		String suffix = "";
-
-		while(new File(Constants.HOME + Constants.FILE_SEP + "Desktop" + Constants.FILE_SEP + fileName + suffix + ".csv").exists()) {
-			count++;
-			suffix = "("+count+")";
-		}
-
-		try {
-			FileOutputStream fileOut = new FileOutputStream(Constants.HOME + Constants.FILE_SEP + "Desktop" + Constants.FILE_SEP + fileName + suffix + ".csv");
-
-			for(String line : csv) {
-				fileOut.write((line+"\n").getBytes());
-			}
-
-			fileOut.close();
-		} 
-		catch (java.io.FileNotFoundException e) {
-			e.printStackTrace(System.err);
-		}
-		catch (java.io.IOException e) {
-			e.printStackTrace(System.err);
-		}
-	}
-
 	public static String generateTableName(String base, ArrayList<String> usedNames) {
 		Random rand = new Random();
 		int postfix = rand.nextInt(10000000);
