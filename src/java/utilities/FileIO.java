@@ -6,14 +6,20 @@
 
 package utilities;
 
-import java.util.*;
-import java.io.*;
-import model.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Iterator;
+import java.io.File;
+import java.io.FileOutputStream;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.fileupload.FileItem; 
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload; 
+
+import model.Study;
 
 /**
  *
@@ -37,13 +43,7 @@ public class FileIO {
 		ArrayList<String> errors = new ArrayList<String>();
 		ArrayList<String> picNames = type == PHOTO ? new ArrayList<String>() : null;
 
-		DiskFileItemFactory factory = new DiskFileItemFactory();
-		factory.setSizeThreshold(UPLOAD_SIZE_THRESHOLD);
-		new File(TEMP_DIR).mkdirs();
-		factory.setRepository(new File(TEMP_DIR));
-
-		ServletFileUpload upload = new ServletFileUpload(factory);
-		upload.setSizeMax(MAX_UPLOAD_SIZE);
+		ServletFileUpload upload = getFileUpload();
 
 		try {
 			List fileItems = upload.parseRequest(request);
@@ -62,16 +62,32 @@ public class FileIO {
 			e.printStackTrace(System.err);
 		} catch(Exception e) {
 			e.printStackTrace(System.err);
+		} finally {
+			cleanTempDir();
 		}
 
 		errors.addAll(SQL.Helper.insertAndUpdateUploads(type, study, picNames));
+		return errors;
+	}
+
+	private static ServletFileUpload getFileUpload() {
+		DiskFileItemFactory factory = new DiskFileItemFactory();
+		factory.setSizeThreshold(UPLOAD_SIZE_THRESHOLD);
+		new File(TEMP_DIR).mkdirs();
+		factory.setRepository(new File(TEMP_DIR));
+
+		ServletFileUpload upload = new ServletFileUpload(factory);
+		upload.setSizeMax(MAX_UPLOAD_SIZE);
+
+		return upload;
+	}
+
+	private static void cleanTempDir() {
 		try {
 			FileUtils.cleanDirectory(new File(TEMP_DIR));
 		} catch(java.io.IOException e) {
 			e.printStackTrace(System.err);
 		}
-
-		return errors;
 	}
 
 	private static ArrayList<String> uploadPhotos(FileItem fileItem, String fileName, ArrayList<String> picNames, Study study) 
@@ -107,16 +123,11 @@ public class FileIO {
 	}
 
 	public static void createCSV(ArrayList<String> csv, String fileName) {
-		int count = 0;
-		String suffix = "";
-
-		while(new File(Constants.HOME + Constants.FILE_SEP + "Desktop" + Constants.FILE_SEP + fileName + suffix + ".csv").exists()) {
-			count++;
-			suffix = "("+count+")";
-		}
+		String pathAndName = Constants.HOME + Constants.FILE_SEP + "Desktop" + Constants.FILE_SEP + fileName;
+		String suffix = getSuffix(pathAndName, ".csv");
 
 		try {
-			FileOutputStream fileOut = new FileOutputStream(Constants.HOME + Constants.FILE_SEP + "Desktop" + Constants.FILE_SEP + fileName + suffix + ".csv");
+			FileOutputStream fileOut = new FileOutputStream(pathAndName + suffix + ".csv");
 
 			for(String line : csv) {
 				fileOut.write((line+"\n").getBytes());
@@ -130,6 +141,18 @@ public class FileIO {
 		catch (java.io.IOException e) {
 			e.printStackTrace(System.err);
 		}
+	}
+
+	public static String getSuffix(String pathAndFile, String extension) {
+		int count = 0;
+		String suffix = "";
+
+		while(new File(pathAndFile + suffix + extension).exists()) {
+			count++;
+			suffix = "("+count+")";
+		}
+
+		return suffix;
 	}
 
 	public static String getExtension(String fileName) {
