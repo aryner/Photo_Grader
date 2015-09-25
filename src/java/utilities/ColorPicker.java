@@ -11,7 +11,7 @@ package utilities;
  * @author aryner
  */
 public class ColorPicker {
-	private String [] colors;
+	private final String [] colors;
 	private int index;
 
 	public ColorPicker() {

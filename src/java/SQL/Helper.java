@@ -6,8 +6,7 @@
 
 package SQL;
 
-import java.util.*;
-
+import java.util.ArrayList;
 import java.io.File;
 
 import model.Study;
