@@ -6,14 +6,24 @@
 
 package utilities;
 
-import java.util.*;
-import model.*;
-import SQL.*;
-import metaData.*;
-import Exceptions.*;
-import java.io.*;
+import java.util.ArrayList;
+import java.util.Scanner;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.FileInputStream;
+
 import org.apache.poi.xssf.usermodel.*; 
 import org.apache.poi.ss.usermodel.*; 
+
+import model.Study;
+
+import SQL.Query;
+import SQL.Helper;
+
+import metaData.TableMetaData;
+
+import Exceptions.UploadException;
 
 /**
  *
@@ -87,7 +97,6 @@ public class TableReader {
 
 	private static void updateUpdateLines(Scanner lineScanner, ArrayList<String> fieldNames, int index, ArrayList<String> updates) {
 		Scanner cellScanner = new Scanner(lineScanner.nextLine());
-		cellScanner.useDelimiter(",");
 		String currentUpdate;
 		ArrayList<String> values = getCSVLine(cellScanner);
 
