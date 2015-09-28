@@ -92,38 +92,25 @@ public class GradeGroup extends Model {
 			return errors;
 		}
 
-		if (type == GRADE) {
-			createGradeGroup_grade(request,study,newName);
+		usedNames = (ArrayList)Query.getField(GradeGroup.TABLE_NAME, "grade_name", null,null);
+		String grade_name = Tools.generateTableName(type==GRADE?"grade_":"rank_", usedNames);
+		String query = "INSERT INTO photo_grade_group (study_id, name, grade_name, grade_rank) VALUES ('"+study.getId()+
+			       "', '"+newName+"', '"+grade_name+"', '"+(type==GRADE?GRADE:RANK)+"')";
+		Query.update(query);
+
+		int groupId = Integer.parseInt(Query.getField(
+			GradeGroup.TABLE_NAME,
+			"id",
+			"study_id="+study.getId()+" AND name='"+newName+"' AND grade_rank="+(type==GRADE?GRADE:RANK),null).get(0)+"");
+		createGroup(groupId, study.getPhoto_attribute_table_name(), request);
+		if(type==GRADE) {
+			Question.createQuestions(groupId, request);
+			Grade.createTable(groupId);
 		} else {
-			createGradeGroup_rank(request,study,newName);
+			Rank.createTable(groupId);
 		}
 
 		return errors;
-	}
-
-	private static void createGradeGroup_grade(HttpServletRequest request, Study study, String newName) {
-		ArrayList<String> usedNames = (ArrayList)Query.getField(GradeGroup.TABLE_NAME, "grade_name", null,null);
-		String grade_name = Tools.generateTableName("grade_", usedNames);
-		String query = "INSERT INTO photo_grade_group (study_id, name, grade_name, grade_rank) VALUES ('"+study.getId()+
-			       "', '"+newName+"', '"+grade_name+"', '"+GRADE+"')";
-		Query.update(query);
-
-		int groupId = Integer.parseInt(Query.getField(GradeGroup.TABLE_NAME,"id","study_id="+study.getId()+" AND name='"+newName+"' AND grade_rank="+GRADE,null).get(0)+"");
-		createGroup(groupId, study.getPhoto_attribute_table_name(), request);
-		Question.createQuestions(groupId, request);
-		Grade.createTable(groupId);
-	}
-
-	private static void createGradeGroup_rank(HttpServletRequest request, Study study, String newName) {
-		ArrayList<String> usedNames = (ArrayList)Query.getField(GradeGroup.TABLE_NAME, "grade_name", null,null);
-		String grade_name = Tools.generateTableName("grade_", usedNames);
-		String query = "INSERT INTO photo_grade_group (study_id, name, grade_name, grade_rank) VALUES ('"+study.getId()+
-			       "', '"+newName+"', '"+grade_name+"', '"+RANK+"')";
-		Query.update(query);
-
-		int groupId = Integer.parseInt(Query.getField(GradeGroup.TABLE_NAME,"id","study_id="+study.getId()+" AND name='"+newName+"' AND grade_rank="+GRADE,null).get(0)+"");
-		createGroup(groupId, study.getPhoto_attribute_table_name(), request);
-		Rank.createTable(groupId);
 	}
 
 	public static void createGroup(int group_id, String attr_table_name, HttpServletRequest request) {

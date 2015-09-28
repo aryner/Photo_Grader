@@ -25,8 +25,10 @@ public class Rank {
 		String postfix = "PRIMARY KEY(id)) ENGINE=INnoDB";
 		ArrayList<GroupBy> grouping = GroupBy.getGroup(group_id);
 
-		for(GroupBy group : grouping) 
+		for(GroupBy group : grouping) {
 			query += group.getPhoto_attribute()+" varchar(40),";
+		}
+		//TODO add columns for ranking
 
 		Query.update(query+postfix);
 	}

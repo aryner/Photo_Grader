@@ -13,7 +13,6 @@ $(document).ready(function() {
 	addAnswerTypeListener(0);
 
 	$(':submit[value=Submit]').click(function(e) {
-		e.preventDefault();
 		$('input[name=questionCount]').val(questionCount+1);
 
 		var errors = getErrorMsg();
