@@ -13,7 +13,7 @@ int number_fields = Integer.parseInt(request.getParameter("number"));
 <h1>Describe the meta-data of photos for <%out.print(name);%></h1>
 <p class="sub-text">
 	If there are not enough rows go back and enter a larger number.<br>
-	If there are too many rows leave some blank.<br><br><br>
+	If there are too many rows you can leave some blank.<br><br><br>
 	<b>(The photo name will be saved as meta-data by default)</b>
 </p>
 

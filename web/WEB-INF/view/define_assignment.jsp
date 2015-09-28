@@ -74,9 +74,6 @@ if(name > 0) {
 	out.print("<input type='radio' name='start_1' value='"+MetaData.NEXT_LETTER+"'> The next letter character<br>");
 	out.print("<input type='radio' name='start_1' value='"+MetaData.NEXT_NOT_NUMBER+"'> The next character that is not a digit<br>");
 	out.print("<input type='radio' name='start_1' value='"+MetaData.NEXT_NOT_LETTER+"'> The next character that is not a letter<br>");
-	//this response is only valid after the first section
-	// I'm leaving it in as a comment to be used as template/example
-//	out.print("<input type='radio' name='start_1' value='"+MetaData.AFTER+"'> Right after the end of the previous section");
 	out.print("</div>");
 
 	out.print("<div class='meta-col'>");
