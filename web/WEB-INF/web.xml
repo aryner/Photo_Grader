@@ -20,6 +20,10 @@
         <servlet-name>Patient_controller</servlet-name>
         <servlet-class>controller.Patient_controller</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>Rank_controller</servlet-name>
+        <servlet-class>controller.Rank_controller</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>User_controller</servlet-name>
         <url-pattern>/User_controller</url-pattern>
@@ -35,6 +39,10 @@
     <servlet-mapping>
         <servlet-name>Patient_controller</servlet-name>
         <url-pattern>/Patient_controller</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Rank_controller</servlet-name>
+        <url-pattern>/Rank_controller</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

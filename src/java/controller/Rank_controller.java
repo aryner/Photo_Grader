@@ -8,6 +8,7 @@ package controller;
 
 import java.util.ArrayList;
 import java.io.IOException;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -17,20 +18,21 @@ import javax.servlet.http.HttpSession;
 
 import model.User;
 import model.Study;
-import model.Grade;
 import model.Photo;
-import SQL.Helper;
+
 import metaData.grade.GradeGroup;
+
+import SQL.Helper;
 
 /**
  *
  * @author aryner
  */
-@WebServlet(name = "Controller.Grade_controller", urlPatterns = {
-								"/select_grade_category","/grade","/startGrading","/submitGrade",
-								"/define_grading_questions","/defineGradingQuestions"
+@WebServlet(name = "Controller.Rank_controller", urlPatterns = {
+								"/define_ranking","/defineRanking"
 								})
-public class Grade_controller extends HttpServlet {
+public class Rank_controller extends HttpServlet {
+
 	/**
 	 * Handles the HTTP <code>GET</code> method.
 	 *
@@ -41,7 +43,7 @@ public class Grade_controller extends HttpServlet {
 	 */
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+		throws ServletException, IOException {
 		String userPath = request.getServletPath(); 
 		HttpSession session = request.getSession(); 
 		User user = (User)session.getAttribute("user");
@@ -52,17 +54,10 @@ public class Grade_controller extends HttpServlet {
 			response.sendRedirect("/Photo_Grader/index.jsp");
 			return;
 		}
-		else if(userPath.equals("/select_grade_category")) {
-			request.setAttribute("categories",study.getGradeCategoryNames());
-		}
-		else if(userPath.equals("/grade")) {
-			GradeGroup group = (GradeGroup)session.getAttribute("grade_group");
-			request.setAttribute("photoGroup",Photo.getUngradedGroup(group, study.getPhoto_attribute_table_name(), user.getName()));
-			request.setAttribute("photoNumber", study.getPhotoNumber());
-		}
-		else if(userPath.equals("/define_grading_questions")) {
+		else if (userPath.equals("/define_ranking")) {
+			//TODO
 			ArrayList<String> columns = Photo.getMetaDataKeys(study.getPhoto_attribute_table_name());
-			ArrayList<String> usedNames = GradeGroup.getUsedNames(study.getId(), GradeGroup.GRADE);
+			ArrayList<String> usedNames = GradeGroup.getUsedNames(study.getId(), GradeGroup.RANK);
 			Helper.unprocess(columns);
 			request.setAttribute("columns", columns);
 			request.setAttribute("usedNames", usedNames);
@@ -87,27 +82,15 @@ public class Grade_controller extends HttpServlet {
 	 */
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+		throws ServletException, IOException {
 		String userPath = request.getServletPath(); 
 		HttpSession session = request.getSession(); 
+		User user = (User)session.getAttribute("user");
 		Study study = (Study)session.getAttribute("study");
 
-		if(userPath.equals("/submitGrade")) {
-			GradeGroup group = (GradeGroup)session.getAttribute("grade_group");
-			User user = (User)session.getAttribute("user");
-			Grade.grade(request, study, group, user);
-			response.sendRedirect("/Photo_Grader/grade");
-			return;
-		}
-		else if(userPath.equals("/defineGradingQuestions")) {
-			session.setAttribute("errors",GradeGroup.createGradeGroup(request,study,GradeGroup.GRADE));
+		if (userPath.equals("/defineRanking")) {
+			session.setAttribute("errors",GradeGroup.createGradeGroup(request,study,GradeGroup.RANK));
 			response.sendRedirect("/Photo_Grader/home");
-			return;
-		}
-		else if(userPath.equals("/startGrading")) {
-			int grade_group_id = study.getGradeGroupId(request.getParameter("category"));
-			session.setAttribute("grade_group", new GradeGroup(grade_group_id));
-			response.sendRedirect("/Photo_Grader/grade");
 			return;
 		}
 
