@@ -35,7 +35,6 @@ public class Grade extends Model {
 	private Map<String,String> question_answers;
 
 	public static final String FILENAME = "_photo_file_name";
-	
 
 	public Grade() {}
 
