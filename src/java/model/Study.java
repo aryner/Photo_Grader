@@ -81,11 +81,19 @@ public class Study extends Model {
 	}
 
 	public int getGradeGroupId(String name) {
-		return Integer.parseInt(""+Query.getField(GradeGroup.TABLE_NAME,"id","study_id="+this.id+" AND name='"+name+"'",null).get(0));
+		return Integer.parseInt(""+Query.getField(GradeGroup.TABLE_NAME,"id","study_id="+this.id+" AND name='"+name+"' AND grade_rank="+GradeGroup.GRADE,null).get(0));
 	}
 
 	public ArrayList<String> getGradeCategoryNames() {
-		return (ArrayList)Query.getField(GradeGroup.TABLE_NAME,"name","study_id="+this.id,null);
+		return (ArrayList)Query.getField(GradeGroup.TABLE_NAME,"name","study_id="+this.id+" AND grade_rank="+GradeGroup.GRADE,null);
+	}
+
+	public int getRankGroupId(String name) {
+		return Integer.parseInt(""+Query.getField(GradeGroup.TABLE_NAME,"id","study_id="+this.id+" AND name='"+name+"' AND grade_rank="+GradeGroup.RANK,null).get(0));
+	}
+
+	public ArrayList<String> getRankCategoryNames() {
+		return (ArrayList)Query.getField(GradeGroup.TABLE_NAME,"name","study_id="+this.id+" AND grade_rank="+GradeGroup.RANK,null);
 	}
 
 	public ArrayList getExcelTableMetaData() {

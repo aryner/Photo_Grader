@@ -29,7 +29,8 @@ import SQL.Helper;
  * @author aryner
  */
 @WebServlet(name = "Controller.Rank_controller", urlPatterns = {
-								"/define_ranking","/defineRanking"
+								"/define_ranking","/defineRanking","/select_rank_category",
+								"/rank","/startRanking"
 								})
 public class Rank_controller extends HttpServlet {
 
@@ -62,6 +63,16 @@ public class Rank_controller extends HttpServlet {
 			request.setAttribute("columns", columns);
 			request.setAttribute("usedNames", usedNames);
 		}
+		else if (userPath.equals("/select_rank_category")) {
+			request.setAttribute("categories",study.getRankCategoryNames());
+		}
+		else if(userPath.equals("/rank")) {
+			GradeGroup group = (GradeGroup)session.getAttribute("rank_group");
+			/*
+			request.setAttribute("photoGroup",Photo.getUngradedGroup(group, study.getPhoto_attribute_table_name(), user.getName()));
+			request.setAttribute("photoNumber", study.getPhotoNumber());
+			*/
+		}
 
 		String url = "/WEB-INF/view" + userPath + ".jsp";
 
@@ -91,6 +102,12 @@ public class Rank_controller extends HttpServlet {
 		if (userPath.equals("/defineRanking")) {
 			session.setAttribute("errors",GradeGroup.createGradeGroup(request,study,GradeGroup.RANK));
 			response.sendRedirect("/Photo_Grader/home");
+			return;
+		}
+		else if (userPath.equals("/startRanking")) {
+			int rank_group_id = study.getRankGroupId(request.getParameter("category"));
+			session.setAttribute("rank_group", new GradeGroup(rank_group_id));
+			response.sendRedirect("/Photo_Grader/rank");
 			return;
 		}
 

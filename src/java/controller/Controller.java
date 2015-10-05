@@ -52,6 +52,10 @@ public class Controller extends HttpServlet {
 			response.sendRedirect("/Photo_Grader/index.jsp");
 			return;
 		}
+		else if(userPath.equals("/home")) {
+			session.removeAttribute("grade_group");
+			session.removeAttribute("rank_group");
+		}
 		else if(userPath.equals("/select_CSVs")) {
 			request.setAttribute("categories",study.getGradeCategoryNames());
 		}
