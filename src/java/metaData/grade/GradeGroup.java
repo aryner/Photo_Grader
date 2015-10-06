@@ -149,7 +149,7 @@ public class GradeGroup extends Model {
 	}
 
 	private void setGroupBy() {
-		this.groupBy = GroupBy.getGroup(this.id);
+		this.setGroupBy(GroupBy.getGroup(this.id));
 	}
 
 	private void setQuestions() {
@@ -161,11 +161,11 @@ public class GradeGroup extends Model {
 	}
 
 	public GroupBy getGroupBy(int index) {
-		return groupBy.get(index);
+		return getGroupBy().get(index);
 	}
 
 	public int groupBySize() {
-		return groupBy.size();
+		return getGroupBy().size();
 	}
 
 	public int questionSize() {
@@ -240,6 +240,20 @@ public class GradeGroup extends Model {
 	 */
 	public void setGrade_rank(int grade_rank) {
 		this.grade_rank = grade_rank;
+	}
+
+	/**
+	 * @return the groupBy
+	 */
+	public ArrayList<GroupBy> getGroupBy() {
+		return groupBy;
+	}
+
+	/**
+	 * @param groupBy the groupBy to set
+	 */
+	public void setGroupBy(ArrayList<GroupBy> groupBy) {
+		this.groupBy = groupBy;
 	}
 	
 }

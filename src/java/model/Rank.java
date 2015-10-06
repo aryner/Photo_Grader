@@ -93,7 +93,7 @@ public class Rank extends Model {
 		User user = new User(ranker_id);
 		generateRanks(grade_group, user, photo_table);
 
-		Pair pair = new Pair(grade_group.getGrade_name(),user.getName());
+		Pair pair = new Pair(grade_group,user.getName(),photo_table);
 		if (pair.isFull()) { return pair; }
 
 		//if only one has no head make compairisons build the main chain
@@ -139,18 +139,48 @@ public class Rank extends Model {
 		private ArrayList<Photo> parent_photos;
 		private ArrayList<Photo> child_photos;
 
-		public Pair(String table_name, String ranker) {
-			String query = "SELECT * FROM "+table_name+" WHERE grader='"+ranker+"' "+
+		public Pair(GradeGroup group, String ranker, String photo_table) {
+			String query = "SELECT * FROM "+group.getGrade_name()+" WHERE grader='"+ranker+"' "+
 					" AND "+CHILD+"=-1 AND "+PARENT+"=-1 LIMIT 2";
 			ArrayList<Rank> ranks = (ArrayList) Query.getModel(query,new Rank());
 
 			this.parent = ranks.get(0);
 			this.child = ranks.get(1);
+
+			this.setPhotos(photo_table,group);
 		}
 
 		public Pair(Rank parent, Rank child) {
 			this.parent = parent;
 			this.child = child;
+		}
+
+		public final void setPhotos(String table_name, GradeGroup group) {
+			String query = "SELECT * FROM "+table_name;
+			Photo photo = (Photo)Query.getModel(query,new Photo()).get(0);
+
+			if (parent != null) {
+				query = "SELECT * FROM "+table_name+" WHERE ";
+				String postfix = "";
+
+				for(GroupBy grouped_by : group.getGroupBy()) {
+					if (postfix.length() > 0) { postfix += " AND "; }
+					String key = grouped_by.getPhoto_attribute(); 
+					postfix += key+"='"+parent.getGroup_meta_value(key)+"'";
+				}
+				this.parent_photos = (ArrayList)Query.getModel(query+postfix,new Photo());
+			}
+			if (child != null) {
+				query = "SELECT * FROM "+table_name+" WHERE ";
+				String postfix = "";
+
+				for(GroupBy grouped_by : group.getGroupBy()) {
+					if (postfix.length() > 0) { postfix += " AND "; }
+					String key = grouped_by.getPhoto_attribute(); 
+					postfix += key+"='"+child.getGroup_meta_value(key)+"'";
+				}
+				this.child_photos = (ArrayList)Query.getModel(query+postfix,new Photo());
+			}
 		}
 
 		public boolean contains(Rank needle) {
@@ -343,6 +373,10 @@ public class Rank extends Model {
 	 */
 	public void setGroup_meta_data(Map<String,String> group_meta_data) {
 		this.group_meta_data = group_meta_data;
+	}
+
+	public Object getGroup_meta_value(String key) {
+		return group_meta_data.get(key);
 	}
 
 	/**
