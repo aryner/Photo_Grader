@@ -227,6 +227,27 @@ public class Photo extends Model{
 		return result;
 	}
 
+	public static int getPhotoCount(String tableName) {
+		String query = "SELECT * FROM "+tableName;
+		ArrayList photos = Query.getModel(query,new Photo());
+
+		return photos.size();
+	}
+
+	public static int getUnassignedCount(String tableName) {
+		String query = "SELECT * FROM "+tableName;
+		Photo photo = (Photo)Query.getModel(query,new Photo()).get(0);
+
+		query = "SELECT * FROM "+tableName+" WHERE ";
+		String postfix = "";
+		for(Object field : photo.getFields().keySet()) {
+			if (postfix.length() > 0 ) { postfix += " OR "; }
+			postfix += field.toString() + " IS NULL";
+		}
+
+		return Query.getModel(query+postfix,new Photo()).size();
+	}
+
 	public String getField(String key) {
 		return ""+fields.get(key);
 	}

@@ -29,6 +29,17 @@ public class User extends Model {
 
 	public User() {}
 
+	public User(int id) {
+		String query = "SELECT * FROM user WHERE id="+id;
+		
+		User user = (User) Query.getModel(query,new User()).get(0);
+
+		this.id = id;
+		this.name = user.getName();
+		this.password = user.getPassword();
+		this.access_level = user.getAccess_level();
+	}
+
 	public User(int id, String name, String password, int access_level) {
 		this.id = id;
 		this.name = Helper.unprocess(name);

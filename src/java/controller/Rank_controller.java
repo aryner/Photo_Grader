@@ -19,6 +19,7 @@ import javax.servlet.http.HttpSession;
 import model.User;
 import model.Study;
 import model.Photo;
+import model.Rank;
 
 import metaData.grade.GradeGroup;
 
@@ -67,11 +68,23 @@ public class Rank_controller extends HttpServlet {
 			request.setAttribute("categories",study.getRankCategoryNames());
 		}
 		else if(userPath.equals("/rank")) {
+			int photoCount = Photo.getPhotoCount(study.getPhoto_attribute_table_name());
+			if(photoCount == 0) {
+				ArrayList<String> errors = new ArrayList<String>();
+				errors.add("There are no photos here to rank");
+				session.setAttribute("errors",errors);
+				response.sendRedirect("/Photo_Grader/home");
+				return;
+			} else if (photoCount == Photo.getUnassignedCount(study.getPhoto_attribute_table_name())) {
+				ArrayList<String> errors = new ArrayList<String>();
+				errors.add("Photos must have meta data assigned before they can be ranked");
+				session.setAttribute("errors",errors);
+				response.sendRedirect("/Photo_Grader/home");
+				return;
+			}
 			GradeGroup group = (GradeGroup)session.getAttribute("rank_group");
-			/*
-			request.setAttribute("photoGroup",Photo.getUngradedGroup(group, study.getPhoto_attribute_table_name(), user.getName()));
-			request.setAttribute("photoNumber", study.getPhotoNumber());
-			*/
+			request.setAttribute("rankPair",Rank.getPairToRank(group.getId(), user.getId(), study.getPhoto_attribute_table_name()));
+			//request.setAttribute("photoNumber", study.getPhotoNumber());
 		}
 
 		String url = "/WEB-INF/view" + userPath + ".jsp";

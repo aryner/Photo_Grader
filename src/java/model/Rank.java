@@ -16,6 +16,7 @@ import java.sql.ResultSetMetaData;
 import SQL.Query;
 
 import metaData.grade.GroupBy;
+import metaData.grade.GradeGroup;
 
 /**
  *
@@ -86,31 +87,90 @@ public class Rank extends Model {
 		Query.update(query+postfix);
 	}
 
-	public static Pair getPairToRank(int group_id, int ranker_id) {
+	public static Pair getPairToRank(int group_id, int ranker_id, String photo_table) {
+		//TODO
+		GradeGroup grade_group = new GradeGroup(group_id);
+		User user = new User(ranker_id);
+		generateRanks(grade_group, user, photo_table);
+
+		Pair pair = new Pair(grade_group.getGrade_name(),user.getName());
+		if (pair.isFull()) { return pair; }
+
+		//if only one has no head make compairisons build the main chain
+		//else clear children from those with no parents and get recursive
+		//TODO
+
 		return null;
 	}
 
-	/**
-	 * @return the grader
-	 */
-	public String getGrader() {
-		return grader;
+	private static void generateRanks(GradeGroup grade_group, User user, String photo_table) {
+		String query = "SELECT * FROM "+grade_group.getGrade_name()+" WHERE grader='"+user.getName()+"'";
+		ArrayList ranks = Query.getModel(query, new Rank());
+		
+		if (ranks.isEmpty()) {
+			ArrayList<Photo> photos = Photo.getPossibleCombinations(grade_group, photo_table);
+
+			query = "INSERT INTO "+grade_group.getGrade_name()+" (grader";
+			for (Object field : photos.get(0).getFields().keySet()) {
+				query += ", "+field.toString();
+			}
+			query += ") VALUES ";
+			int count = 0;
+
+			for(Photo photo : photos) {
+				if (count != 0) { query += ","; }
+				count++;
+
+				query += "(";
+				String temp = "'"+user.getName()+"'";
+				for (Object field : photo.getFields().keySet()) {
+					temp += ",'"+photo.getField(field.toString())+"'";
+				}
+				query += temp + ")";
+			}
+
+			Query.update(query);
+		}
 	}
 
-	/**
-	 * @param grader the grader to set
-	 */
-	public void setGrader(String grader) {
-		this.grader = grader;
-	}
-
-	public class Pair {
+	public static class Pair {
 		private Rank parent;
 		private Rank child;
+		private ArrayList<Photo> parent_photos;
+		private ArrayList<Photo> child_photos;
+
+		public Pair(String table_name, String ranker) {
+			String query = "SELECT * FROM "+table_name+" WHERE grader='"+ranker+"' "+
+					" AND "+CHILD+"=-1 AND "+PARENT+"=-1 LIMIT 2";
+			ArrayList<Rank> ranks = (ArrayList) Query.getModel(query,new Rank());
+
+			this.parent = ranks.get(0);
+			this.child = ranks.get(1);
+		}
 
 		public Pair(Rank parent, Rank child) {
 			this.parent = parent;
 			this.child = child;
+		}
+
+		public boolean contains(Rank needle) {
+			return parent.equals(needle) || child.equals(needle);
+		}
+
+		public boolean hasParent() {
+			return parent != null;
+		}
+
+		public boolean hasChild() {
+			return child != null;
+		}
+
+		public boolean isFull() {
+			return hasParent() && hasChild();
+		}
+
+		public boolean isEmpty() {
+			return !hasParent() && !hasChild();
 		}
 
 		/**
@@ -141,6 +201,78 @@ public class Rank extends Model {
 			this.child = child;
 		}
 
+		/**
+		 * @return the parent_photos
+		 */
+		public ArrayList<Photo> getParent_photos() {
+			return parent_photos;
+		}
+
+		/**
+		 * @param parent_photos the parent_photos to set
+		 */
+		public void setParent_photos(ArrayList<Photo> parent_photos) {
+			this.parent_photos = parent_photos;
+		}
+
+		/**
+		 * @return the child_photos
+		 */
+		public ArrayList<Photo> getChild_photos() {
+			return child_photos;
+		}
+
+		/**
+		 * @param child_photos the child_photos to set
+		 */
+		public void setChild_photos(ArrayList<Photo> child_photos) {
+			this.child_photos = child_photos;
+		}
+
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = 3;
+		hash = 61 * hash + this.id;
+		hash = 61 * hash + (this.grader != null ? this.grader.hashCode() : 0);
+		hash = 61 * hash + (this.group_meta_data != null ? this.group_meta_data.hashCode() : 0);
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final Rank other = (Rank) obj;
+		if (this.id != other.id) {
+			return false;
+		}
+		if ((this.grader == null) ? (other.grader != null) : !this.grader.equals(other.grader)) {
+			return false;
+		}
+		if (this.group_meta_data != other.group_meta_data && (this.group_meta_data == null || !this.group_meta_data.equals(other.group_meta_data))) {
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * @return the grader
+	 */
+	public String getGrader() {
+		return grader;
+	}
+
+	/**
+	 * @param grader the grader to set
+	 */
+	public void setGrader(String grader) {
+		this.grader = grader;
 	}
 
 	/**
