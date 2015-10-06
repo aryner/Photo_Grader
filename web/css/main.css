@@ -162,3 +162,15 @@ a {
 .question {
 	margin-left: 05px;
 }
+
+.rank_col {
+	float: left;
+	width: 35%;
+}
+.rank_col img {
+	width: 90%;
+}
+.rank_form {
+	float: left;
+	width: 25%;
+}

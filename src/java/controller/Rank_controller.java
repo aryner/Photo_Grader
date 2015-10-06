@@ -84,6 +84,7 @@ public class Rank_controller extends HttpServlet {
 			}
 			GradeGroup group = (GradeGroup)session.getAttribute("rank_group");
 			request.setAttribute("rank_pair",Rank.getPairToRank(group.getId(), user.getId(), study.getPhoto_attribute_table_name()));
+			request.setAttribute("photo_table",study.getPhoto_attribute_table_name());
 			//request.setAttribute("photoNumber", study.getPhotoNumber());
 		}
 
