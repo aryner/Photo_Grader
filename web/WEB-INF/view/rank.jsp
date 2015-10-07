@@ -29,6 +29,8 @@ for (Photo photo : pair.getParent_photos()) {
 </div>
 <div class="rank_form">
 	<form action="submitRank" method="POST">
+		<input type="hidden" name="left_rank" value="<%out.print(pair.getParent().getId());%>">
+		<input type="hidden" name="right_rank" value="<%out.print(pair.getChild().getId());%>">
 		<label>Which is worse?</label>
 		<ul>
 			<li><input type="radio" name="compare" value="left">Left</li>
