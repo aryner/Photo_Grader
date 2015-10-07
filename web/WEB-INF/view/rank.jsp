@@ -28,11 +28,19 @@ for (Photo photo : pair.getParent_photos()) {
 %>
 </div>
 <div class="rank_form">
-	<p> Placeholder for ranking form </p>
+	<form action="submitRank" method="POST">
+		<label>Which is worse?</label>
+		<ul>
+			<li><input type="radio" name="compare" value="left">Left</li>
+			<li><input type="radio" name="compare" value="equal">Equal</li>
+			<li><input type="radio" name="compare" value="right">Right</li>
+		</ul>
+		<input type="submit" value="Submit Ranking" class="btn">
+
+	</form>
 </div>
 <div class="rank_col">
 <%
-out.print("<br>");
 for (Photo photo : pair.getChild_photos()) {
 	out.print("<img class='Img' src='"+Constants.SRC+"img?number="+photo_table_num+"&name="+photo.getName()+"'>");
 }
