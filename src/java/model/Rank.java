@@ -13,6 +13,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.ResultSetMetaData;
 
+import javax.servlet.http.HttpServletRequest;
+
 import SQL.Query;
 
 import metaData.grade.GroupBy;
@@ -85,6 +87,28 @@ public class Rank extends Model {
 		query += PARENT+" int DEFAULT -1, "+CHILD+" int DEFAULT -1, "+MAIN_CHAIN+" int DEFAULT "+OFF_CHAIN+", "+RANK+" int DEFAULT -1,";
 
 		Query.update(query+postfix);
+	}
+
+	public static void processRanking(HttpServletRequest request, GradeGroup group, User user) {
+		int right_id = Integer.parseInt(request.getParameter("right_rank"));
+		int left_id = Integer.parseInt(request.getParameter("left_rank"));
+		String compare = request.getParameter("compare");
+
+		assignParentChildRelationship(right_id, left_id, compare, group.getGrade_name());
+	}
+
+	public static void assignParentChildRelationship(int right_id, int left_id, String compare, String category) {
+		if(compare.equals("right")) {
+			String query = "UPDATE "+category+" SET child_id="+left_id+" WHERE id="+right_id;
+			Query.update(query);
+			query = "UPDATE "+category+" SET parent_id="+right_id+" WHERE id="+left_id;
+			Query.update(query);
+		} else { //treating 'equal' the same as choosing left
+			String query = "UPDATE "+category+" SET child_id="+right_id+" WHERE id="+left_id;
+			Query.update(query);
+			query = "UPDATE "+category+" SET parent_id="+left_id+" WHERE id="+right_id;
+			Query.update(query);
+		}
 	}
 
 	public static Pair getPairToRank(int group_id, int ranker_id, String photo_table) {
