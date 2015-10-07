@@ -84,7 +84,7 @@ public class Rank extends Model {
 		for(GroupBy group : grouping) {
 			query += group.getPhoto_attribute()+" varchar(40),";
 		}
-		query += PARENT+" int DEFAULT -1, "+CHILD+" int DEFAULT -1, "+MAIN_CHAIN+" int DEFAULT "+OFF_CHAIN+", "+RANK+" int DEFAULT -1,";
+		query += PARENT+" int DEFAULT -1, "+CHILD+" int DEFAULT -1, "+MAIN_CHAIN+" int DEFAULT "+OFF_CHAIN+", "+RANK+" int DEFAULT 0,";
 
 		Query.update(query+postfix);
 	}
@@ -112,16 +112,30 @@ public class Rank extends Model {
 	}
 
 	public static Pair getPairToRank(int group_id, int ranker_id, String photo_table) {
-		//TODO
 		GradeGroup grade_group = new GradeGroup(group_id);
 		User user = new User(ranker_id);
 		generateRanks(grade_group, user, photo_table);
 
 		Pair pair = new Pair(grade_group,user.getName(),photo_table);
-		if (pair.isFull()) { return pair; }
+		if (pair.isFull()) { 
+			pair.setPhotos(photo_table,grade_group);
+			return pair;
+		}
 
-		//if only one has no head make compairisons build the main chain
-		//else clear children from those with no parents and get recursive
+		//if pair has one member then it is an odd man out so we must mark
+		// at what recursive level we will be adding it to the main chain
+		//  (not actual record of level, just relative position, actual lvl
+		//    will be determined by counting children)
+		if (!pair.isEmpty()) {
+			pair.getParent().setOddRankOut(grade_group.getGrade_name());
+		}
+
+		if (parentlessCount(grade_group.getGrade_name()) > 1) {
+			clearChildren(grade_group.getGrade_name());
+			return getPairToRank(group_id,ranker_id,photo_table);
+		}
+
+		//if we got this far, we are building the main chain
 		//TODO
 
 		return null;
@@ -157,6 +171,23 @@ public class Rank extends Model {
 		}
 	}
 
+	public void setOddRankOut(String table_name) {
+		int low = (Integer)Query.getField(table_name,"parent_id","parent_id < 0","parent_id asc").get(0);
+		low--;
+		String query = "UPDATE "+table_name+" SET parent_id="+low+" WHERE id="+this.id;
+		Query.update(query);
+	}
+
+	public static void clearChildren(String table_name) {
+		String query = "UPDATE "+table_name+" SET child_id=-1 WHERE parent_id=-1";
+		Query.update(query);
+	}
+
+	public static int parentlessCount(String table_name) {
+		String query = "SELECT * FROM "+table_name+" WHERE parent_id=-1";
+		return Query.getModel(query,new Rank()).size();
+	}
+
 	public static class Pair {
 		private Rank parent;
 		private Rank child;
@@ -168,10 +199,8 @@ public class Rank extends Model {
 					" AND "+CHILD+"=-1 AND "+PARENT+"=-1 LIMIT 2";
 			ArrayList<Rank> ranks = (ArrayList) Query.getModel(query,new Rank());
 
-			this.parent = ranks.get(0);
-			this.child = ranks.get(1);
-
-			this.setPhotos(photo_table,group);
+			this.parent = ranks.size()>0?ranks.get(0):null;
+			this.child = ranks.size()>1?ranks.get(1):null;
 		}
 
 		public Pair(Rank parent, Rank child) {
@@ -219,7 +248,7 @@ public class Rank extends Model {
 			return child != null;
 		}
 
-		public boolean isFull() {
+		public final boolean isFull() {
 			return hasParent() && hasChild();
 		}
 
