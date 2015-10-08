@@ -84,7 +84,7 @@ public class Rank extends Model {
 		for(GroupBy group : grouping) {
 			query += group.getPhoto_attribute()+" varchar(40),";
 		}
-		query += PARENT+" int DEFAULT -1, "+CHILD+" int DEFAULT -1, "+MAIN_CHAIN+" int DEFAULT "+OFF_CHAIN+", "+RANK+" int DEFAULT 0,";
+		query += PARENT+" int DEFAULT 0, "+CHILD+" int DEFAULT 0, "+MAIN_CHAIN+" int DEFAULT "+OFF_CHAIN+", "+RANK+" int DEFAULT 0,";
 
 		Query.update(query+postfix);
 	}
@@ -116,29 +116,28 @@ public class Rank extends Model {
 		User user = new User(ranker_id);
 		generateRanks(grade_group, user, photo_table);
 
-		Pair pair = new Pair(grade_group,user.getName(),photo_table);
+		Pair pair = new Pair(grade_group,user.getName());
 		if (pair.isFull()) { 
 			pair.setPhotos(photo_table,grade_group);
 			return pair;
 		}
 
-		//if pair has one member then it is an odd man out so we must mark
-		// at what recursive level we will be adding it to the main chain
-		//  (not actual record of level, just relative position, actual lvl
-		//    will be determined by counting children)
-		if (!pair.isEmpty()) {
-			pair.getParent().setOddRankOut(grade_group.getGrade_name());
-		}
-
-		if (parentlessCount(grade_group.getGrade_name()) > 1) {
-			clearChildren(grade_group.getGrade_name());
+		if (parentlessCount(grade_group.getGrade_name()) > 0) {
+			int level = clearChildren(grade_group.getGrade_name());
+			if (!pair.isEmpty()) {
+				pair.getParent().setOddRankOut(grade_group.getGrade_name(), level);
+			}
 			return getPairToRank(group_id,ranker_id,photo_table);
 		}
 
 		//if we got this far, we are building the main chain
+		pair.getPairForMainChain(grade_group,user.getName());
+		if (pair.isFull()) { 
+			pair.setPhotos(photo_table,grade_group);
+		}
 		//TODO
 
-		return null;
+		return pair;
 	}
 
 	private static void generateRanks(GradeGroup grade_group, User user, String photo_table) {
@@ -171,20 +170,26 @@ public class Rank extends Model {
 		}
 	}
 
-	public void setOddRankOut(String table_name) {
-		int low = (Integer)Query.getField(table_name,"parent_id","parent_id < 0","parent_id asc").get(0);
-		low--;
-		String query = "UPDATE "+table_name+" SET parent_id="+low+" WHERE id="+this.id;
+	public void setOddRankOut(String table_name, int low) {
+		String query = "UPDATE "+table_name+" SET parent_id=-1 WHERE id="+this.id;
+		Query.update(query);
+		query = "UPDATE "+table_name+" SET child_id="+low+" WHERE id="+this.id;
 		Query.update(query);
 	}
 
-	public static void clearChildren(String table_name) {
-		String query = "UPDATE "+table_name+" SET child_id=-1 WHERE parent_id=-1";
+	public static int clearChildren(String table_name) {
+		int low = (Integer)Query.getField(table_name,"child_id",null,"child_id asc").get(0);
+		low--;
+		System.out.println("low is: "+low);
+		String query = "UPDATE "+table_name+" SET child_id=0 WHERE parent_id=0 AND child_id >= 0";
 		Query.update(query);
+		query = "UPDATE "+table_name+" SET child_id="+low+" WHERE parent_id>0 AND child_id=0";
+		Query.update(query);
+		return low;
 	}
 
 	public static int parentlessCount(String table_name) {
-		String query = "SELECT * FROM "+table_name+" WHERE parent_id=-1";
+		String query = "SELECT * FROM "+table_name+" WHERE parent_id=0";
 		return Query.getModel(query,new Rank()).size();
 	}
 
@@ -194,9 +199,9 @@ public class Rank extends Model {
 		private ArrayList<Photo> parent_photos;
 		private ArrayList<Photo> child_photos;
 
-		public Pair(GradeGroup group, String ranker, String photo_table) {
+		public Pair(GradeGroup group, String ranker) {
 			String query = "SELECT * FROM "+group.getGrade_name()+" WHERE grader='"+ranker+"' "+
-					" AND "+CHILD+"=-1 AND "+PARENT+"=-1 LIMIT 2";
+					" AND "+CHILD+"=0 AND "+PARENT+"=0 LIMIT 2";
 			ArrayList<Rank> ranks = (ArrayList) Query.getModel(query,new Rank());
 
 			this.parent = ranks.size()>0?ranks.get(0):null;
@@ -206,6 +211,10 @@ public class Rank extends Model {
 		public Pair(Rank parent, Rank child) {
 			this.parent = parent;
 			this.child = child;
+		}
+
+		public void getPairForMainChain(GradeGroup group, String userName) {
+			//TODO
 		}
 
 		public final void setPhotos(String table_name, GradeGroup group) {
