@@ -9,11 +9,13 @@ package model;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Collections;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.ResultSetMetaData;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import SQL.Query;
 
@@ -24,7 +26,7 @@ import metaData.grade.GradeGroup;
  *
  * @author aryner
  */
-public class Rank extends Model {
+public class Rank extends Model implements Comparable<Rank>{
 	private int id;
 	private String grader;
 	private Map<String,String> group_meta_data;
@@ -94,7 +96,12 @@ public class Rank extends Model {
 		int left_id = Integer.parseInt(request.getParameter("left_rank"));
 		String compare = request.getParameter("compare");
 
-		assignParentChildRelationship(right_id, left_id, compare, group.getGrade_name());
+		if (parentlessCount(group.getGrade_name()) > 0 ) {
+			assignParentChildRelationship(right_id, left_id, compare, group.getGrade_name());
+		} else {
+			//TODO
+			//add to main chain
+		}
 	}
 
 	public static void assignParentChildRelationship(int right_id, int left_id, String compare, String category) {
@@ -111,7 +118,7 @@ public class Rank extends Model {
 		}
 	}
 
-	public static Pair getPairToRank(int group_id, int ranker_id, String photo_table) {
+	public static Pair getPairToRank(int group_id, int ranker_id, String photo_table, HttpServletRequest request) {
 		GradeGroup grade_group = new GradeGroup(group_id);
 		User user = new User(ranker_id);
 		generateRanks(grade_group, user, photo_table);
@@ -127,15 +134,15 @@ public class Rank extends Model {
 			if (!pair.isEmpty()) {
 				pair.getParent().setOddRankOut(grade_group.getGrade_name(), level);
 			}
-			return getPairToRank(group_id,ranker_id,photo_table);
+			return getPairToRank(group_id,ranker_id,photo_table,request);
 		}
 
 		//if we got this far, we are building the main chain
-		pair.getPairForMainChain(grade_group,user.getName());
+		pair.getPairForMainChain(grade_group,user.getName(),request.getSession());
 		if (pair.isFull()) { 
 			pair.setPhotos(photo_table,grade_group);
 		}
-		//TODO
+		//TODO?
 
 		return pair;
 	}
@@ -180,7 +187,6 @@ public class Rank extends Model {
 	public static int clearChildren(String table_name) {
 		int low = (Integer)Query.getField(table_name,"child_id",null,"child_id asc").get(0);
 		low--;
-		System.out.println("low is: "+low);
 		String query = "UPDATE "+table_name+" SET child_id=0 WHERE parent_id=0 AND child_id >= 0";
 		Query.update(query);
 		query = "UPDATE "+table_name+" SET child_id="+low+" WHERE parent_id>0 AND child_id=0";
@@ -191,6 +197,107 @@ public class Rank extends Model {
 	public static int parentlessCount(String table_name) {
 		String query = "SELECT * FROM "+table_name+" WHERE parent_id=0";
 		return Query.getModel(query,new Rank()).size();
+	}
+
+	public static ArrayList<Rank> getAllRanks(String userName, String group) {
+		String query = "SELECT * FROM "+group+" WHERE grader='"+userName+"'";
+		return (ArrayList)Query.getModel(query,new Rank());
+	}
+
+	public static void startChain(ArrayList<Rank> ranks, String group) {
+		int head = 0;
+		int head_id = 0;
+		Rank headRank = null;
+
+		for(Rank rank : ranks) {
+			if (rank.getChild_id() < head) {
+				head = rank.getChild_id();
+				head_id = rank.getId();
+				headRank = rank;
+			}
+		}
+
+		if (headRank != null) {
+			String query = "UPDATE "+group+" SET rank = "+ranks.size()+
+				", main_chain="+ON_CHAIN+", parent_id="+ranks.size()+
+				" WHERE id="+head_id;
+			Query.update(query);
+			headRank.setRank(ranks.size());
+			headRank.setMain_chain(ON_CHAIN);
+			headRank.setParent_id(ranks.size());
+		}
+	}
+
+	private static Pair compareForChain(ArrayList<Rank> onChain, ArrayList<Rank> offChain, int level, String tableName) {
+		int rankedCount = 0;
+		ArrayList<Rank> currLevel = new ArrayList<Rank>();
+		for(int i=offChain.size()-1; i>=0; i--) {
+			if (offChain.get(i).getChild_id() == -level) {
+				currLevel.add(offChain.get(i));
+				if (offChain.get(i).getRank() > 0) {
+					rankedCount++;
+					onChain.add(offChain.get(i));
+				}
+			}
+		}
+		if(rankedCount == currLevel.size()) { 
+			//set main chain
+			setMainChain(tableName);
+			//return method to get pair on next level (recuse with next level?)
+			offChain.removeAll(onChain);
+			return compareForChain(onChain,offChain, level-1, tableName);
+		}
+		int parentRank = getNextParentRank(rankedCount,offChain.size());
+		Collections.sort(onChain);
+		int parentIndex = -1;
+		for(int i=0; i<onChain.size() && parentIndex < 0; i++) {
+			if (onChain.get(i).getParent_id() == parentRank && onChain.get(i).getMain_chain() == ON_CHAIN) {
+				parentIndex = i;
+			}
+		}
+		if(parentIndex == -1) {
+			//this is the odd case
+			//assert there is only one element in currLevel and it is the next to be inserted
+			//return a binary insert compare method with this as an argument 
+			return binaryInsertionComparison(onChain,currLevel.get(0), onChain.get(onChain.size()-1).getRank(),onChain.get(0).getRank());
+		}
+		for (Rank needle: currLevel) {
+			if(needle.getParent_id() == onChain.get(parentIndex).getId()) {
+				//needle is the next element to be inserted
+				//return a binary insert compare method with this as an argument 
+				return binaryInsertionComparison(onChain,needle,onChain.get(parentIndex).getRank(),onChain.get(0).getRank());
+			}
+		}
+		//Should not get this far
+		return null;
+	}
+
+	private static Pair binaryInsertionComparison(ArrayList<Rank> onChain, Rank toInsert, int high, int low) {
+		int compare = ((high - low) / 2) + low;
+		Pair toCompare = null;
+		for(Rank check : onChain) {
+			if(check.getRank() == compare) {
+				toCompare = new Pair(check,toInsert);
+				break;
+			}
+		}
+		return toCompare;
+	}
+
+	//lowBound is the lowest assigned ranking on the main chain (-1?)
+	private static int getNextParentRank(int k, int lowBound) {
+		int currIndex = (int)(Math.pow(2,k+1)+Math.pow(-1,k))/3;
+		return lowBound + currIndex;
+	}
+
+	private static void setMainChain(String tableName) {
+		String query = "UPDATE TABLE "+tableName+" SET main_chain="+ON_CHAIN+" WHERE rank > 0";
+		Query.update(query);
+	}
+
+	@Override
+	public int compareTo(Rank r1) {
+		return this.rank - r1.getRank();
 	}
 
 	public static class Pair {
@@ -213,8 +320,32 @@ public class Rank extends Model {
 			this.child = child;
 		}
 
-		public void getPairForMainChain(GradeGroup group, String userName) {
+		public Pair getPairForMainChain(GradeGroup group, String userName, HttpSession session) {
+			//Check for session variables
+			//  if present, proceed accordingly
 			//TODO
+
+			//if no session variables 
+			ArrayList<Rank> ranks = getAllRanks(userName, group.getGrade_name());
+			ArrayList<Rank> onChain = new ArrayList<Rank>();
+			ArrayList<Rank> offChain = new ArrayList<Rank>();
+			boolean started_chain = false;
+			int level = -ranks.size();
+			for(Rank rank : ranks) {
+				boolean has_rank = rank.getRank() > 0;
+				if(has_rank) {
+					started_chain = has_rank;
+				}
+				if(rank.getMain_chain() == ON_CHAIN) {
+					onChain.add(rank);
+				} else {
+					level = -Math.max(-level,rank.getChild_id());
+					offChain.add(rank);
+				}
+			}
+			if (!started_chain) { startChain(ranks, group.getGrade_name()); }
+
+			return  compareForChain(onChain, offChain, level, group.getGrade_name());
 		}
 
 		public final void setPhotos(String table_name, GradeGroup group) {
