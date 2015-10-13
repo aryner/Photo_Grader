@@ -14,6 +14,9 @@
 <%
 GradeGroup group = (GradeGroup)session.getAttribute("rank_group");
 Pair pair = (Pair)request.getAttribute("rank_pair");
+String high_rank = request.getAttribute("high_rank").toString();
+String low_rank = request.getAttribute("low_rank").toString();
+
 String photo_table = (String)request.getAttribute("photo_table");
 String photo_table_num = photo_table.substring(photo_table.lastIndexOf("_")+1);
 %>
@@ -31,6 +34,9 @@ for (Photo photo : pair.getParent_photos()) {
 	<form action="submitRank" method="POST">
 		<input type="hidden" name="left_rank" value="<%out.print(pair.getParent().getId());%>">
 		<input type="hidden" name="right_rank" value="<%out.print(pair.getChild().getId());%>">
+		<input type="hidden" name="last_compared_rank" value="<%out.print(pair.getParent().getRank());%>">
+		<input type="hidden" name="high_rank" value="<%out.print(high_rank);%>">
+		<input type="hidden" name="low_rank" value="<%out.print(low_rank);%>">
 		<label>Which is worse?</label>
 		<ul>
 			<li><input type="radio" name="compare" value="left">Left</li>
