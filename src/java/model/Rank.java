@@ -263,12 +263,8 @@ public class Rank extends Model implements Comparable<Rank>{
 		}
 	}
 
-	private static Pair compareForChain(ArrayList<Rank> onChain, ArrayList<Rank> offChain, int level, String tableName, HttpServletRequest request, String grader) {
-		if (offChain.isEmpty()) {
-			return null;
-		}
+	public static int findCurrentLevel(ArrayList<Rank> onChain, ArrayList<Rank> offChain, ArrayList<Rank> currLevel, int level) {
 		int rankedCount = 0;
-		ArrayList<Rank> currLevel = new ArrayList<Rank>();
 		for(int i=offChain.size()-1; i>=0; i--) {
 			if (offChain.get(i).getChild_id() == -level) {
 				currLevel.add(offChain.get(i));
@@ -278,6 +274,17 @@ public class Rank extends Model implements Comparable<Rank>{
 				}
 			}
 		}
+		return rankedCount;
+	}
+
+	private static Pair compareForChain(ArrayList<Rank> onChain, ArrayList<Rank> offChain, int level, String tableName, HttpServletRequest request, String grader) {
+		if (offChain.isEmpty()) {
+			//this user has finished ranking this set
+			return null;
+		}
+
+		ArrayList<Rank> currLevel = new ArrayList<Rank>();
+		int rankedCount = findCurrentLevel(onChain,offChain,currLevel,level);
 		if(rankedCount == currLevel.size()) { 
 			//set main chain
 			setMainChain(tableName,grader);
@@ -285,6 +292,7 @@ public class Rank extends Model implements Comparable<Rank>{
 			offChain.removeAll(onChain);
 			return compareForChain(onChain,offChain, level-1, tableName,request,grader);
 		}
+
 		int parentRank = getNextParentRank(rankedCount,offChain.size());
 		Collections.sort(onChain);
 		int parentIndex = -1;
@@ -307,6 +315,7 @@ public class Rank extends Model implements Comparable<Rank>{
 			}
 		}
 		//Should not get this far
+		System.err.println("went too far in compareForChain");
 		return null;
 	}
 
@@ -333,6 +342,27 @@ public class Rank extends Model implements Comparable<Rank>{
 	private static void setMainChain(String tableName, String grader) {
 		String query = "UPDATE TABLE "+tableName+" SET main_chain="+ON_CHAIN+" WHERE rank > 0 AND grader='"+grader+"'";
 		Query.update(query);
+	}
+
+	public static boolean startedChain(ArrayList<Rank> ranks) {
+		for (Rank rank : ranks) {
+			if (rank.getRank() > 0) { return true; }
+		}
+		return false;
+	}
+
+	public static int groupOnOffChain(ArrayList<Rank> ranks, ArrayList<Rank> onChain, ArrayList<Rank> offChain) {
+		int level = -ranks.size();
+		for(Rank rank : ranks) {
+			if(rank.getMain_chain() == ON_CHAIN) {
+				onChain.add(rank);
+			} else {
+				level = -Math.max(-level,rank.getChild_id());
+				offChain.add(rank);
+			}
+		}
+
+		return level;
 	}
 
 	@Override
@@ -367,24 +397,11 @@ public class Rank extends Model implements Comparable<Rank>{
 				return continueBinaryInsertion(request, group, userName);
 			}
 
-			//we need to select the next rank to insert into the main chain
 			ArrayList<Rank> ranks = getAllRanks(userName, group.getGrade_name());
 			ArrayList<Rank> onChain = new ArrayList<Rank>();
 			ArrayList<Rank> offChain = new ArrayList<Rank>();
-			boolean started_chain = false;
-			int level = -ranks.size();
-			for(Rank rank : ranks) {
-				boolean has_rank = rank.getRank() > 0;
-				if(has_rank) {
-					started_chain = has_rank;
-				}
-				if(rank.getMain_chain() == ON_CHAIN) {
-					onChain.add(rank);
-				} else {
-					level = -Math.max(-level,rank.getChild_id());
-					offChain.add(rank);
-				}
-			}
+			boolean started_chain = startedChain(ranks);
+			int level = groupOnOffChain(ranks, onChain, offChain);
 			if (!started_chain) { startChain(ranks, group.getGrade_name()); }
 
 			return  compareForChain(onChain, offChain, level, group.getGrade_name(),request,userName);
