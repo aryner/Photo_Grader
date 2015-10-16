@@ -55,6 +55,11 @@ public class Controller extends HttpServlet {
 		else if(userPath.equals("/home")) {
 			session.removeAttribute("grade_group");
 			session.removeAttribute("rank_group");
+			session.removeAttribute("last_compared_rank");
+			session.removeAttribute("high_rank");
+			session.removeAttribute("low_rank");
+			session.removeAttribute("right_rank");
+			session.removeAttribute("left_rank");
 		}
 		else if(userPath.equals("/select_CSVs")) {
 			request.setAttribute("categories",study.getGradeCategoryNames());

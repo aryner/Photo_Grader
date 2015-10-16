@@ -20,6 +20,7 @@ import model.User;
 import model.Study;
 import model.Photo;
 import model.Rank;
+import model.Rank.Pair;
 
 import metaData.grade.GradeGroup;
 
@@ -83,7 +84,9 @@ public class Rank_controller extends HttpServlet {
 				return;
 			}
 			GradeGroup group = (GradeGroup)session.getAttribute("rank_group");
-			request.setAttribute("rank_pair",Rank.getPairToRank(group.getId(), user.getId(), study.getPhoto_attribute_table_name(), request));
+			Pair pair = Rank.getPairToRank(group.getId(), user.getId(), study.getPhoto_attribute_table_name(), request);
+			pair.setPhotos(study.getPhoto_attribute_table_name(),group);
+			request.setAttribute("rank_pair",pair);
 			request.setAttribute("photo_table",study.getPhoto_attribute_table_name());
 			//request.setAttribute("photoNumber", study.getPhotoNumber());
 		}
