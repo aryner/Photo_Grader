@@ -47,7 +47,7 @@ if (pair.isFull()) {
 			<li><input type="radio" name="compare" value="equal">Equal</li>
 			<li><input type="radio" name="compare" value="right">Right</li>
 		</ul>
-		<input type="submit" value="Submit Ranking" class="btn">
+		<input type="submit" value="Submit" class="btn">
 
 </div>
 <div class="rank_col">
