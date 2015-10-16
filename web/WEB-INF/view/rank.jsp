@@ -19,6 +19,7 @@ String low_rank = request.getAttribute("low_rank")+"";
 
 String photo_table = (String)request.getAttribute("photo_table");
 String photo_table_num = photo_table.substring(photo_table.lastIndexOf("_")+1);
+int photoCount = 0;
 %>
 
 <h1>Rank <%out.print(group.getName());%></h1>
@@ -28,7 +29,8 @@ String photo_table_num = photo_table.substring(photo_table.lastIndexOf("_")+1);
 if (pair.isFull()) {
 	out.print("<h3>"+pair.getParent().getId()+"</h3>");
 	for (Photo photo : pair.getParent_photos()) {
-		out.print("<img class='Img' src='"+Constants.SRC+"img?number="+photo_table_num+"&name="+photo.getName()+"'>");
+		out.print("<img class='Img' name='photo_"+photoCount+"' src='"+Constants.SRC+"img?number="+photo_table_num+"&name="+photo.getName()+"'>");
+		photoCount++;
 	}
 %>
 </div>
@@ -47,15 +49,17 @@ if (pair.isFull()) {
 		</ul>
 		<input type="submit" value="Submit Ranking" class="btn">
 
-	</form>
 </div>
 <div class="rank_col">
 <%
 	out.print("<h3>"+pair.getChild().getId()+"</h3>");
 	for (Photo photo : pair.getChild_photos()) {
-		out.print("<img class='Img' src='"+Constants.SRC+"img?number="+photo_table_num+"&name="+photo.getName()+"'>");
+		out.print("<img class='Img' name='photo_"+photoCount+"' src='"+Constants.SRC+"img?number="+photo_table_num+"&name="+photo.getName()+"'>");
+		photoCount++;
 	}
 %>
+		<input type="hidden" name="photoCount" value="<%out.print(photoCount);%>">
+	</form>
 </div>
 <%
 } else {
@@ -64,3 +68,7 @@ if (pair.isFull()) {
 <%
 }
 %>
+
+
+<script src="javascripts/jquery-1.11.1.min.js" type="text/javascript"></script>
+<script src="javascripts/rank.js" type="text/javascript"></script>

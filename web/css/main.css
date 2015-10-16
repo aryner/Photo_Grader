@@ -154,9 +154,11 @@ a {
 
 .examineImg {
 	position: absolute;
-	left: 55px;
-	top: 55px;
-	width: 1800px;
+	margin: 0px;
+	padding: 0px;
+	left: 1%;
+	top: 1%;
+	width: 98%;
 }
 
 .question {
