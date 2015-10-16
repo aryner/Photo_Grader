@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Collections;
+import java.util.Random;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.ResultSetMetaData;
@@ -101,21 +102,16 @@ public class Rank extends Model implements Comparable<Rank>{
 		request.getSession().setAttribute("right_rank",right_id);
 		request.getSession().setAttribute("left_rank",left_id);
 		String compare = request.getParameter("compare");
-		System.out.println("in processRanking");
 
 		if (parentlessCount(group.getGrade_name(), user.getName()) > 0 ) {
-			System.out.println("assigning child-parent relationship");
 			assignParentChildRelationship(right_id, left_id, compare, group.getGrade_name());
 		} else {
-			System.out.println("adding to main chain");
 			addToMainChain(request, group, user);
 		}
 	}
 
 	public static void addToMainChain(HttpServletRequest request, GradeGroup group, User user) {
-		System.out.println("in addToMainChain");
 		int last_compared_rank = Integer.parseInt(request.getParameter("last_compared_rank"));
-		System.out.println("last_compared_rank = "+last_compared_rank);
 		int high_rank = Integer.parseInt(request.getParameter("high_rank")+"");
 		int low_rank = Integer.parseInt(request.getParameter("low_rank")+"");
 		String compare = request.getParameter("compare");
@@ -123,27 +119,22 @@ public class Rank extends Model implements Comparable<Rank>{
 		int comparison = compare.equals("left")?LESS:compare.equals("right")?GREATER:EQUAL;
 		switch (comparison) {
 			case LESS:
-				System.out.println("Less");
 				high_rank = last_compared_rank - 1;
 				request.getSession().setAttribute("high_rank",high_rank);
 				break;
 			case GREATER:
-				System.out.println("Greater");
 				low_rank = last_compared_rank + 1;
 				request.getSession().setAttribute("low_rank",low_rank);
 				break;
 			case EQUAL:
-				System.out.println("Equal");
 				low_rank = last_compared_rank;
 				high_rank = low_rank-1;
 		}
-		System.out.println("high = "+high_rank+", low = "+low_rank);
 		HttpSession session = request.getSession();
 		session.setAttribute("last_compared_rank",last_compared_rank);
 		session.setAttribute("high_rank",high_rank);
 		session.setAttribute("low_rank",low_rank);
 		if (high_rank < low_rank) {
-			System.out.println("in high<low if");
 			int to_insert_id = Integer.parseInt(request.getParameter("right_rank"));
 			insertRank(group.getGrade_name(),low_rank,to_insert_id,user.getName());
 			session.removeAttribute("last_compared_rank");
@@ -237,7 +228,7 @@ public class Rank extends Model implements Comparable<Rank>{
 	}
 
 	public static int clearChildren(String table_name, String grader) {
-		int low = (Integer)Query.getField(table_name,"child_id",null,"child_id asc").get(0);
+		int low = (Integer)Query.getField(table_name,"child_id","grader='"+grader+"'","child_id asc").get(0);
 		low--;
 		String query = "UPDATE "+table_name+" SET child_id=0 WHERE parent_id=0 AND child_id >= 0 AND grader='"+grader+"'";
 		Query.update(query);
@@ -320,7 +311,6 @@ public class Rank extends Model implements Comparable<Rank>{
 		ArrayList<Rank> currLevel = new ArrayList<Rank>();
 		int rankedCount = findCurrentLevel(onChain,offChain,currLevel,level);
 		if(rankedCount == currLevel.size()) { 
-			System.out.println("rankedCount == currLevel.size()");
 			//set main chain
 			setMainChain(tableName,grader);
 			//return method to get pair on next level (recuse with next level?)
@@ -328,19 +318,13 @@ public class Rank extends Model implements Comparable<Rank>{
 			return compareForChain(onChain,offChain, level-1, tableName,request,grader);
 		}
 
-		int parentIndex = -1;
-		int parentRank = getNextParentRank(rankedCount,offChain.size());
+		int parentRank;
 		do {
-			System.out.println("parentRank = "+parentRank);
+			parentRank = getNextParentRank(rankedCount,offChain.size());
 			Collections.sort(onChain);
-			parentIndex = -1;
-			/*
-			for(int i=0; i<offChain.size() && parentIndex < 0; i++) {
-				if (offChain.get(i).getParent_id() == parentRank && offChain.get(i).getRank() == 0) {
-					parentIndex = i;
-				}
-			}
-			*/
+			parentRank = Math.min(parentRank,onChain.get(onChain.size()-1).getRank());
+			int parentIndex = -1;
+
 			for(int i=0; i<onChain.size() && parentIndex <0; i++) {
 				if (onChain.get(i).getParent_id() == parentRank && onChain.get(i).getMain_chain() == ON_CHAIN) {
 					parentIndex = i;
@@ -355,23 +339,15 @@ public class Rank extends Model implements Comparable<Rank>{
 					}
 				}
 			}
-			parentRank++;
+			rankedCount++;
 		} while (offChain.size() > 1 && parentRank < (onChain.size()+offChain.size()));
 
+		//We only get to this loop if it is the odd rank out to be inserted (no parent)
 		for(Rank rank : currLevel) {
 			if(rank.getRank() == 0){
 				return binaryInsertionComparison(onChain,currLevel.get(0), onChain.get(onChain.size()-1).getRank(),onChain.get(0).getRank(),request);
 			}
 		}
-		/*
-		if(parrentIndex == -1) {
-			System.out.println("odd case");
-			//this is the odd case
-			//assert there is only one element in currLevel and it is the next to be inserted
-			//return a binary insert compare method with this as an argument 
-			return binaryInsertionComparison(onChain,currLevel.get(0), onChain.get(onChain.size()-1).getRank(),onChain.get(0).getRank(),request);
-		}
-		*/
 		//Should not get this far
 		System.err.println("went too far in compareForChain");
 		return null;
@@ -400,6 +376,7 @@ public class Rank extends Model implements Comparable<Rank>{
 	private static void setMainChain(String tableName, String grader) {
 		String query = "SELECT * FROM "+tableName+" WHERE rank > 0 AND grader='"+grader+"' ORDER BY rank ASC";
 		Rank tail = (Rank)Query.getModel(query,new Rank()).get(0);
+		if(tail.getRank() == 1) { return; }
 		query = "SELECT * FROM "+tableName+" WHERE main_chain="+OFF_CHAIN+" AND parent_id="+tail.getId()+" AND grader='"+grader+"' ORDER BY child_id ASC";
 		Rank newTail = (Rank)Query.getModel(query,new Rank()).get(0);
 		query = "UPDATE "+tableName+" SET rank="+(tail.getRank()-1)+" WHERE id="+newTail.getId();
@@ -461,16 +438,19 @@ public class Rank extends Model implements Comparable<Rank>{
 
 		public static Pair getUncomparedPair(GradeGroup group, String ranker) {
 			String query = "SELECT * FROM "+group.getGrade_name()+" WHERE grader='"+ranker+"' "+
-					" AND "+CHILD+"=0 AND "+PARENT+"=0 LIMIT 2";
-			ArrayList<Rank> ranks = (ArrayList) Query.getModel(query,new Rank());
+					" AND "+CHILD+"=0 AND "+PARENT+"=0";
+			ArrayList<Rank> AllRanks = (ArrayList) Query.getModel(query,new Rank());
+			ArrayList<Rank> ranks = new ArrayList<Rank>();
+			Random rand = new Random(System.currentTimeMillis());
+			ranks.add(AllRanks.size()>0?AllRanks.remove(rand.nextInt(AllRanks.size())):null);
+			ranks.add(AllRanks.size()>0?AllRanks.remove(rand.nextInt(AllRanks.size())):null);
 
-			return new Pair(ranks.size()>0?ranks.get(0):null,ranks.size()>1?ranks.get(1):null);
+			return new Pair(ranks.get(0),ranks.get(1));
 		}
 
 		public void getPairForMainChain(GradeGroup group, String userName, HttpServletRequest request) {
 			//Check for request variables
 			if(request.getSession().getAttribute("last_compared_rank") != null) {
-				System.out.println("in last_compared_not null if");
 				Pair temp = continueBinaryInsertion(request, group, userName);
 				setParent(temp.getParent());
 				setChild(temp.getChild());

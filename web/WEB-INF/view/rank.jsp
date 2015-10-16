@@ -16,7 +16,6 @@ GradeGroup group = (GradeGroup)session.getAttribute("rank_group");
 Pair pair = (Pair)request.getAttribute("rank_pair");
 String high_rank = request.getAttribute("high_rank")+"";
 String low_rank = request.getAttribute("low_rank")+"";
-System.out.println("high="+high_rank+", low="+low_rank);
 
 String photo_table = (String)request.getAttribute("photo_table");
 String photo_table_num = photo_table.substring(photo_table.lastIndexOf("_")+1);
@@ -26,19 +25,18 @@ String photo_table_num = photo_table.substring(photo_table.lastIndexOf("_")+1);
 
 <div class="rank_col">
 <%
-out.print("<h3>"+pair.getParent().getId()+"</h3>");
-for (Photo photo : pair.getParent_photos()) {
-	out.print("<img class='Img' src='"+Constants.SRC+"img?number="+photo_table_num+"&name="+photo.getName()+"'>");
-}
+if (pair.isFull()) {
+	out.print("<h3>"+pair.getParent().getId()+"</h3>");
+	for (Photo photo : pair.getParent_photos()) {
+		out.print("<img class='Img' src='"+Constants.SRC+"img?number="+photo_table_num+"&name="+photo.getName()+"'>");
+	}
 %>
 </div>
 <div class="rank_form">
 	<form action="submitRank" method="POST">
 		<input type="hidden" name="left_rank" value="<%out.print(pair.getParent().getId());%>">
 		<input type="hidden" name="right_rank" value="<%out.print(pair.getChild().getId());%>">
-		<%//if (high_rank != null) {%>
 		<input type="hidden" name="last_compared_rank" value="<%out.print(pair.getParent().getRank());%>">
-		<%//}%>
 		<input type="hidden" name="high_rank" value="<%out.print(high_rank);%>">
 		<input type="hidden" name="low_rank" value="<%out.print(low_rank);%>">
 		<label>Which is worse?</label>
@@ -53,9 +51,16 @@ for (Photo photo : pair.getParent_photos()) {
 </div>
 <div class="rank_col">
 <%
-out.print("<h3>"+pair.getChild().getId()+"</h3>");
-for (Photo photo : pair.getChild_photos()) {
-	out.print("<img class='Img' src='"+Constants.SRC+"img?number="+photo_table_num+"&name="+photo.getName()+"'>");
-}
+	out.print("<h3>"+pair.getChild().getId()+"</h3>");
+	for (Photo photo : pair.getChild_photos()) {
+		out.print("<img class='Img' src='"+Constants.SRC+"img?number="+photo_table_num+"&name="+photo.getName()+"'>");
+	}
 %>
 </div>
+<%
+} else {
+%>
+<h3>You have finished ranking this group</h3>
+<%
+}
+%>

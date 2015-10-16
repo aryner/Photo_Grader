@@ -88,7 +88,6 @@ public class Rank_controller extends HttpServlet {
 			pair.setPhotos(study.getPhoto_attribute_table_name(),group);
 			request.setAttribute("rank_pair",pair);
 			request.setAttribute("photo_table",study.getPhoto_attribute_table_name());
-			//request.setAttribute("photoNumber", study.getPhotoNumber());
 		}
 
 		String url = "/WEB-INF/view" + userPath + ".jsp";
