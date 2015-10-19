@@ -37,7 +37,10 @@ $(document).ready(function() {
 });
 
 function check_for_back() {
-	if(back_pressed.value === '1') { window.location.replace('home'); }
+	if(back_pressed.value === '1') { 
+		alert('You cannot use the back button while ranking.');
+		window.location.replace('home'); 
+	}
 }
 
 function mark_page() {
