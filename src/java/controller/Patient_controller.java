@@ -28,6 +28,7 @@ import metaData.MetaData;
 import metaData.ManualMetaData;
 
 import SQL.Query;
+import SQL.Helper;
 
 import utilities.Constants;
 import utilities.FileIO;
@@ -39,7 +40,7 @@ import utilities.FileIO;
 @WebServlet(name = "Controller.Patient_controller", urlPatterns = {
 								"/defineAssignment","/define_assignment","/upload","/upload_pictures",
 								"/upload_table_data","/img","/assign_manual_meta","/manually_assign_meta-data",
-								"/setManualMetaData"
+								"/setManualMetaData","/view_photos"
 								})
 public class Patient_controller extends HttpServlet {
 	/**
@@ -87,6 +88,11 @@ public class Patient_controller extends HttpServlet {
 			request.setAttribute("photoNumber", study.getPhotoNumber());
 			request.setAttribute("photo",photo);
 			request.setAttribute("manualMetaData",manualMetaData);
+		}
+		else if(userPath.equals("/view_photos")) {
+			ArrayList<String> columns = Photo.getMetaDataKeys(study.getPhoto_attribute_table_name());
+			Helper.unprocess(columns);
+			request.setAttribute("columns", columns);
 		}
 		else if(userPath.equals("/img")) {
 			String name = request.getParameter("name");
