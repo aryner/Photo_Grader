@@ -51,5 +51,8 @@
 		<%
 		}
 		%>
+		<div>
+			<a href="select_study" class="btn">Change Study</a>
+		</div>
 	</div>
 </div>
