@@ -4,7 +4,15 @@
  * and open the template in the editor.
  */
 
+var back_pressed;
+window.onpopstate = function(e) {
+	check_for_back();
+};
+
+
 $(document).ready(function() {
+	back_pressed = document.getElementById('back_pressed');
+
 	var photoCount = Number($('input[name=photoCount]').val());
 
 	addPhotoClickListeners(photoCount);
@@ -24,8 +32,17 @@ $(document).ready(function() {
 			var div = document.getElementsByClassName('errorDiv');
 			div[0].innerHTML = errorMsg;
 		}
+		else { mark_page(); }
 	});
 });
+
+function check_for_back() {
+	if(back_pressed.value === '1') { window.location.replace('home'); }
+}
+
+function mark_page() {
+	back_pressed.value = '1';
+}
 
 function checkInput() {
 	var errors = [];

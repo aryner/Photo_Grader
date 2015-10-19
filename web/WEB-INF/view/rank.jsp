@@ -35,6 +35,7 @@ if (pair.isFull()) {
 </div>
 <div class="rank_form">
 	<form action="submitRank" method="POST">
+		<input type="hidden" id="back_pressed" name="back_pressed" value="0"/>
 		<input type="hidden" name="left_rank" value="<%out.print(pair.getParent().getId());%>">
 		<input type="hidden" name="right_rank" value="<%out.print(pair.getChild().getId());%>">
 		<input type="hidden" name="last_compared_rank" value="<%out.print(pair.getParent().getRank());%>">
@@ -67,7 +68,6 @@ if (pair.isFull()) {
 <%
 }
 %>
-
 
 <script src="javascripts/jquery-1.11.1.min.js" type="text/javascript"></script>
 <script src="javascripts/rank.js" type="text/javascript"></script>
