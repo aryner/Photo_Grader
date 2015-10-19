@@ -335,6 +335,8 @@ public class Rank extends Model implements Comparable<Rank>{
 					if(needle.getParent_id() == onChain.get(parentIndex).getId() && needle.getRank() == 0) {
 						//needle is the next element to be inserted
 						//return a binary insert compare method with this as an argument 
+						//insertRanked(onChain,currLevel);
+						//Collections.sort(onChain);
 						return binaryInsertionComparison(onChain,needle,onChain.get(parentIndex).getRank(),onChain.get(0).getRank(),request);
 					}
 				}
@@ -345,12 +347,20 @@ public class Rank extends Model implements Comparable<Rank>{
 		//We only get to this loop if it is the odd rank out to be inserted (no parent)
 		for(Rank rank : currLevel) {
 			if(rank.getRank() == 0){
+				//insertRanked(onChain,currLevel);
+				//Collections.sort(onChain);
 				return binaryInsertionComparison(onChain,currLevel.get(0), onChain.get(onChain.size()-1).getRank(),onChain.get(0).getRank(),request);
 			}
 		}
 		//Should not get this far
 		System.err.println("went too far in compareForChain");
 		return null;
+	}
+
+	private static void insertRanked(ArrayList<Rank> onChain, ArrayList<Rank> toBeAdded) {
+		for(Rank rank : toBeAdded) {
+			if(rank.getRank()>0) { onChain.add(rank); }
+		}
 	}
 
 	private static Pair binaryInsertionComparison(ArrayList<Rank> onChain, Rank toInsert, int high, int low, HttpServletRequest request) {
