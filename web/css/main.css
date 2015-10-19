@@ -195,3 +195,7 @@ a {
 .rank_form form {
 	margin-top: 50px;
 }
+
+.rank_form .errorDiv {
+	width: 60%;
+}

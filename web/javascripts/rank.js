@@ -4,8 +4,6 @@
  * and open the template in the editor.
  */
 
-var keys = ['s','d','f','t'];
-
 $(document).ready(function() {
 	var photoCount = Number($('input[name=photoCount]').val());
 
@@ -13,8 +11,6 @@ $(document).ready(function() {
 	addKeyboardRanking();
 
 	$('input[type=submit][value=Submit]').click(function(e) {
-		console.log('submitting form');
-		e.preventDefault();
 
 		var errors = checkInput();
 		if(errors.length > 0) {
@@ -32,7 +28,18 @@ $(document).ready(function() {
 });
 
 function checkInput() {
-	return [];
+	var errors = [];
+	var buttons = document.getElementsByName("compare");
+
+	var oneChecked = false;
+	for(var i=0; i<buttons.length && !oneChecked; i++) {
+		oneChecked = buttons[i].checked;
+	}
+	if(!oneChecked) {
+		errors.push('You must select which group is worse, or select \'Equal\' if they are the same.');
+	}
+
+	return errors; 
 }
 
 function addPhotoClickListeners(photoCount) {
@@ -46,7 +53,6 @@ function addPhotoClickListener(img) {
 	var src = img.prop('src');
 
 	img.click(function() {
-		console.log('click');
 		$("body").append("<img class='examineImg' src='"+src+"'>");
 		$('.examineImg').fadeIn("fast");
 
@@ -59,14 +65,10 @@ function addPhotoClickListener(img) {
 function addKeyboardRanking() {
 	var choices = document.getElementsByName("compare");
 
-	for (var i=0; i< choices.length; i++) {
-		console.log(choices[i].value);
-	}
-
 	$(document).bind('keydown',{choices:choices},function(e) {
 		var unicode = e.keyCode || e.which;
 		//return || t
-		if(unicode === 13 || 84) $(':submit[value=Submit]').click();
+		if(unicode === 13 || unicode === 84) { $(':submit[value=Submit]').click(); }
 
 		//s
 		if(unicode === 83) {
