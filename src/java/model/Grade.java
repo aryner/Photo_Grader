@@ -91,9 +91,30 @@ public class Grade extends Model {
 	}
 
 	public static void grade(HttpServletRequest request, Study study, GradeGroup group, User user) {
+		Photo photo = new Photo(study, request.getParameter("photo"));
+		ArrayList update = hasBeenGraded(study,group,user,photo);
+
+		if(update.isEmpty()) {
+			newGrade(request, study, group, user, photo);
+		} else {
+			updateGrade(request, group, (Grade)update.get(0));
+		}
+	}
+
+	private static void updateGrade(HttpServletRequest request, GradeGroup group, Grade grade) {
+		String query = "UPDATE "+group.getGrade_name()+" SET ";
+		for(int i=0; i<group.questionSize(); i++) {
+			if(i>0) { query += ", "; }
+			query += group.getQuestion(i).getLabel()+"='"+Helper.escape(getAnswer(request, group.getQuestion(i)))+"'";
+		}
+		query += " WHERE id="+grade.getId();
+
+		Query.update(query);
+	}
+
+	private static void newGrade(HttpServletRequest request, Study study, GradeGroup group, User user, Photo photo) {
 		String query = "INSERT INTO "+group.getGrade_name()+" ";
 
-		Photo photo = new Photo(study, request.getParameter("photo"));
 		String parameters = "(grader";
 		String values = "VALUES ('"+user.getName();
 
@@ -112,6 +133,18 @@ public class Grade extends Model {
 		values += "')";
 
 		Query.update(query+parameters+values);
+	}
+
+	public static ArrayList hasBeenGraded(Study study, GradeGroup group, User user, Photo photo) {
+		String query = "SELECT * FROM "+group.getGrade_name()+" WHERE grader='"+user.getName()+"'";
+		for(int i=0; i<group.groupBySize(); i++) {
+			String key = group.getGroupBy(i).getPhoto_attribute();
+			String value = photo.getField(key);
+			if(key.equals(FILENAME)) value = photo.getName();
+			query += " AND "+key+"='"+value+"'";
+		}
+
+		return Query.getModel(query,new Grade());
 	}
 
 	public static String getAnswer(HttpServletRequest request, Question question) {

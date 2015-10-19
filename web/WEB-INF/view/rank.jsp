@@ -27,7 +27,6 @@ int photoCount = 0;
 <div class="rank_col">
 <%
 if (pair.isFull()) {
-	out.print("<h3>"+pair.getParent().getId()+"</h3>");
 	for (Photo photo : pair.getParent_photos()) {
 		out.print("<img class='Img' name='photo_"+photoCount+"' src='"+Constants.SRC+"img?number="+photo_table_num+"&name="+photo.getName()+"'>");
 		photoCount++;
@@ -53,7 +52,6 @@ if (pair.isFull()) {
 </div>
 <div class="rank_col">
 <%
-	out.print("<h3>"+pair.getChild().getId()+"</h3>");
 	for (Photo photo : pair.getChild_photos()) {
 		out.print("<img class='Img' name='photo_"+photoCount+"' src='"+Constants.SRC+"img?number="+photo_table_num+"&name="+photo.getName()+"'>");
 		photoCount++;
