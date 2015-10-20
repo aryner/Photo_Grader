@@ -200,3 +200,27 @@ a {
 .rank_form .errorDiv {
 	width: 60%;
 }
+
+.group_view_img {
+	display: table;
+	width: 90%;
+	margin: 10px auto;
+}
+
+.group_view_col {
+	float: left;
+	width: 30%;
+	margin: 20px 0px;
+}
+
+.group_view_col .btn {
+	display: table;
+	margin: 0 auto;
+}
+
+.group_left_right_btn {
+	float: left;
+	margin-bottom: 50px;
+}
+
+

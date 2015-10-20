@@ -257,6 +257,23 @@ public class Photo extends Model{
 		return result;
 	}
 
+	public ArrayList<Photo> getGroup(ArrayList<String> groupOptions, String tableName) {
+		String query = "SELECT * FROM "+tableName+" WHERE ";
+
+		for(int i=0; i<groupOptions.size(); i++) {
+			if(i>0) { query += " AND "; }
+
+			String key = groupOptions.get(i);
+			if(key.equals("Filename")) {
+				query += "name='"+name+"'";
+			} else {
+				query += key+"='"+getField(key)+"'";
+			}
+		}
+
+		return (ArrayList)Query.getModel(query,new Photo());
+	}
+
 	public static int getPhotoCount(String tableName) {
 		String query = "SELECT * FROM "+tableName;
 		ArrayList photos = Query.getModel(query,new Photo());

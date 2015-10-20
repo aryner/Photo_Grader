@@ -40,7 +40,7 @@ import utilities.FileIO;
 @WebServlet(name = "Controller.Patient_controller", urlPatterns = {
 								"/defineAssignment","/define_assignment","/upload","/upload_pictures",
 								"/upload_table_data","/img","/assign_manual_meta","/manually_assign_meta-data",
-								"/setManualMetaData","/set_view_group","/view_groups","/selectGrouping"
+								"/setManualMetaData","/set_view_group","/view_groups","/selectGrouping","/view_group"
 								})
 public class Patient_controller extends HttpServlet {
 	/**
@@ -95,11 +95,17 @@ public class Patient_controller extends HttpServlet {
 			request.setAttribute("columns", columns);
 		}
 		else if(userPath.equals("/view_groups")) {
-			//query the group in question based on the id/index of the group rested
-			//send this group of photos along with the photos that represent the previous
-			//and next group so we go forward and backwards through the groups
 			request.setAttribute("groups",session.getAttribute("viewGroups"));
 			request.setAttribute("groupOptions",session.getAttribute("viewGroupOptions"));
+		}
+		else if(userPath.equals("/view_group")) {
+			ArrayList<Photo> groups = (ArrayList)session.getAttribute("viewGroups");
+			ArrayList<String> groupOptions = (ArrayList)session.getAttribute("viewGroupOptions");
+			int index = Integer.parseInt(request.getParameter("index"));
+			request.setAttribute("index",Integer.parseInt(request.getParameter("index")));
+			request.setAttribute("groupsSize",groups.size());
+			request.setAttribute("photo_table_num",study.getPhoto_attribute_table_name());
+			request.setAttribute("photos",groups.get(index).getGroup(groupOptions,study.getPhoto_attribute_table_name()));
 		}
 		else if(userPath.equals("/img")) {
 			String name = request.getParameter("name");

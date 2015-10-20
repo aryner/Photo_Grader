@@ -12,7 +12,9 @@
 ArrayList<Photo> groups = (ArrayList)request.getAttribute("groups");
 ArrayList<String> groupOptions = (ArrayList)request.getAttribute("groupOptions");
 
-for(Photo group : groups) {
-	out.print(group.getOptionValues(groupOptions)+"<br>");
+for(int i=0; i<groups.size(); i++) {
+	out.print("<a href='view_group?index="+i+"'>");
+	out.print(groups.get(i).getOptionValues(groupOptions));
+	out.print("</a><br>");
 }
 %>
