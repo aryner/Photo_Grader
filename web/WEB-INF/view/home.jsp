@@ -55,7 +55,7 @@
 			<a href="select_study" class="btn">Change Study</a>
 		</div>
 		<div class="meta-col">
-			<a href="view_photos" class="btn">View Uploaded Photos</a>
+			<a href="set_view_group" class="btn">View Uploaded Photos</a>
 		</div>
 	</div>
 </div>

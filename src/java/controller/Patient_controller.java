@@ -40,7 +40,7 @@ import utilities.FileIO;
 @WebServlet(name = "Controller.Patient_controller", urlPatterns = {
 								"/defineAssignment","/define_assignment","/upload","/upload_pictures",
 								"/upload_table_data","/img","/assign_manual_meta","/manually_assign_meta-data",
-								"/setManualMetaData","/view_photos"
+								"/setManualMetaData","/set_view_group","/view_groups","/selectGrouping"
 								})
 public class Patient_controller extends HttpServlet {
 	/**
@@ -89,10 +89,17 @@ public class Patient_controller extends HttpServlet {
 			request.setAttribute("photo",photo);
 			request.setAttribute("manualMetaData",manualMetaData);
 		}
-		else if(userPath.equals("/view_photos")) {
+		else if(userPath.equals("/set_view_group")) {
 			ArrayList<String> columns = Photo.getMetaDataKeys(study.getPhoto_attribute_table_name());
 			Helper.unprocess(columns);
 			request.setAttribute("columns", columns);
+		}
+		else if(userPath.equals("/view_groups")) {
+			//query the group in question based on the id/index of the group rested
+			//send this group of photos along with the photos that represent the previous
+			//and next group so we go forward and backwards through the groups
+			request.setAttribute("groups",session.getAttribute("viewGroups"));
+			request.setAttribute("groupOptions",session.getAttribute("viewGroupOptions"));
 		}
 		else if(userPath.equals("/img")) {
 			String name = request.getParameter("name");
@@ -165,6 +172,14 @@ public class Patient_controller extends HttpServlet {
 			ArrayList<String> errors = FileIO.upload(request,FileIO.TABLE,study);
 			session.setAttribute("errors",errors);
 			response.sendRedirect("/Photo_Grader/home");
+			return;
+		}
+		else if(userPath.equals("/selectGrouping")) {
+			//viewGroup contains an array list of photos, each of which represents a different group
+			ArrayList<String> viewOptions = Photo.getViewGroupOptions(request,study);
+			session.setAttribute("viewGroupOptions",viewOptions);
+			session.setAttribute("viewGroups",Photo.getViewGroups(viewOptions,study));
+			response.sendRedirect("/Photo_Grader/view_groups");
 			return;
 		}
 

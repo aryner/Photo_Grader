@@ -13,7 +13,7 @@
 <h1>Select how you want to group photos to view</h1>
 <p>Select only 'File name' if you want to see each photo individually</p>
 
-<form action="select_grouping" method="POST">
+<form action="selectGrouping" method="POST">
 	<div class="container">
 		<h3>Group Pictures that share:</h3>
 		<input type="checkbox" name="groupBy_-1" value="-1"> File name

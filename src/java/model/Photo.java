@@ -215,6 +215,36 @@ public class Photo extends Model{
 		return "manually_assign_meta-data?id="+photo.getId();
 	}
 
+	public static ArrayList<Photo> getViewGroups(ArrayList<String> groupOptions, Study study) {
+		//query the group to get a list of photos, each representing a differnet group;
+		String query = "SELECT * FROM "+study.getPhoto_attribute_table_name()+" GROUP BY ";
+		String postfix = "";
+		for(String option : groupOptions) {
+			if(postfix.length() > 0) postfix += ", ";
+			String attribute = option;
+			postfix += attribute.equals(Grade.FILENAME) ? "name" : attribute;
+		}
+		return (ArrayList)Query.getModel(query+postfix,new Photo());
+	}
+
+	public static ArrayList<String> getViewGroupOptions(HttpServletRequest request, Study study) {
+		ArrayList<String> result = new ArrayList<String>(); 
+		ArrayList<String> columns = Photo.getMetaDataKeys(study.getPhoto_attribute_table_name());
+		int optionsCount = Integer.parseInt(request.getParameter("groupOptionCount"));
+		for(int i=-1; i<optionsCount; i++) {
+			if(request.getParameter("groupBy_"+i)!=null) {
+				if(i>=0) {
+					result.add(columns.get(i));
+				}
+				else {
+					result.add(GradeGroup.FILENAME);
+				}
+			}
+		}
+		if (result.isEmpty()) { result.add(GradeGroup.FILENAME); }
+		return result;
+	}
+
 	public ArrayList<Photo> getPrevNext(String tableName) {
 		ArrayList<Photo> result = new ArrayList<Photo>();
 		String query = "SELECT * FROM "+tableName+" WHERE id < "+id+" ORDER BY id DESC LIMIT 1";
@@ -246,6 +276,20 @@ public class Photo extends Model{
 		}
 
 		return Query.getModel(query+postfix,new Photo()).size();
+	}
+
+	public String getOptionValues(ArrayList<String> options) {
+		String result = "";
+
+		for(String option : options) {
+			if(result.length() > 0) result += ", ";
+			if(option.equals(Grade.FILENAME)) { 
+				result += "Filename = <b>"+this.name+"</b>";
+			} else {
+				result += Helper.unprocess(option)+" = "+"<b>"+getField(option)+"</b>";
+			}
+		}
+		return result;
 	}
 
 	public String getField(String key) {

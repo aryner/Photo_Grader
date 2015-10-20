@@ -60,6 +60,8 @@ public class Controller extends HttpServlet {
 			session.removeAttribute("low_rank");
 			session.removeAttribute("right_rank");
 			session.removeAttribute("left_rank");
+			session.removeAttribute("viewGroups");
+			session.removeAttribute("viewGroupOptions");
 		}
 		else if(userPath.equals("/select_CSVs")) {
 			request.setAttribute("categories",study.getGradeCategoryNames());
