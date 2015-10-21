@@ -112,9 +112,12 @@ public class Rank_controller extends HttpServlet {
 		throws ServletException, IOException {
 		String userPath = request.getServletPath(); 
 		HttpSession session = request.getSession(); 
-		User user = (User)session.getAttribute("user");
 		Study study = (Study)session.getAttribute("study");
+		User user = (User)session.getAttribute("user");
 
+		if(user == null) {
+			response.sendRedirect("/home");
+		}
 		if (userPath.equals("/defineRanking")) {
 			session.setAttribute("errors",GradeGroup.createGradeGroup(request,study,GradeGroup.RANK));
 			response.sendRedirect("/Photo_Grader/home");

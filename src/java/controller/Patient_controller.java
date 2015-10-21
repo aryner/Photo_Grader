@@ -153,6 +153,11 @@ public class Patient_controller extends HttpServlet {
 		String userPath = request.getServletPath(); 
 		HttpSession session = request.getSession(); 
 		Study study = (Study)session.getAttribute("study");
+		User user = (User)session.getAttribute("user");
+
+		if(user == null) {
+			response.sendRedirect("/home");
+		}
 
 		if(userPath.equals("/setManualMetaData")) {
 			ArrayList<ManualMetaData> manualMetaData = (ArrayList)Query.getModel("SELECT * FROM photo_data_by_manual WHERE study_id="+study.getId(),new ManualMetaData());

@@ -91,10 +91,14 @@ public class Grade_controller extends HttpServlet {
 		String userPath = request.getServletPath(); 
 		HttpSession session = request.getSession(); 
 		Study study = (Study)session.getAttribute("study");
+		User user = (User)session.getAttribute("user");
+
+		if(user == null) {
+			response.sendRedirect("/home");
+		}
 
 		if(userPath.equals("/submitGrade")) {
 			GradeGroup group = (GradeGroup)session.getAttribute("grade_group");
-			User user = (User)session.getAttribute("user");
 			Grade.grade(request, study, group, user);
 			response.sendRedirect("/Photo_Grader/grade");
 			return;

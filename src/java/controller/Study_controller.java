@@ -74,8 +74,12 @@ public class Study_controller extends HttpServlet {
 			throws ServletException, IOException {
 		String userPath = request.getServletPath(); 
 		HttpSession session = request.getSession(); 
+		User user = (User)session.getAttribute("user");
 
-		if(userPath.equals("/setStudy")) {
+		if(user == null) {
+			response.sendRedirect("/home");
+		}
+		else if(userPath.equals("/setStudy")) {
 			session.setAttribute("study",Study.getStudyByName(request.getParameter("name")));
 			response.sendRedirect("/Photo_Grader/home");
 			return;
