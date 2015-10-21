@@ -264,7 +264,7 @@ public class Photo extends Model{
 			if(i>0) { query += " AND "; }
 
 			String key = groupOptions.get(i);
-			if(key.equals("Filename")) {
+			if(key.equals(Grade.FILENAME)) {
 				query += "name='"+name+"'";
 			} else {
 				query += key+"='"+getField(key)+"'";
