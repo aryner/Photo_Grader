@@ -37,6 +37,7 @@
 		<br>
 		Amount of meta-data to track in photos:
 		<input type="text" name="number">
+		<span class='note'>(Not including the photo name, this is saved by default)<span>
 	</p>
 	<input type="submit" class="btn" value="Create Study" name="newStudy">
 </form>

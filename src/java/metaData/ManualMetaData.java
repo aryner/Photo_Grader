@@ -338,7 +338,7 @@ public class ManualMetaData extends Model implements MetaDataSource {
 		}
 
 		public boolean isEmpty() {
-			return value == null || key == null;
+			return value == null || key == null || value.trim().length()==0;
 		}
 
 		public String getKey() {

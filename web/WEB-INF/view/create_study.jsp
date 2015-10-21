@@ -24,7 +24,7 @@ int number_fields = Integer.parseInt(request.getParameter("number"));
 	for(int i=0; i<number_fields; i++) {
 %>
 <div class="meta-row">
-	<div class="newRow error hidden" name="sameName<%out.print(i);%>" >You can't have duplicate names</div>
+	<div class="error hidden" name="sameName<%out.print(i);%>" >You can't have duplicate names</div>
 	<div class="meta-col">
 		<span class="error hidden" name='<%out.print(i+1);%>'>Names must start with a letter and can only contain letters, <br>and numbers <br></span>
 		<b>(<%out.print(i+1);%>)</b> Meta-data descriptor(name): <input type="text" name="name<%out.print(i);%>" autocomplete="off">
@@ -41,6 +41,7 @@ int number_fields = Integer.parseInt(request.getParameter("number"));
 		Or leave the descriptor section empty and this row will be skipped.
 	</div>
 </div>
+<div class='newRow'></div>
 <%
 	}
 %>
