@@ -140,7 +140,7 @@ function clearOptions(index, downTo) {
 
 function addRadioOrCheck(index) {
 	var row = $("div[name=manual_"+(+index+1)+"]");
-	var newInput = "<div class='meta-col' name='"+index+"_option_"+option_counts[index]+
+	var newInput = "<div class='option-col' name='"+index+"_option_"+option_counts[index]+
 			"'><br><br><br>Option label: <input type='text' name='"+(index)+"_option_"+
 			option_counts[index]+"' title='"+index+"'>";
 	row.append(newInput);
