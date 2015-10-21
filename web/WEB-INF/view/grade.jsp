@@ -4,6 +4,7 @@
     Author     : aryner
 --%>
 <%@page import="java.util.*"%>
+<%@page import="model.Grade.GradeCounts"%>
 <%@page import="metaData.grade.*"%>
 <%@page import="utilities.*"%>
 
@@ -11,10 +12,20 @@
 GradeGroup group = (GradeGroup)session.getAttribute("grade_group");
 ArrayList<Photo> photoGroup = (ArrayList)request.getAttribute("photoGroup");
 String photoNumber = (String)request.getAttribute("photoNumber");
+GradeCounts counts = (GradeCounts)request.getAttribute("gradeCounts");
+
 if(photoGroup.size()>0) {
 %>
 
-<h1>Grade <%out.print(group.getName());%></h1>
+<div class='grade_rank_header'>
+	<h1>Grade <%out.print(group.getName());%></h1>
+	<progress value='<%out.print(counts.getGraded());%>' max='<%out.print(counts.getTotal_grades());%>'>
+	</progress>
+	<p>
+		<%out.print(counts.getGraded()+"/"+counts.getTotal_grades());%>
+	</p>
+</div>
+<div class='newRow'></div>
 
 <div class="meta-row">
 	<form action="submitGrade" method="POST">
@@ -37,11 +48,11 @@ if(photoGroup.size()>0) {
 		}
 		%>
 		<div class="newRow"></div>
-		<div class="meta-col errorDiv"> </div>
-		<div class="newRow"></div>
 		<div class="meta-col">
 			<input type="submit" value="Submit" class="btn">
 		</div>
+		<div class="newRow"></div>
+		<div class="meta-col errorDiv"> </div>
 	</form>
 </div>
 <%

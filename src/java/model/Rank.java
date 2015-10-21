@@ -601,6 +601,49 @@ public class Rank extends Model implements Comparable<Rank>{
 
 	}
 
+	public static class RankCounts {
+		private int total_ranks;
+		private int ranks;
+
+		public RankCounts(String grader, GradeGroup group) {
+			String query = "SELECT * FROM "+group.getGrade_name()+" WHERE grader='"+grader+"'";
+			this.total_ranks = Query.getModel(query,new Rank()).size() * 2;
+
+			query = "SELECT * FROM "+group.getGrade_name()+" WHERE grader='"+grader+"' AND parent_id != 0";
+			this.ranks = Query.getModel(query,new Rank()).size();
+			query = "SELECT * FROM "+group.getGrade_name()+" WHERE grader='"+grader+"' AND rank > 0";
+			this.ranks += Query.getModel(query,new Rank()).size();
+		}
+
+		/**
+		 * @return the total_grades
+		 */
+		public int getTotal_ranks() {
+			return total_ranks;
+		}
+
+		/**
+		 * @param total_grades the total_grades to set
+		 */
+		public void setTotal_ranks(int total_grades) {
+			this.total_ranks = total_grades;
+		}
+
+		/**
+		 * @return the graded
+		 */
+		public int getRanks() {
+			return ranks;
+		}
+
+		/**
+		 * @param graded the graded to set
+		 */
+		public void setRanked(int graded) {
+			this.ranks = graded;
+		}
+	}
+
 	@Override
 	public int hashCode() {
 		int hash = 3;

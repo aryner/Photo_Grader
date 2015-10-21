@@ -223,4 +223,17 @@ a {
 	margin-bottom: 50px;
 }
 
+.grade_rank_header h1 {
+	float: left;
+}
+.grade_rank_header progress {
+	float: left;
+	margin: 20px 80px;
+} 
+.grade_rank_header p {
+	float: left;
+	margin: 20px;
+	font-weight: bold;
+	font-size: 1.10em;
+} 
 

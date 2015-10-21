@@ -20,6 +20,7 @@ import model.User;
 import model.Study;
 import model.Photo;
 import model.Rank;
+import model.Rank.RankCounts;
 import model.Rank.Pair;
 
 import metaData.grade.GradeGroup;
@@ -86,6 +87,7 @@ public class Rank_controller extends HttpServlet {
 			GradeGroup group = (GradeGroup)session.getAttribute("rank_group");
 			Pair pair = Rank.getPairToRank(group.getId(), user.getId(), study.getPhoto_attribute_table_name(), request);
 			pair.setPhotos(study.getPhoto_attribute_table_name(),group);
+			request.setAttribute("rankCounts",new RankCounts(user.getName(),group));
 			request.setAttribute("rank_pair",pair);
 			request.setAttribute("photo_table",study.getPhoto_attribute_table_name());
 		}

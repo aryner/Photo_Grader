@@ -7,6 +7,7 @@
 <%@page import="java.util.ArrayList"%>
 <%@page import="metaData.grade.GradeGroup"%>
 <%@page import="model.Rank"%>
+<%@page import="model.Rank.RankCounts"%>
 <%@page import="model.Photo"%>
 <%@page import="model.Rank.Pair"%>
 <%@page import="utilities.Constants"%>
@@ -16,13 +17,18 @@ GradeGroup group = (GradeGroup)session.getAttribute("rank_group");
 Pair pair = (Pair)request.getAttribute("rank_pair");
 String high_rank = request.getAttribute("high_rank")+"";
 String low_rank = request.getAttribute("low_rank")+"";
+RankCounts counts = (RankCounts)request.getAttribute("rankCounts");
 
 String photo_table = (String)request.getAttribute("photo_table");
 String photo_table_num = photo_table.substring(photo_table.lastIndexOf("_")+1);
 int photoCount = 0;
 %>
 
-<h1>Rank <%out.print(group.getName());%></h1>
+<div class='grade_rank_header'>
+	<h1>Rank <%out.print(group.getName());%></h1>
+	<progress value='<%out.print(counts.getRanks());%>' max='<%out.print(counts.getTotal_ranks());%>'> </progress>
+</div>
+<div class='newRow'></div>
 
 <div class="rank_col">
 <%

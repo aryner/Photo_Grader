@@ -18,6 +18,7 @@ import javax.servlet.http.HttpSession;
 import model.User;
 import model.Study;
 import model.Grade;
+import model.Grade.GradeCounts;
 import model.Photo;
 import SQL.Helper;
 import metaData.grade.GradeGroup;
@@ -57,6 +58,7 @@ public class Grade_controller extends HttpServlet {
 		}
 		else if(userPath.equals("/grade")) {
 			GradeGroup group = (GradeGroup)session.getAttribute("grade_group");
+			request.setAttribute("gradeCounts",new GradeCounts(study.getPhoto_attribute_table_name(),user.getName(),group));
 			request.setAttribute("photoGroup",Photo.getUngradedGroup(group, study.getPhoto_attribute_table_name(), user.getName()));
 			request.setAttribute("photoNumber", study.getPhotoNumber());
 		}

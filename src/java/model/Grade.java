@@ -135,6 +135,52 @@ public class Grade extends Model {
 		Query.update(query+parameters+values);
 	}
 
+	public static class GradeCounts {
+		private int total_grades;
+		private int graded;
+
+		public GradeCounts(String photo_table, String grader, GradeGroup group) {
+			String query = "SELECT * FROM "+photo_table+" GROUP BY ";
+			for(int i=0; i<group.groupBySize(); i++) {
+				if(i>0) query += ", ";
+				String attribute = group.getGroupBy(i).getPhoto_attribute();
+				query += attribute.equals(Grade.FILENAME) ? "name" : attribute;
+			}
+			this.total_grades = Query.getModel(query,new Photo()).size();
+
+			query = "SELECT * FROM "+group.getGrade_name()+" WHERE grader='"+grader+"'";
+			this.graded= Query.getModel(query,new Grade()).size();
+		}
+
+		/**
+		 * @return the total_grades
+		 */
+		public int getTotal_grades() {
+			return total_grades;
+		}
+
+		/**
+		 * @param total_grades the total_grades to set
+		 */
+		public void setTotal_grades(int total_grades) {
+			this.total_grades = total_grades;
+		}
+
+		/**
+		 * @return the graded
+		 */
+		public int getGraded() {
+			return graded;
+		}
+
+		/**
+		 * @param graded the graded to set
+		 */
+		public void setGraded(int graded) {
+			this.graded = graded;
+		}
+	}
+
 	public static ArrayList hasBeenGraded(Study study, GradeGroup group, User user, Photo photo) {
 		String query = "SELECT * FROM "+group.getGrade_name()+" WHERE grader='"+user.getName()+"'";
 		for(int i=0; i<group.groupBySize(); i++) {
