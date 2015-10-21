@@ -40,7 +40,8 @@ import utilities.FileIO;
 @WebServlet(name = "Controller.Patient_controller", urlPatterns = {
 								"/defineAssignment","/define_assignment","/upload","/upload_pictures",
 								"/upload_table_data","/img","/assign_manual_meta","/manually_assign_meta-data",
-								"/setManualMetaData","/set_view_group","/view_groups","/selectGrouping","/view_group"
+								"/setManualMetaData","/set_view_group","/view_groups","/selectGrouping","/view_group",
+								"/removePhoto"
 								})
 public class Patient_controller extends HttpServlet {
 	/**
@@ -186,6 +187,11 @@ public class Patient_controller extends HttpServlet {
 			session.setAttribute("viewGroupOptions",viewOptions);
 			session.setAttribute("viewGroups",Photo.getViewGroups(viewOptions,study));
 			response.sendRedirect("/Photo_Grader/view_groups");
+			return;
+		}
+		else if(userPath.equals("/removePhoto")) {
+			int index = Photo.deletePhoto(request,study);
+			response.sendRedirect("/Photo_Grader/view_group?index="+index);
 			return;
 		}
 

@@ -190,6 +190,20 @@ public class Photo extends Model{
 		return hasMissingMetaDataByName(names);
 	}
 
+	public static int deletePhoto(HttpServletRequest request, Study study) {
+		int index = Integer.parseInt(request.getParameter("index"));
+		String photoId = request.getParameter("photo_id");
+		String query = "SELECT * FROM "+study.getPhoto_attribute_table_name()+" WHERE id="+photoId;
+		Photo photo = (Photo)Query.getModel(query,new Photo()).get(0);
+		String photoTable = study.getPhoto_attribute_table_name();
+		String dir = photoTable.substring(photoTable.lastIndexOf("_")+1);
+		FileIO.deletePhoto(photo.getName(),dir);
+		query = "DELETE FROM "+study.getPhoto_attribute_table_name()+" WHERE id="+photoId;
+		Query.update(query);
+
+		return index;
+	}
+
 	public boolean hasMissingMetaDataByName(ArrayList<String> columnNames) {
 		boolean result = false;
 		for(String columnName : columnNames) {

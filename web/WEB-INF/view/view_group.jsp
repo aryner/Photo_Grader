@@ -21,10 +21,12 @@ for(int i=0; i<photos.size(); i++) {
 	out.print("<div class='group_view_col'>");
 	out.print("<img class='group_view_img' name='photo_"+i+"' src='"+Constants.SRC+"img?number="+photo_table_num+"&name="+photos.get(i).getName()+"'>");
 %>
+<input type="hidden" value="<%out.print(photos.size());%>" name="photoCount">
 <br>
 <form action="removePhoto" method="POST">
-	<input type="hidden" value="<%out.print(photos.size());%>" name="photoCount">
-	<input type="submit" value="Delete Image From Program" class="btn">
+	<input type='hidden' value='<%out.print(index);%>' name='index'>
+	<input type='hidden' value='<%out.print(photos.get(i).getId());%>' name='photo_id'>
+	<input type="submit" value="Delete Image From Program" name='delete_<%out.print(i);%>' class="btn">
 </form>
 </div>
 <%

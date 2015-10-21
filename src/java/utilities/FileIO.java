@@ -109,6 +109,11 @@ public class FileIO {
 		return errors;
 	}
 
+	public static void deletePhoto(String fileName, String dir) {
+		String fileDir = BASE_PICTURE_DIR+dir+"/";
+		new File(fileDir+fileName).delete();
+	}
+
 	private static ArrayList<String> uploadTable(FileItem fileItem, String fileName, Study study) 
 			throws Exception {
 		ArrayList<String> errors = new ArrayList<String>();

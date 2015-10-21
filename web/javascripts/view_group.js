@@ -22,6 +22,12 @@ $(document).ready(function() {
 			}
 		}
 	});
+
+
+	$('input[type=submit][value="Delete Image From Program"]').click(function(e) {
+		var result = window.confirm("Are you sure you want to delte this photo from the program?");
+		if(result === false) { e.preventDefault(); }
+	});
 });
 
 function addPhotoClickListeners(photoCount) {
@@ -43,3 +49,5 @@ function addPhotoClickListener(img) {
 		});
 	});
 }
+
+
