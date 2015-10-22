@@ -9,6 +9,7 @@ package controller;
 import model.Study;
 import model.User;
 import model.Grade;
+import model.Rank;
 
 import metaData.grade.GradeGroup;
 
@@ -64,14 +65,24 @@ public class Controller extends HttpServlet {
 			session.removeAttribute("viewGroupOptions");
 		}
 		else if(userPath.equals("/select_CSVs")) {
-			request.setAttribute("categories",study.getGradeCategoryNames());
+			request.setAttribute("gradeCategories",study.getGradeCategoryNames());
+			request.setAttribute("rankCategories",study.getRankCategoryNames());
 		}
 		else if (userPath.equals("/present_CSV")) {
 			String category = request.getParameter("category");
-			int grade_group_id = study.getGradeGroupId(request.getParameter("category"));
+			String type = request.getParameter("type");
+			String categoryName = request.getParameter("category");
+			if (type.equals("grade")) {
+				int grade_group_id = study.getGradeGroupId(categoryName);
 
-			request.setAttribute("category",category);
-			request.setAttribute("csvLines", Grade.getCSVLines(new GradeGroup(grade_group_id),study));
+				request.setAttribute("category",category);
+				request.setAttribute("csvLines", Grade.getCSVLines(new GradeGroup(grade_group_id),study));
+			} else {
+				int rank_group_id = study.getRankGroupId(categoryName);
+
+				request.setAttribute("category",category);
+				request.setAttribute("csvLines", Rank.getCSVLines(new GradeGroup(rank_group_id),study));
+			}
 		}
 
 		String url = "/WEB-INF/view" + userPath + ".jsp";

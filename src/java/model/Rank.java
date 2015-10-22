@@ -247,6 +247,11 @@ public class Rank extends Model implements Comparable<Rank>{
 		return (ArrayList)Query.getModel(query,new Rank());
 	}
 
+	public static ArrayList<Rank> getAllRanks(String group) {
+		String query = "SELECT * FROM "+group;
+		return (ArrayList)Query.getModel(query,new Rank());
+	}
+
 	public static void startChain(ArrayList<Rank> ranks, String group) {
 		int head = 0;
 		int head_id = 0;
@@ -375,6 +380,30 @@ public class Rank extends Model implements Comparable<Rank>{
 		request.setAttribute("high_rank",high);
 		request.setAttribute("low_rank",low);
 		return toCompare;
+	}
+
+	public static ArrayList<String> getCSVLines(GradeGroup group, Study study) {
+		ArrayList<String> lines = new ArrayList<String>();
+		ArrayList<String> fields = new ArrayList<String>();
+		String currline = "Grader";
+		for(int i=0; i<group.groupBySize();i++) {
+			fields.add(group.getGroupBy(i).getPhoto_attribute());
+			currline += ", "+group.getGroupBy(i).getPhoto_attribute();
+		}
+		currline += ", rank";
+		lines.add(currline);
+
+		ArrayList<Rank> ranks = getAllRanks(group.getGrade_name());
+		for(Rank rank : ranks) {
+			currline = rank.getGrader();
+			for(String field : fields) {
+				currline += ", "+rank.getGroup_meta_value(field);
+			}
+			currline += ", "+rank.getRank();
+			lines.add(currline);
+		}
+
+		return lines;
 	}
 
 	//lowBound is the lowest assigned ranking on the main chain (-1?)
