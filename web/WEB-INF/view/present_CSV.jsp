@@ -8,6 +8,12 @@
 <%
 String category = (String)request.getAttribute("category");
 ArrayList<String> lines = (ArrayList)request.getAttribute("csvLines");
+if(lines == null) {
+%>
+<h3>This grading category has not yet been graded by anyone</h3>
+<%
+}
+else {
 %>
 <form action="printCSV" method="POST">
 	<input type="hidden" name="category" value="<%out.print(category);%>">
@@ -21,3 +27,4 @@ for(String line : lines) {
 }
 %>
 </p>
+<%}%>

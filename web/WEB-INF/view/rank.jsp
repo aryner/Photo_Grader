@@ -49,11 +49,11 @@ if (pair.isFull()) {
 		<input type="hidden" name="low_rank" value="<%out.print(low_rank);%>">
 		<label>Which is worse?</label>
 		<ul>
-			<li><input type="radio" name="compare" value="left">Left</li>
-			<li><input type="radio" name="compare" value="equal">Equal</li>
-			<li><input type="radio" name="compare" value="right">Right</li>
+			<li><input type="radio" name="compare" value="left">Left <b>(s)</b></li>
+			<li><input type="radio" name="compare" value="equal">Equal <b>(d)</b></li>
+			<li><input type="radio" name="compare" value="right">Right <b>(f)</b></li>
 		</ul>
-		<input type="submit" value="Submit" class="btn">
+		<input type="submit" value="Submit" class="btn"><b>(t)</b>
 		<div class="errorDiv"></div>
 
 </div>

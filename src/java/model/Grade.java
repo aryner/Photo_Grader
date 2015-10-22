@@ -218,6 +218,7 @@ public class Grade extends Model {
 		ArrayList<String> lines = new ArrayList<String>();
 		ArrayList<Grade> grades = getGrades(category);
 		ArrayList<String> fields = new ArrayList<String>();
+		if(grades.isEmpty()) return null;
 		fields.addAll(grades.get(0).getMetaKeys());
 		fields.addAll(grades.get(0).getQuestionKeys());
 
