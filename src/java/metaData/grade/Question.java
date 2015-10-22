@@ -138,7 +138,7 @@ public class Question extends Model{
 
 	public String getHtml(int index) {
 		return Tools.getQuestionHtml(this.question, this.q_type == MetaData.TEXT ? getTextHtml() :
-					     this.q_type == MetaData.RADIO ? getRadioHtml(index) : getCheckHtml());
+					     this.q_type == MetaData.RADIO ? getRadioHtml(index) : getCheckHtml(index));
 	}
 
 	private String getTextHtml() {
@@ -150,18 +150,20 @@ public class Question extends Model{
 		int index = 0;
 		for(String option : this.options) {
 			html += "<span style='font-family:Courier' name='"+questionIndex+"_"+index+
-				"'></span><input type='radio' name='"+this.label+"' title='"+questionIndex+
+				"' title='radio'></span><input type='radio' name='"+this.label+"' title='"+questionIndex+
 				"_"+index+"' value='"+option+"'"+(index == defaultIndex ? " checked='true'" : "")+"> "+option+"<br>";
 			index++;
 		}
 		return html;
 	}
 
-	private String getCheckHtml() {
+	private String getCheckHtml(int questionIndex) {
 		String html = "";
 		int index = 0;
 		for(String option : this.options) {
-			html += "<input type='checkbox' name='"+this.label+"_"+index+"' value='"+option+
+			html += "<span style='font-family:Courier' name='"+questionIndex+"_"+index+
+				"' title='check'></span><input type='checkbox' name='"+this.label+"_"+index+"' "+
+				"title='"+questionIndex+"_"+index+"' value='"+option+
 				"'"+(index == defaultIndex ? " checked='true'" : "")+"> "+option+"<br>";
 			index++;
 		}

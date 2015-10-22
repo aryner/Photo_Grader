@@ -57,23 +57,29 @@ function addKeyboardGrading(questionCount) {
 	var optionCounts = getOptionCounts(radioQuestionIndices);
 	var onRow = 0;
 	var keyRadios = [];
+	var keyChecks = [];
 
 	for(var i=0; i<radioQuestionIndices.length; i++) {
 		if(optionCounts[i] < keyboardRows[onRow].length) {
 			for(var j=0; j<optionCounts[i]; j++) {
 				var span = document.getElementsByName(radioQuestionIndices[i]+"_"+j);
 				var key = keyboardRows[onRow].shift();
-				addKeyRadio(key, span[0].getAttribute('name'), keyRadios);
+				if(span[0].title === 'radio') {
+					addKey(key, span[0].getAttribute('name'), keyRadios);
+				} else {
+					addKey(key, span[0].getAttribute('name'), keyChecks);
+				}
 				span[0].innerHTML = "<b>("+key+")</b>";
 			}
 			keyboardRows[onRow].reverse();
 			onRow = (onRow + 1) % 3;
 		}
 	}
-	setListeners(keyRadios);
+	setRadioListeners(keyRadios);
+	setCheckListeners(keyChecks);
 }
 
-function setListeners(keyRadios) {
+function setRadioListeners(keyRadios) {
 	$(document).bind('keydown', {keys_radios : keyRadios}, function(e) {
 		var unicode = e.keyCode || e.which;
 		if(unicode === 13) $(':submit[value=Submit]').click();
@@ -91,8 +97,24 @@ function setListeners(keyRadios) {
 	});
 }
 
-function addKeyRadio(key, title, keyRadios) {
-	keyRadios.push([key , $('input[title='+title+']')]);
+function setCheckListeners(keyChecks) {
+	$(document).bind('keydown',{key_checks : keyChecks}, function(e) {
+		var unicode = e.keyCode || e.wich;
+		var key = String.fromCharCode(unicode);
+		if($(':focus').attr('type') !== 'text') { 
+			var keyChecks = e.data.key_checks;
+
+			for(var i=0; i<keyChecks.length; i++) {
+				if(key.toLowerCase() === keyChecks[i][0]) {
+					keyChecks[i][1].prop('checked',!keyChecks[i][1].prop('checked'));
+				}
+			}
+		}
+	});
+}
+
+function addKey(key, title, keys) {
+	keys.push([key , $('input[title='+title+']')]);
 }
 
 function getOptionCounts(radioQuestionIndices) {
@@ -120,7 +142,7 @@ function getRadioQuestionIndices(questionCount) {
 function isRadioQuestion(index) {
 	var questionTypeConstraint = $('input[name=question_'+index+']').prop('title');
 	var type = Number(questionTypeConstraint.substring(0,1));
-	return type === 2;
+	return type === 2 || type === 3;
 }
 
 function checkInput(questionCount) {
