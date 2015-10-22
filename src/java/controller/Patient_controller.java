@@ -26,6 +26,7 @@ import model.Photo;
 
 import metaData.MetaData;
 import metaData.ManualMetaData;
+import metaData.TableMetaData;
 
 import SQL.Query;
 import SQL.Helper;
@@ -107,6 +108,10 @@ public class Patient_controller extends HttpServlet {
 			request.setAttribute("groupsSize",groups.size());
 			request.setAttribute("photo_table_num",study.getPhoto_attribute_table_name());
 			request.setAttribute("photos",groups.get(index).getGroup(groupOptions,study.getPhoto_attribute_table_name()));
+		}
+		else if(userPath.equals("/upload")) {
+			request.setAttribute("csv_meta",TableMetaData.getCSVMetaDataSources(study.getId()));
+			request.setAttribute("excel_meta",TableMetaData.getExcelMetaDataSources(study.getId()));
 		}
 		else if(userPath.equals("/img")) {
 			String name = request.getParameter("name");

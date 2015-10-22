@@ -62,6 +62,16 @@ public class TableMetaData extends Model implements MetaDataSource {
 		this.setTable_type(type);
 	}
 
+	public static ArrayList<Model> getCSVMetaDataSources(int study_id) {
+		String query = "SELECT * FROM  photo_data_by_table WHERE study_id='"+study_id+"' AND table_type='"+MetaData.CSV+"'";
+		return Query.getModel(query,new TableMetaData());
+	}
+
+	public static ArrayList<Model> getExcelMetaDataSources(int study_id) {
+		String query = "SELECT * FROM  photo_data_by_table WHERE study_id='"+study_id+"' AND table_type='"+MetaData.EXCEL+"'";
+		return Query.getModel(query,new TableMetaData());
+	}
+
 	@Override
 	public ArrayList<Model> getMetaDataSources(String where, String order){
 		String query = "SELECT * FROM photo_data_by_table "+(where.length()>0?"WHERE "+where:"")+(order.length()>0?" ORDER BY "+order:"");

@@ -250,3 +250,19 @@ a {
 .span {
 	font-size: .5em;
 }
+
+.csv, table, th, td {
+	border: none;
+}
+.csv, table, th {
+	text-align: left;
+}
+.csv, table, td {
+	text-align: right;
+}
+.excel td{
+	border: 1px solid black;
+}
+.excel th{
+	border: 1px solid black;
+}
