@@ -479,7 +479,7 @@ function addQuestion(index) {
 				'<h4>Constraints?</h4>'+ 
 				'<input type="radio" name="constraints_'+index+'" value="0"> Mandatory'+
 				'<input type="radio" name="constraints_'+index+'" value="-1"> Optional'+
-				'<input type="radio" name="constraints_'+index+'" value="1"> Conditional'+
+				//'<input type="radio" name="constraints_'+index+'" value="1"> Conditional'+
 			'</div>'+
 			'<div id="conditioned_'+index+'"></div>'+
 			'<div class="newRow"></div>'+

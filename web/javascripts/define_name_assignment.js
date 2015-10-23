@@ -340,8 +340,9 @@ function radioFields() {
 	var buttons = "";
 
 	for(var i=0; i<fields.length; i++) {
+		if(i===0) { buttons += "<span class='hidden'>"; }
 		buttons += "<input type='radio' name='type_1_"+index+"' value='"+fields[i].value+"'>"+
-			(i>0?fields[i].value:'Not meta-data (use to help break name into sections)')+"<br>";
+			(i>0?fields[i].value:'Not meta-data (use to help break name into sections)</span>')+"<br>";
 	}
 
 	return buttons;

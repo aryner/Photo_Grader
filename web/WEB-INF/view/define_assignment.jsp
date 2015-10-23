@@ -54,7 +54,7 @@ if(name > 0) {
 	out.print("<div class='meta-col'>");
 	out.print("<h4>(1) Which type of meta-data?</h4>");
 	int index = 0;
-	out.print("<input type='radio' value='_not-meta_' name='type_"+MetaData.NAME+"_1' title='"+index+"'> Not meta-data (use to help break name into sections)<br>");
+	out.print("<span class='hidden'><input type='radio' value='_not-meta_' name='type_"+MetaData.NAME+"_1' title='"+index+"'> Not meta-data (use to help break name into sections)</span><br>");
 	for(MetaData datum : metaData) {
 		if(datum.getCollection() == MetaData.NAME) {
 			index++;
