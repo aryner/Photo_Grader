@@ -105,7 +105,13 @@ public class Photo extends Model{
 	}
 
 	public static ArrayList<Photo> getUngradedGroup(GradeGroup category, String photoTable, String grader) {
-		ArrayList<Photo> choices = getUngradedCombinations(category, photoTable, grader);
+		ArrayList<Photo> choices = null;
+		if(Math.random() < 0.1) {
+			choices = getRegradeCombinations(category, photoTable, grader);
+		} 
+		if (choices == null) {
+			choices = getUngradedCombinations(category, photoTable, grader);
+		}
 		if(choices.isEmpty()) return new ArrayList<Photo>();
 
 		Random rand = new Random(System.currentTimeMillis());
@@ -145,6 +151,28 @@ public class Photo extends Model{
 		}
 
 		return combinations;
+	}
+
+	public static ArrayList<Photo> getRegradeCombinations(GradeGroup category, String photoTable, String grader) {
+		String query = "SELECT * FROM "+category.getGrade_name()+" WHERE grader='"+grader+"'";
+		ArrayList<Grade> grades = (ArrayList)Query.getModel(query,new Grade());
+		if(grades.isEmpty()) { return null; }
+
+		Random rand = new Random(System.currentTimeMillis());
+		Grade reGrade = grades.get(rand.nextInt(grades.size()));
+		query = "SELECT * FROM "+photoTable+" WHERE ";
+		for(int i=0; i<category.groupBySize(); i++) {
+			if(i>0) { query += " AND "; }
+			String field = category.getGroupBy(i).getPhoto_attribute();
+			if(field.equals(Grade.FILENAME)) { 
+				field = "name"; 
+				query += field+"='"+reGrade.getGroupMetaData(Grade.FILENAME)+"'";
+			} else {
+				query += field+"='"+reGrade.getGroupMetaData(field)+"'";
+			}
+		}
+
+		return (ArrayList)Query.getModel(query,new Photo());
 	}
 
 	public static ArrayList<Photo> getPossibleCombinations(GradeGroup category, String tableName) {
