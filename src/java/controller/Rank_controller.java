@@ -33,7 +33,7 @@ import SQL.Helper;
  */
 @WebServlet(name = "Controller.Rank_controller", urlPatterns = {
 								"/define_ranking","/defineRanking","/select_rank_category",
-								"/rank","/startRanking","/submitRank"
+								"/rank","/startRanking","/submitRank","/removeRankCategory"
 								})
 public class Rank_controller extends HttpServlet {
 
@@ -135,6 +135,10 @@ public class Rank_controller extends HttpServlet {
 			GradeGroup group = (GradeGroup) session.getAttribute("rank_group");
 			Rank.processRanking(request,group,user);
 			response.sendRedirect("/Photo_Grader/rank");
+			return;
+		}
+		else if (userPath.equals("/removeRankCategory")) {
+			response.sendRedirect("/Photo_Grader/home");
 			return;
 		}
 

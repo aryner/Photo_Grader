@@ -29,7 +29,7 @@ import metaData.grade.GradeGroup;
  */
 @WebServlet(name = "Controller.Grade_controller", urlPatterns = {
 								"/select_grade_category","/grade","/startGrading","/submitGrade",
-								"/define_grading_questions","/defineGradingQuestions"
+								"/define_grading_questions","/defineGradingQuestions","/removeGradeCategory"
 								})
 public class Grade_controller extends HttpServlet {
 	/**
@@ -114,6 +114,10 @@ public class Grade_controller extends HttpServlet {
 			int grade_group_id = study.getGradeGroupId(request.getParameter("category"));
 			session.setAttribute("grade_group", new GradeGroup(grade_group_id));
 			response.sendRedirect("/Photo_Grader/grade");
+			return;
+		}
+		else if(userPath.equals("/removeGradeCategory")) {
+			response.sendRedirect("/Photo_Grader/home");
 			return;
 		}
 

@@ -25,7 +25,8 @@ import model.User;
  * @author aryner
  */
 @WebServlet(name = "Controller.Study_controller", urlPatterns = {
-								"/select_study","/setStudy","/createStudy","/create_study"
+								"/select_study","/setStudy","/createStudy","/create_study",
+								"/remove_category"
 								})
 public class Study_controller extends HttpServlet {
 	/**
@@ -50,6 +51,11 @@ public class Study_controller extends HttpServlet {
 		}
 		else if(userPath.equals("/select_study")) {
 			request.setAttribute("studyNames",Query.getField("study","name",null,null));
+		}
+		else if(userPath.equals("/remove_category")) {
+			Study study = (Study)session.getAttribute("study");
+			request.setAttribute("grades",study.getGradeCategoryNames());
+			request.setAttribute("ranks",study.getRankCategoryNames());
 		}
 
 		String url = "/WEB-INF/view" + userPath + ".jsp";

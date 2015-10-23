@@ -57,5 +57,8 @@
 		<div class="home-col">
 			<a href="set_view_group" class="btn">View Uploaded Photos</a>
 		</div>
+		<div class="home-col">
+			<a href="remove_category" class="btn">Remove Category</a>
+		</div>
 	</div>
 </div>
