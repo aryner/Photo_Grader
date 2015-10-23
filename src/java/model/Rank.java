@@ -198,8 +198,13 @@ public class Rank extends Model implements Comparable<Rank>{
 			ArrayList<Photo> photos = Photo.getPossibleCombinations(grade_group, photo_table);
 
 			query = "INSERT INTO "+grade_group.getGrade_name()+" (grader";
+			/*
 			for (Object field : photos.get(0).getFields().keySet()) {
 				query += ", "+field.toString();
+			}
+			*/
+			for(int i=0; i<grade_group.groupBySize(); i++) {
+				query += ", "+grade_group.getGroupBy(i).getPhoto_attribute();
 			}
 			query += ") VALUES ";
 			int count = 0;
@@ -210,14 +215,36 @@ public class Rank extends Model implements Comparable<Rank>{
 
 				query += "(";
 				String temp = "'"+user.getName()+"'";
+				/*
 				for (Object field : photo.getFields().keySet()) {
 					temp += ",'"+photo.getField(field.toString())+"'";
+				}
+				*/
+				for(int i=0; i<grade_group.groupBySize(); i++) {
+					String attribute = grade_group.getGroupBy(i).getPhoto_attribute();
+					if(attribute.equals(Grade.FILENAME)) {
+						temp += ",'"+photo.getName()+"'";
+					} else {
+						temp += ",'"+photo.getField(attribute)+"'";
+					}
 				}
 				query += temp + ")";
 			}
 
 			Query.update(query);
 		}
+	}
+
+	public static void removeCategory(HttpServletRequest request, Study study) {
+		String query = "SELECT * FROM photo_grade_group WHERE grade_rank=1 AND study_id="+study.getId()+
+				" AND name='"+request.getParameter("category")+"'";
+		GradeGroup group = (GradeGroup)Query.getModel(query,new GradeGroup()).get(0);
+		query = "DELETE FROM group_by WHERE grade_group_id="+group.getId();
+		Query.update(query);
+		query = "DROP TABLE "+group.getGrade_name();
+		Query.update(query);
+		query = "DELETE FROM photo_grade_group WHERE id="+group.getId();
+		Query.update(query);
 	}
 
 	public void setOddRankOut(String table_name, int low) {
@@ -535,7 +562,11 @@ public class Rank extends Model implements Comparable<Rank>{
 				for(GroupBy grouped_by : group.getGroupBy()) {
 					if (postfix.length() > 0) { postfix += " AND "; }
 					String key = grouped_by.getPhoto_attribute(); 
-					postfix += key+"='"+parent.getGroup_meta_value(key)+"'";
+					if(key.equals(Grade.FILENAME)) {
+						postfix += "name='"+parent.getGroup_meta_value(key)+"'";
+					} else {
+						postfix += key+"='"+parent.getGroup_meta_value(key)+"'";
+					}
 				}
 				this.parent_photos = (ArrayList)Query.getModel(query+postfix,new Photo());
 			}
@@ -546,7 +577,11 @@ public class Rank extends Model implements Comparable<Rank>{
 				for(GroupBy grouped_by : group.getGroupBy()) {
 					if (postfix.length() > 0) { postfix += " AND "; }
 					String key = grouped_by.getPhoto_attribute(); 
-					postfix += key+"='"+child.getGroup_meta_value(key)+"'";
+					if(key.equals(Grade.FILENAME)) {
+						postfix += "name='"+child.getGroup_meta_value(key)+"'";
+					} else {
+						postfix += key+"='"+child.getGroup_meta_value(key)+"'";
+					}
 				}
 				this.child_photos = (ArrayList)Query.getModel(query+postfix,new Photo());
 			}

@@ -138,6 +138,7 @@ public class Rank_controller extends HttpServlet {
 			return;
 		}
 		else if (userPath.equals("/removeRankCategory")) {
+			Rank.removeCategory(request,study);
 			response.sendRedirect("/Photo_Grader/home");
 			return;
 		}
