@@ -357,21 +357,26 @@ public class Rank extends Model implements Comparable<Rank>{
 			parentRank = Math.min(parentRank,onChain.get(onChain.size()-1).getRank());
 			int parentIndex = -1;
 
-			for(int i=0; i<onChain.size() && parentIndex <0; i++) {
-				if (onChain.get(i).getParent_id() == parentRank && onChain.get(i).getMain_chain() == ON_CHAIN) {
-					parentIndex = i;
-				}
-			}
-			if (parentIndex != -1) {
-				for (Rank needle: currLevel) {
-					if(needle.getParent_id() == onChain.get(parentIndex).getId() && needle.getRank() == 0) {
-						//needle is the next element to be inserted
-						//return a binary insert compare method with this as an argument 
-						//insertRanked(onChain,currLevel);
-						//Collections.sort(onChain);
-						return binaryInsertionComparison(onChain,needle,onChain.get(parentIndex).getRank(),onChain.get(0).getRank(),request);
+			int tempRank = parentRank;
+			while (tempRank > 1) {
+				parentIndex = -1;
+				for(int i=0; i<onChain.size() && parentIndex <0; i++) {
+					if (onChain.get(i).getParent_id() == tempRank && onChain.get(i).getMain_chain() == ON_CHAIN) {
+						parentIndex = i;
 					}
 				}
+				if (parentIndex != -1) {
+					for (Rank needle: currLevel) {
+						if(needle.getParent_id() == onChain.get(parentIndex).getId() && needle.getRank() == 0) {
+							//needle is the next element to be inserted
+							//return a binary insert compare method with this as an argument 
+							//insertRanked(onChain,currLevel);
+							//Collections.sort(onChain);
+							return binaryInsertionComparison(onChain,needle,onChain.get(parentIndex).getRank(),onChain.get(0).getRank(),request);
+						}
+					}
+				}
+				tempRank--;
 			}
 			rankedCount++;
 		} while (offChain.size() > 1 && parentRank < (onChain.size()+offChain.size()));
