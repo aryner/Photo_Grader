@@ -193,6 +193,31 @@ public class Grade extends Model {
 		return Query.getModel(query,new Grade());
 	}
 
+	public static void removeCategory(HttpServletRequest request, Study study) {
+		String query = "SELECT * FROM photo_grade_group WHERE grade_rank=0 AND study_id="+study.getId()+
+				" AND name='"+request.getParameter("category")+"'";
+		GradeGroup group = (GradeGroup)Query.getModel(query,new GradeGroup()).get(0);
+		query = "SELECT * FROM question WHERE grade_group_id="+group.getId();
+		ArrayList<Question> questions = (ArrayList)Query.getModel(query,new Question());
+		query = "DELETE FROM check_radio_option WHERE ";
+		String postfix = "";
+		for(Question q : questions) {
+			if(postfix.length() > 0) { postfix += " OR "; }
+			postfix += "photo_data_id="+q.getId();
+		}
+		if(postfix.trim().length() > 0) { 
+			Query.update(query+postfix); 
+		}
+		query = "DELETE FROM question WHERE grade_group_id="+group.getId();
+		Query.update(query);
+		query = "DELETE FROM group_by WHERE grade_group_id="+group.getId();
+		Query.update(query);
+		query = "DROP TABLE "+group.getGrade_name();
+		Query.update(query);
+		query = "DELETE FROM photo_grade_group WHERE id="+group.getId();
+		Query.update(query);
+	}
+
 	public static String getAnswer(HttpServletRequest request, Question question) {
 		String answers = "";
 		if(question.getQ_type() == MetaData.CHECKBOX) {
@@ -218,6 +243,7 @@ public class Grade extends Model {
 		ArrayList<String> lines = new ArrayList<String>();
 		ArrayList<Grade> grades = getGrades(category);
 		ArrayList<String> fields = new ArrayList<String>();
+		if(grades.isEmpty()) { return null; }
 		fields.addAll(grades.get(0).getMetaKeys());
 		fields.addAll(grades.get(0).getQuestionKeys());
 
