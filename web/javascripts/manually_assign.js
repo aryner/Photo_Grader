@@ -155,7 +155,7 @@ function setScale(image,circle) {
 	xScale = image.clientWidth / 1865;
 	//yScale = image.clientHeight /1399;
 	yScale = window.innerHeight / 868;
-	radius = 27 * number_of_mms * xScale;
+	radius = 19 * number_of_mms * xScale;
 	circle.css("width",radius).css("height",radius).css("border-radius",radius);
 }
 
