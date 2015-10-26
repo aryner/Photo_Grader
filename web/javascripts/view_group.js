@@ -5,6 +5,7 @@
  */
 var number_of_mms = 3;
 var scale = 1;
+var yDiff = 0;
 
 $(document).ready(function() {
 	var photoCount = Number($('input[name=photoCount]').val());
@@ -21,9 +22,6 @@ $(document).ready(function() {
 				case 39:
 					$(':submit[name=next]').click();
 					break;
-				case 49:
-					number_of_mms = 1;
-					break;
 				case 50:
 					number_of_mms = 2;
 					break;
@@ -35,18 +33,6 @@ $(document).ready(function() {
 					break;
 				case 53:
 					number_of_mms = 5;
-					break;
-				case 54:
-					number_of_mms = 6;
-					break;
-				case 55:
-					number_of_mms = 7;
-					break;
-				case 56:
-					number_of_mms = 8;
-					break;
-				case 57:
-					number_of_mms = 9;
 					break;
 			}
 		}
@@ -74,26 +60,28 @@ function addPhotoClickListener(img) {
 		$('body').append("<div id='circle'></div>");
 		var image = $('.examineImg');
 		var circle = $('#circle');
-		console.log(image[0].clientWidth);
 
 		scale = image[0].clientWidth / 1865;
+		yDiff = scale* 1920 - window.innerWidth;
 		var radius = 27 * number_of_mms * scale;
 		circle.css("width",radius).css("height",radius).css("border-radius",radius);
 
 		var xp = e.pageX, yp = e.pageY;
 		$(window).mousemove(function(e){
-			xp = e.pageX;
-			yp = e.pageY;
+			xp = e.clientX;
+			yp = e.clientY;
 		});
 		setInterval(function() {
-			circle.css("top",scale*(yp-600)).css("left",scale*(xp-30));
+			console.log(yDiff);
+			circle.css("top",yp-(scale*615)+yDiff*10).css("left",xp-(scale*28));
 		},30);
 
 		window.addEventListener('resize', function(e) {
 			var image = $('.examineImg');
 		var circle = $('#circle');
 			scale = image[0].clientWidth / 1865;
-			var radius = 27 * number_of_mms * scale;
+			yDiff = scale*1920 - window.innerWidth;
+			radius = 27 * number_of_mms * scale;
 			circle.css("width",radius).css("height",radius).css("border-radius",radius);
 		});
 
