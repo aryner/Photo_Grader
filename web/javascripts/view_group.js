@@ -4,8 +4,9 @@
  * and open the template in the editor.
  */
 var number_of_mms = 3;
-var scale = 1;
-var yDiff = 0;
+var xScale = 1;
+var yScale = 1;
+var radius;
 
 $(document).ready(function() {
 	var photoCount = Number($('input[name=photoCount]').val());
@@ -22,20 +23,9 @@ $(document).ready(function() {
 				case 39:
 					$(':submit[name=next]').click();
 					break;
-				case 50:
-					number_of_mms = 2;
-					break;
-				case 51:
-					number_of_mms = 3;
-					break;
-				case 52:
-					number_of_mms = 4;
-					break;
-				case 53:
-					number_of_mms = 5;
-					break;
 			}
 		}
+		changeRadius(unicode);
 	});
 
 
@@ -56,15 +46,11 @@ function addPhotoClickListener(img) {
 	var src = img.prop('src');
 
 	img.click(function(e) {
-		$("body").append("<img class='examineImg' src='"+src+"'>");
-		$('body').append("<div id='circle'></div>");
+		startExamine(src);
+
 		var image = $('.examineImg');
 		var circle = $('#circle');
-
-		scale = image[0].clientWidth / 1865;
-		yDiff = scale* 1920 - window.innerWidth;
-		var radius = 27 * number_of_mms * scale;
-		circle.css("width",radius).css("height",radius).css("border-radius",radius);
+		setScale(image[0],circle);
 
 		var xp = e.pageX, yp = e.pageY;
 		$(window).mousemove(function(e){
@@ -72,37 +58,65 @@ function addPhotoClickListener(img) {
 			yp = e.clientY;
 		});
 		setInterval(function() {
-			console.log(yDiff);
-			circle.css("top",yp-(scale*615)+yDiff*10).css("left",xp-(scale*28));
+			circle.css("top",yp-(xScale*30)).css("left",xp-(xScale*28));
 		},30);
 
 		window.addEventListener('resize', function(e) {
 			var image = $('.examineImg');
-		var circle = $('#circle');
-			scale = image[0].clientWidth / 1865;
-			yDiff = scale*1920 - window.innerWidth;
-			radius = 27 * number_of_mms * scale;
-			circle.css("width",radius).css("height",radius).css("border-radius",radius);
+			var circle = $('#circle');
+			setScale(image[0],circle);
 		});
 
 		$(document).bind('keydown', function(e) {
-			if(+e.keyCode>=49 && +e.keyCode<=57) {
+			var unicode = e.keyCode || e.which;
+			if(unicode>=49 && unicode<=57) {
+				var image = $('.examineImg');
 				var circle = $('#circle');
-				var radius = 27 * number_of_mms * scale;
-				circle.css("width",radius).css("height",radius).css("border-radius",radius);
+				setScale(image[0],circle);
 			}
 
-			if(e.keyCode === 27) {
-				$('.examineImg').remove();
-				$('#circle').remove();
+			if(unicode === 27) {
+				endExamine();
 			}
 		});
 
-		$('#circle').click(function() {
-			$('.examineImg').remove();
-			$('#circle').remove();
-		});
+		$('#circle').click(endExamine);
 	});
+}
+
+function startExamine(src) {
+	$("body").append("<img class='examineImg' src='"+src+"'>");
+	$('body').append("<div id='circle'></div>");
+}
+
+function endExamine() {
+	$('.examineImg').remove();
+	$('#circle').remove();
+}
+
+function setScale(image,circle) {
+	xScale = image.clientWidth / 1865;
+	//yScale = image.clientHeight /1399;
+	yScale = window.innerHeight / 868;
+	radius = 27 * number_of_mms * xScale;
+	circle.css("width",radius).css("height",radius).css("border-radius",radius);
+}
+
+function changeRadius(unicode) {
+	switch (unicode) {
+		case 50:
+			number_of_mms = 2;
+			break;
+		case 51:
+			number_of_mms = 3;
+			break;
+		case 52:
+			number_of_mms = 4;
+			break;
+		case 53:
+			number_of_mms = 5;
+			break;
+	}
 }
 
 

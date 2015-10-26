@@ -3,6 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+var number_of_mms = 3;
+var xScale = 1;
+var yScale = 1;
+var radius;
 
 var keyboardRows = [['q','w','e','r','t','y','u','i','o','p'],
 		    ['a','s','d','f','g','h','j','k','l'],
@@ -42,13 +46,42 @@ function addPhotoClickListeners(photoCount) {
 function addPhotoClickListener(img) {
 	var src = img.prop('src');
 
-	img.click(function() {
-		$("body").append("<img class='examineImg' src='"+src+"'>");
-		$('.examineImg').fadeIn("fast");
+	img.click(function(e) {
+		startExamine(src);
 
-		$('.examineImg').click(function() {
-			$('.examineImg').remove();
+		var image = $('.examineImg');
+		var circle = $('#circle');
+		setScale(image[0],circle);
+
+		var xp = e.pageX, yp = e.pageY;
+		$(window).mousemove(function(e){
+			xp = e.clientX;
+			yp = e.clientY;
 		});
+		setInterval(function() {
+			circle.css("top",yp-(xScale*30)).css("left",xp-(xScale*28));
+		},30);
+
+		window.addEventListener('resize', function(e) {
+			var image = $('.examineImg');
+			var circle = $('#circle');
+			setScale(image[0],circle);
+		});
+
+		$(document).bind('keydown', function(e) {
+			var unicode = e.keyCode || e.which;
+			if(unicode>=49 && unicode<=57) {
+				var image = $('.examineImg');
+				var circle = $('#circle');
+				setScale(image[0],circle);
+			}
+
+			if(unicode === 27) {
+				endExamine();
+			}
+		});
+
+		$('#circle').click(endExamine);
 	});
 }
 
@@ -94,6 +127,7 @@ function setRadioListeners(keyRadios) {
 				}
 			}
 		}
+		changeRadius(unicode);
 	});
 }
 
@@ -188,3 +222,40 @@ function checkQuestion(label, type, optionCount, constraint) {
 			break;
 	}
 }
+
+function startExamine(src) {
+	$("body").append("<img class='examineImg' src='"+src+"'>");
+	$('body').append("<div id='circle'></div>");
+}
+
+function endExamine() {
+	$('.examineImg').remove();
+	$('#circle').remove();
+}
+
+function setScale(image,circle) {
+	xScale = image.clientWidth / 1865;
+	//yScale = image.clientHeight /1399;
+	yScale = window.innerHeight / 868;
+	radius = 27 * number_of_mms * xScale;
+	circle.css("width",radius).css("height",radius).css("border-radius",radius);
+}
+
+function changeRadius(unicode) {
+	switch (unicode) {
+		case 50:
+			number_of_mms = 2;
+			break;
+		case 51:
+			number_of_mms = 3;
+			break;
+		case 52:
+			number_of_mms = 4;
+			break;
+		case 53:
+			number_of_mms = 5;
+			break;
+	}
+}
+
+
