@@ -50,7 +50,6 @@ if (index < groupsSize-1) {
 }
 %>
 
-
 <script src="javascripts/jquery-1.11.1.min.js" type="text/javascript"></script>
 <script src="javascripts/view_group.js" type="text/javascript"></script>
 

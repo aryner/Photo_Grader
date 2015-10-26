@@ -34,7 +34,7 @@ public class Photo extends Model{
 	private int id;
 	private String name;
 	private String path;
-	private Map<String,Object> fields;
+	private transient Map<String,Object> fields;
 
 	public Photo() {}
 
