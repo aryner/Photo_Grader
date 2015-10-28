@@ -54,6 +54,10 @@ public class Controller extends HttpServlet {
 			return;
 		}
 		else if(userPath.equals("/home")) {
+			if(user.isAdmin() && study == null) {
+				response.sendRedirect("/Photo_Grader/admin_page");
+				return;
+			}
 			session.removeAttribute("grade_group");
 			session.removeAttribute("rank_group");
 			session.removeAttribute("last_compared_rank");

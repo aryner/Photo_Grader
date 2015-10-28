@@ -34,10 +34,16 @@
 			<a href="define_ranking" class="btn">Define Ranking Category</a>
 		</div>
 		<div class="home-col">
+			<a href="define_inter_class_ranking" class="btn">Define Inter-Class Ranking Category</a>
+		</div>
+		<div class="home-col">
 			<a href="select_grade_category" class="btn">Grade</a>
 		</div>
 		<div class="home-col">
 			<a href="select_rank_category" class="btn">Rank</a>
+		</div>
+		<div class="home-col">
+			<a href="select_inter_class_rank_category" class="btn">Inter-Class Ranking</a>
 		</div>
 		<div class="home-col">
 			<a href="select_CSVs" class="btn">Get CSVs</a>

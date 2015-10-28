@@ -278,3 +278,17 @@ a {
 	z-index: 1;
 	cursor: none; 
 }
+
+.user_table, table, th, td {
+	border: 1px solid grey;
+}
+.user_table th {
+	width: 200px;
+	text-align: right;
+}
+.user_table th:first-child {
+	text-align: left;
+}
+.user_table td:first-child {
+	text-align: left;
+}

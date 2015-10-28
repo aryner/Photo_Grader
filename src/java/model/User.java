@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import SQL.Query;
@@ -26,6 +27,10 @@ public class User extends Model {
 	private String name;
 	private String password;
 	private int access_level;
+
+	private static final int GRADER = 1;
+	private static final int STUDY_COORDINATOR = 2;
+	private static final int ADMIN = 4;
 
 	public User() {}
 
@@ -69,6 +74,10 @@ public class User extends Model {
 				session.setAttribute("error", Constants.TAKEN_USERNAME);
 				return "/Photo_Grader/register";
 			}
+			else if (user.isAdmin()) {
+				session.setAttribute("user", user); 
+				return "/Photo_Grader/admin_page";
+			}
 			else {
 				session.setAttribute("user", user); 
 				return "/Photo_Grader/select_study";
@@ -86,8 +95,8 @@ public class User extends Model {
 
 		if(!users.isEmpty()) return null;
 
-		String insertQuery = "INSERT INTO user (name, password) VALUES ("+
-			       "'"+Helper.process(name)+"', MD5('"+password+"'))";
+		String insertQuery = "INSERT INTO user (name, password, access_level) VALUES ("+
+			       "'"+Helper.process(name)+"', MD5('"+password+"'), '"+(userCount()>0?1:4)+"')";
 		Query.update(insertQuery);
 		
 		return (User)Query.getModel(getQuery, new User()).get(0);
@@ -99,6 +108,51 @@ public class User extends Model {
 		ArrayList<Model> user = Query.getModel(query, new User());
 
 		return (User)(user.isEmpty() ? null : user.get(0));
+	}
+
+	public void updatePrivileges(HttpServletRequest request) {
+		String query = "UPDATE user SET access_level = CASE id";
+
+		int user_count = userCount();
+		for(int i=0; i<user_count; i++) {
+			int level = 0;
+			if(request.getParameter("grader_"+i)!=null) {
+				level += 1;
+			}
+			if(request.getParameter("study_coordinator_"+i)!=null) {
+				level += 2;
+			}
+			if(request.getParameter("admin_"+i)!=null) {
+				level += 4;
+			}
+			int currId = Integer.parseInt(request.getParameter("id_"+i));
+			if(currId == this.id) { this.access_level = level; }
+			query += " WHEN "+ currId + " THEN " + level;
+		}
+		query += " END";
+
+		Query.update(query);
+	}
+
+	public static ArrayList getUsers() {
+		return Query.getModel("SELECT * FROM user", new User());
+	}
+
+	public static int userCount() {
+		String query = "SELECT * FROM user";
+		return Query.getModel(query, new User()).size();
+	}
+
+	public boolean isGrader() {
+		return (this.access_level & GRADER) == GRADER;
+	}
+
+	public boolean isStudy_coordinator() {
+		return (this.access_level & STUDY_COORDINATOR) == STUDY_COORDINATOR;
+	}
+
+	public boolean isAdmin() {
+		return (this.access_level & ADMIN) == ADMIN;
 	}
 
 	/**

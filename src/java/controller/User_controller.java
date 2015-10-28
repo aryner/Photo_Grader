@@ -25,7 +25,8 @@ import model.User;
  */
 
 @WebServlet(name = "Controller.User_controller", urlPatterns = {
-								"/createUser","/login","/logout","/register"
+								"/createUser","/login","/logout","/register",
+								"/admin_page","/updatePrivileges"
 								})
 public class User_controller extends HttpServlet {
 
@@ -48,6 +49,10 @@ public class User_controller extends HttpServlet {
 		if(user == null && !userPath.equals("/register")) {
 			response.sendRedirect("/Photo_Grader/index.jsp");
 			return;
+		}
+		else if(userPath.equals("/admin_page")) {
+			request.setAttribute("users",User.getUsers());
+			request.setAttribute("user",user);
 		}
 
 		String url = "/WEB-INF/view" + userPath + ".jsp";
@@ -95,13 +100,23 @@ public class User_controller extends HttpServlet {
 			}
 
 			session.setAttribute("user",user);
-			response.sendRedirect("/Photo_Grader/select_study"); 
+			if(user.isAdmin()) {
+				response.sendRedirect("/Photo_Grader/admin_page"); 
+			} else {
+				response.sendRedirect("/Photo_Grader/select_study"); 
+			}
 			return;
 		}
 		else if(userPath.equals("/logout")) {
 			session.removeAttribute("user");
 			session.removeAttribute("study");
 			session.removeAttribute("grade_group");
+			response.sendRedirect("/Photo_Grader/");
+			return;
+		}
+		else if(userPath.equals("/updatePrivileges")) {
+			User user = (User)session.getAttribute("user");
+			user.updatePrivileges(request);
 			response.sendRedirect("/Photo_Grader/");
 			return;
 		}
