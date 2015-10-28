@@ -53,6 +53,10 @@ public class Study_controller extends HttpServlet {
 			request.setAttribute("studyNames",Query.getField("study","name",null,null));
 		}
 		else if(userPath.equals("/remove_category")) {
+			if(!user.isStudy_coordinator()) {
+				response.sendRedirect("/home");
+				return;
+			}
 			Study study = (Study)session.getAttribute("study");
 			request.setAttribute("grades",study.getGradeCategoryNames());
 			request.setAttribute("ranks",study.getRankCategoryNames());
@@ -84,6 +88,7 @@ public class Study_controller extends HttpServlet {
 
 		if(user == null) {
 			response.sendRedirect("/home");
+			return;
 		}
 		else if(userPath.equals("/setStudy")) {
 			session.setAttribute("study",Study.getStudyByName(request.getParameter("name")));

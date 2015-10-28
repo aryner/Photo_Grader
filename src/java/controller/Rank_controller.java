@@ -59,7 +59,10 @@ public class Rank_controller extends HttpServlet {
 			return;
 		}
 		else if (userPath.equals("/define_ranking")) {
-			//TODO
+			if(!user.isStudy_coordinator()) {
+				response.sendRedirect("/home");
+				return;
+			}
 			ArrayList<String> columns = Photo.getMetaDataKeys(study.getPhoto_attribute_table_name());
 			ArrayList<String> usedNames = GradeGroup.getUsedNames(study.getId(), GradeGroup.RANK);
 			Helper.unprocess(columns);
@@ -67,6 +70,10 @@ public class Rank_controller extends HttpServlet {
 			request.setAttribute("usedNames", usedNames);
 		}
 		else if (userPath.equals("/select_rank_category")) {
+			if(!user.isGrader()) {
+				response.sendRedirect("/home");
+				return;
+			}
 			request.setAttribute("categories",study.getRankCategoryNames());
 		}
 		else if(userPath.equals("/rank")) {
@@ -119,6 +126,7 @@ public class Rank_controller extends HttpServlet {
 
 		if(user == null) {
 			response.sendRedirect("/home");
+			return;
 		}
 		if (userPath.equals("/defineRanking")) {
 			session.setAttribute("errors",GradeGroup.createGradeGroup(request,study,GradeGroup.RANK));

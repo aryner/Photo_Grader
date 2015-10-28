@@ -54,6 +54,10 @@ public class Grade_controller extends HttpServlet {
 			return;
 		}
 		else if(userPath.equals("/select_grade_category")) {
+			if(!user.isGrader()) {
+				response.sendRedirect("/home");
+				return;
+			}
 			request.setAttribute("categories",study.getGradeCategoryNames());
 		}
 		else if(userPath.equals("/grade")) {
@@ -63,6 +67,10 @@ public class Grade_controller extends HttpServlet {
 			request.setAttribute("photoNumber", study.getPhotoNumber());
 		}
 		else if(userPath.equals("/define_grading_questions")) {
+			if(!user.isStudy_coordinator()) {
+				response.sendRedirect("/home");
+				return;
+			}
 			ArrayList<String> columns = Photo.getMetaDataKeys(study.getPhoto_attribute_table_name());
 			ArrayList<String> usedNames = GradeGroup.getUsedNames(study.getId(), GradeGroup.GRADE);
 			Helper.unprocess(columns);
@@ -97,6 +105,7 @@ public class Grade_controller extends HttpServlet {
 
 		if(user == null) {
 			response.sendRedirect("/home");
+			return;
 		}
 
 		if(userPath.equals("/submitGrade")) {

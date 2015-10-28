@@ -23,12 +23,10 @@ import model.User;
  * @author aryner
  */
 @WebServlet(name = "Inter_Class_Rank_controller", urlPatterns = {
-								"/Inter_Class_Rank_controller"
+								"/Inter_Class_Rank_controller","/define_inter_class_ranking","/select_inter_class_category"
 								})
 public class Inter_Class_Rank_controller extends HttpServlet {
 
-	/*
-	// <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
 	/**
 	 * Handles the HTTP <code>GET</code> method.
 	 *
@@ -50,6 +48,26 @@ public class Inter_Class_Rank_controller extends HttpServlet {
 			response.sendRedirect("/Photo_Grader/index.jsp");
 			return;
 		}
+		if(userPath.equals("/define_inter_class_ranking")) {
+			if(!user.isStudy_coordinator()) {
+				response.sendRedirect("/home");
+				return;
+			}
+		}
+		else if(userPath.equals("/select_inter_class_category")) {
+			if(!user.isGrader()) {
+				response.sendRedirect("/home");
+				return;
+			}
+		}
+
+		String url = "/WEB-INF/view" + userPath + ".jsp";
+
+		try {
+			request.getRequestDispatcher(url).forward(request, response);
+		} catch (IOException ex){
+			ex.printStackTrace(System.err);
+		}
 	}
 
 	/**
@@ -67,6 +85,14 @@ public class Inter_Class_Rank_controller extends HttpServlet {
 		HttpSession session = request.getSession(); 
 		Study study = (Study)session.getAttribute("study");
 		User user = (User)session.getAttribute("user");
+
+		String url = "/WEB-INF/view" + userPath + ".jsp";
+
+		try {
+			request.getRequestDispatcher(url).forward(request, response);
+		} catch (IOException ex){
+			ex.printStackTrace(System.err);
+		}
 	}
 
 	/**

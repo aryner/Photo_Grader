@@ -51,6 +51,20 @@ public class User_controller extends HttpServlet {
 			return;
 		}
 		else if(userPath.equals("/admin_page")) {
+			if(!user.isAdmin()) {
+				response.sendRedirect("/home");
+				return;
+			}
+			session.removeAttribute("study");
+			session.removeAttribute("grade_group");
+			session.removeAttribute("rank_group");
+			session.removeAttribute("last_compared_rank");
+			session.removeAttribute("high_rank");
+			session.removeAttribute("low_rank");
+			session.removeAttribute("right_rank");
+			session.removeAttribute("left_rank");
+			session.removeAttribute("viewGroups");
+			session.removeAttribute("viewGroupOptions");
 			request.setAttribute("users",User.getUsers());
 			request.setAttribute("user",user);
 		}

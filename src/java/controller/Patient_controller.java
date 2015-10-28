@@ -81,6 +81,10 @@ public class Patient_controller extends HttpServlet {
 			request.setAttribute("manualMetaData",manualMetaData);
 		}
 		else if(userPath.equals("/manually_assign_meta-data")) {
+			if(!user.isStudy_coordinator()) {
+				response.sendRedirect("/home");
+				return;
+			}
 			int photoID = Integer.parseInt(request.getParameter("id"));
 			Photo photo = (Photo)Query.getModel("SELECT * FROM "+study.getPhoto_attribute_table_name()+" WHERE id='"+photoID+"'",new Photo()).get(0);
 			ArrayList<ManualMetaData> manualMetaData = (ArrayList)Query.getModel("SELECT * FROM photo_data_by_manual WHERE study_id="+study.getId(),new ManualMetaData());
@@ -92,6 +96,10 @@ public class Patient_controller extends HttpServlet {
 			request.setAttribute("manualMetaData",manualMetaData);
 		}
 		else if(userPath.equals("/set_view_group")) {
+			if(!user.isStudy_coordinator()) {
+				response.sendRedirect("/home");
+				return;
+			}
 			ArrayList<String> columns = Photo.getMetaDataKeys(study.getPhoto_attribute_table_name());
 			Helper.unprocess(columns);
 			request.setAttribute("columns", columns);
@@ -110,6 +118,10 @@ public class Patient_controller extends HttpServlet {
 			request.setAttribute("photos",groups.get(index).getGroup(groupOptions,study.getPhoto_attribute_table_name()));
 		}
 		else if(userPath.equals("/upload")) {
+			if(!user.isStudy_coordinator()) {
+				response.sendRedirect("/home");
+				return;
+			}
 			request.setAttribute("csv_meta",TableMetaData.getCSVMetaDataSources(study.getId()));
 			request.setAttribute("excel_meta",TableMetaData.getExcelMetaDataSources(study.getId()));
 		}
@@ -162,6 +174,7 @@ public class Patient_controller extends HttpServlet {
 
 		if(user == null) {
 			response.sendRedirect("/home");
+			return;
 		}
 
 		if(userPath.equals("/setManualMetaData")) {
