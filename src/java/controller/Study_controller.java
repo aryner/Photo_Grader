@@ -50,11 +50,15 @@ public class Study_controller extends HttpServlet {
 			return;
 		}
 		else if(userPath.equals("/select_study")) {
+			if(!user.isStudy_coordinator() && !user.isGrader()) {
+				response.sendRedirect("/Photo_Grader/home");
+				return;
+			}
 			request.setAttribute("studyNames",Query.getField("study","name",null,null));
 		}
 		else if(userPath.equals("/remove_category")) {
 			if(!user.isStudy_coordinator()) {
-				response.sendRedirect("/home");
+				response.sendRedirect("/Photo_Grader/home");
 				return;
 			}
 			Study study = (Study)session.getAttribute("study");
@@ -87,7 +91,7 @@ public class Study_controller extends HttpServlet {
 		User user = (User)session.getAttribute("user");
 
 		if(user == null) {
-			response.sendRedirect("/home");
+			response.sendRedirect("/Photo_Grader/home");
 			return;
 		}
 		else if(userPath.equals("/setStudy")) {

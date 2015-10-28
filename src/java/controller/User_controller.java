@@ -55,7 +55,6 @@ public class User_controller extends HttpServlet {
 				response.sendRedirect("/home");
 				return;
 			}
-			session.removeAttribute("study");
 			session.removeAttribute("grade_group");
 			session.removeAttribute("rank_group");
 			session.removeAttribute("last_compared_rank");
@@ -114,11 +113,7 @@ public class User_controller extends HttpServlet {
 			}
 
 			session.setAttribute("user",user);
-			if(user.isAdmin()) {
-				response.sendRedirect("/Photo_Grader/admin_page"); 
-			} else {
-				response.sendRedirect("/Photo_Grader/select_study"); 
-			}
+			response.sendRedirect("/Photo_Grader/select_study"); 
 			return;
 		}
 		else if(userPath.equals("/logout")) {

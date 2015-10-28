@@ -68,8 +68,11 @@ public class Grade extends Model {
 		return null;
 	}
 
-	public static ArrayList<Grade> getGrades(GradeGroup group) {
+	public static ArrayList<Grade> getGrades(GradeGroup group, User user) {
 		String query = "SELECT * FROM "+group.getGrade_name();
+		if(user != null && !user.isStudy_coordinator()) {
+			query += " WHERE grader='"+user.getName()+"'";
+		}
 
 		return (ArrayList)Query.getModel(query, new Grade());
 	}
@@ -239,9 +242,9 @@ public class Grade extends Model {
 		return answers == null ? "" : answers;
 	}
 
-	public static ArrayList<String> getCSVLines(GradeGroup category, Study study) {
+	public static ArrayList<String> getCSVLines(GradeGroup category, Study study, User user) {
 		ArrayList<String> lines = new ArrayList<String>();
-		ArrayList<Grade> grades = getGrades(category);
+		ArrayList<Grade> grades = getGrades(category, user);
 		ArrayList<String> fields = new ArrayList<String>();
 		if(grades.isEmpty()) { return null; }
 		fields.addAll(grades.get(0).getMetaKeys());

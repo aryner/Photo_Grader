@@ -75,17 +75,18 @@ public class Controller extends HttpServlet {
 		else if (userPath.equals("/present_CSV")) {
 			String category = request.getParameter("category");
 			String type = request.getParameter("type");
+			request.setAttribute("type",type);
 			String categoryName = request.getParameter("category");
 			if (type.equals("grade")) {
 				int grade_group_id = study.getGradeGroupId(categoryName);
 
 				request.setAttribute("category",category);
-				request.setAttribute("csvLines", Grade.getCSVLines(new GradeGroup(grade_group_id),study));
+				request.setAttribute("csvLines", Grade.getCSVLines(new GradeGroup(grade_group_id),study, user));
 			} else {
 				int rank_group_id = study.getRankGroupId(categoryName);
 
 				request.setAttribute("category",category);
-				request.setAttribute("csvLines", Rank.getCSVLines(new GradeGroup(rank_group_id),study));
+				request.setAttribute("csvLines", Rank.getCSVLines(new GradeGroup(rank_group_id),study, user));
 			}
 		}
 
@@ -112,11 +113,18 @@ public class Controller extends HttpServlet {
 		String userPath = request.getServletPath(); 
 		HttpSession session = request.getSession(); 
 		Study study = (Study)session.getAttribute("study");
+		User user = (User)session.getAttribute("user");
 
 		if(userPath.equals("/printCSV")) {
 			String category = request.getParameter("category");
 			int grade_group_id = study.getGradeGroupId(request.getParameter("category"));
-			FileIO.createCSV(Grade.getCSVLines(new GradeGroup(grade_group_id),study),category);
+			String type = request.getParameter("type");
+			if(type.equals("grade")) {
+				FileIO.createCSV(Grade.getCSVLines(new GradeGroup(grade_group_id),study,user),category);
+			}
+			else {
+				FileIO.createCSV(Rank.getCSVLines(new GradeGroup(grade_group_id),study,user),category);
+			}
 			
 			response.sendRedirect("/Photo_Grader/home");
 			return;

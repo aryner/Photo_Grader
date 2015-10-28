@@ -274,8 +274,18 @@ public class Rank extends Model implements Comparable<Rank>{
 		return (ArrayList)Query.getModel(query,new Rank());
 	}
 
+	public static ArrayList<Rank> getAllRanks(String group, User user) {
+		String query = "SELECT * FROM "+group;
+		if(user != null & !user.isStudy_coordinator()) {
+			query += " WHERE grader='"+user.getName()+"'";
+		}
+
+		return (ArrayList)Query.getModel(query,new Rank());
+	}
+
 	public static ArrayList<Rank> getAllRanks(String group) {
 		String query = "SELECT * FROM "+group;
+
 		return (ArrayList)Query.getModel(query,new Rank());
 	}
 
@@ -414,7 +424,7 @@ public class Rank extends Model implements Comparable<Rank>{
 		return toCompare;
 	}
 
-	public static ArrayList<String> getCSVLines(GradeGroup group, Study study) {
+	public static ArrayList<String> getCSVLines(GradeGroup group, Study study, User user) {
 		ArrayList<String> lines = new ArrayList<String>();
 		ArrayList<String> fields = new ArrayList<String>();
 		String currline = "Grader";
@@ -425,7 +435,7 @@ public class Rank extends Model implements Comparable<Rank>{
 		currline += ", rank";
 		lines.add(currline);
 
-		ArrayList<Rank> ranks = getAllRanks(group.getGrade_name());
+		ArrayList<Rank> ranks = getAllRanks(group.getGrade_name(),user);
 		for(Rank rank : ranks) {
 			currline = rank.getGrader();
 			for(String field : fields) {
