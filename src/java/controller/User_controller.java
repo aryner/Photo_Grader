@@ -51,7 +51,7 @@ public class User_controller extends HttpServlet {
 			return;
 		}
 		else if(userPath.equals("/admin_page")) {
-			if(!user.isAdmin()) {
+			if(user!= null && !user.isAdmin()) {
 				response.sendRedirect("/home");
 				return;
 			}

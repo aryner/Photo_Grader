@@ -18,7 +18,6 @@ $(document).ready(function() {
 		var errors = getErrorMsg();
 		console.log(errors.length);
 		if(errors.length > 0) {
-			console.log('error in grading questions');
 			e.preventDefault();
 			var msg = "";
 			for(var i=0; i<errors.length; i++) {
@@ -43,7 +42,23 @@ function setTextLimit(name) {
 }
 
 function getErrorMsg() {
-	return checkForName(checkForFilledQuestions(checkGradeGroup()));
+	return checkForInvalidCharacters(checkForName(checkForFilledQuestions(checkGradeGroup())));
+}
+
+function checkForInvalidCharacters(errors) {
+	var inputs = $('input[type=text]');
+	var textAreas = $('textarea');
+	for (var i=0; i<textAreas.length; i++) {
+		inputs.push(textAreas[i]);
+	}
+	for(var i=0; i<inputs.length; i++) {
+		if(inputs[i].value.trim().match(/[^a-zA-Z0-9]/)){
+			errors.push("<p class='error'>You can only use letters and numbers</p>");
+			break;
+		}
+	}
+
+	return errors;
 }
 
 function checkForName(errors) {
