@@ -27,6 +27,15 @@
 			<div class="home-col">
 				<a href="upload" class="btn">Upload</a>
 			</div>
+			<%
+			if(study.hasManualMetaData()) {
+			%>
+				<div class="home-col">
+					<a href="assign_manual_meta" class="btn">Assign Manual meta-data</a>
+				</div>
+			<%
+			}
+			%>
 			<div class="home-col">
 				<a href="define_grading_questions" class="btn">Define Grading Category</a>
 			</div>
@@ -51,18 +60,6 @@
 		<div class="home-col">
 			<a href="select_CSVs" class="btn">Get CSVs</a>
 		</div>
-		<%
-		if(study.hasManualMetaData() && user.isStudy_coordinator()) {
-		%>
-			<div class="home-col">
-				<a href="assign_manual_meta" class="btn">Assign Manual meta-data</a>
-			</div>
-		<%
-		}
-		%>
-		<div class="home-col">
-			<a href="select_study" class="btn">Change Study</a>
-		</div>
 		<%if(user.isStudy_coordinator()){%>
 			<div class="home-col">
 				<a href="set_view_group" class="btn">View Uploaded Photos</a>
@@ -71,6 +68,9 @@
 				<a href="remove_category" class="btn">Remove Category</a>
 			</div>
 		<%}%>
+		<div class="home-col">
+			<a href="select_study" class="btn">Change Study</a>
+		</div>
 		<%if(user.isAdmin()){%>
 			<div class="home-col">
 				<a href="admin_page" class="btn">Change user privileges</a>
