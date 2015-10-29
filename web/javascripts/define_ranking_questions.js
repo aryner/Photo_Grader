@@ -50,7 +50,7 @@ function checkForInvalidCharacters(errors) {
 		inputs.push(textAreas[i]);
 	}
 	for(var i=0; i<inputs.length; i++) {
-		if(inputs[i].value.trim().match(/[^a-zA-Z0-9]/)){
+		if(inputs[i].value.trim().match(/[^a-zA-Z0-9\s]/)){
 			errors.push("<p class='error'>You can only use letters and numbers</p>");
 			break;
 		}

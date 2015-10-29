@@ -52,13 +52,24 @@ function checkForInvalidCharacters(errors) {
 		inputs.push(textAreas[i]);
 	}
 	for(var i=0; i<inputs.length; i++) {
-		if(inputs[i].value.trim().match(/[^a-zA-Z0-9]/)){
+		if(inputs[i].value.trim().match(/[^a-zA-Z0-9\s]/)){
 			errors.push("<p class='error'>You can only use letters and numbers</p>");
 			break;
 		}
 	}
+	var labelsWithSpaces = checkForSpacesInLabels();
+	if(labelsWithSpaces) { errors.push(labelsWithSpaces); }
 
 	return errors;
+}
+
+function checkForSpacesInLabels() {
+	for(var i=0; i<questionCount+1; i++) {
+		var label = document.getElementsByName('label_'+i)[0].value.trim();
+		if(label.match(/[\s]/)) { return "<p class='error'>Question labels cannot contain spaces</p>"; }
+	}
+
+	return false;
 }
 
 function checkForName(errors) {

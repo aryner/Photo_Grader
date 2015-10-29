@@ -98,7 +98,7 @@ function oneChecked(index) {
 }
 
 function validOptionLabelName(name) {
-	if(name.length > 0 && (!name.match(/^[a-zA-z]/) || name.match(/[^a-zA-Z0-9]/))) 
+	if(name.length > 0 && (!name.match(/^[a-zA-z\s]/) || name.match(/[^a-zA-Z0-9\s]/))) 
 		return false;
 	return true;
 }
