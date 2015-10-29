@@ -24,6 +24,10 @@
 	<input type="submit" class="btn" value="Use Study" name="setStudy">
 </form>
 
+<%
+User user = (User) request.getAttribute("user");
+if(user.isStudy_coordinator()) {
+%>
 <h1>...Or create a new one</h1>
 
 <div class="hidden error" name="study_name_taken"><%out.print(Constants.STUDY_NAME_TAKEN);%></div>
@@ -41,6 +45,7 @@
 	</p>
 	<input type="submit" class="btn" value="Create Study" name="newStudy">
 </form>
+<%}%>
 
 <script src="javascripts/jquery-1.11.1.min.js" type="text/javascript"></script>
 <script src="javascripts/newStudy.js" type="text/javascript"></script>

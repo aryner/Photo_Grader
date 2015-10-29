@@ -54,6 +54,7 @@ public class Study_controller extends HttpServlet {
 				response.sendRedirect("/Photo_Grader/home");
 				return;
 			}
+			request.setAttribute("user",user);
 			request.setAttribute("studyNames",Query.getField("study","name",null,null));
 		}
 		else if(userPath.equals("/remove_category")) {
