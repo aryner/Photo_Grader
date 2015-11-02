@@ -7,6 +7,7 @@
 package controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,17 +16,22 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import SQL.Helper;
+
 import model.Study;
 import model.User;
+import model.Photo;
+
+import metaData.grade.GradeGroup;
 
 /**
  *
  * @author aryner
  */
-@WebServlet(name = "Inter_Class_Rank_controller", urlPatterns = {
-								"/Inter_Class_Rank_controller","/define_inter_class_ranking","/select_inter_class_category"
-								})
-public class Inter_Class_Rank_controller extends HttpServlet {
+@WebServlet(name = "Compare_controller", urlPatterns = {
+							"/Compare_controller","/define_compare","/select_compare_category"
+							})
+public class Compare_controller extends HttpServlet {
 
 	/**
 	 * Handles the HTTP <code>GET</code> method.
@@ -48,13 +54,18 @@ public class Inter_Class_Rank_controller extends HttpServlet {
 			response.sendRedirect("/Photo_Grader/index.jsp");
 			return;
 		}
-		if(userPath.equals("/define_inter_class_ranking")) {
+		if(userPath.equals("/define_compare")) {
 			if(!user.isStudy_coordinator()) {
 				response.sendRedirect("/home");
 				return;
 			}
+			ArrayList<String> columns = Photo.getMetaDataKeys(study.getPhoto_attribute_table_name());
+			ArrayList<String> usedNames = GradeGroup.getUsedNames(study.getId(), GradeGroup.COMPARE);
+			Helper.unprocess(columns);
+			request.setAttribute("columns", columns);
+			request.setAttribute("usedNames", usedNames);
 		}
-		else if(userPath.equals("/select_inter_class_category")) {
+		else if(userPath.equals("/select_compare_category")) {
 			if(!user.isGrader()) {
 				response.sendRedirect("/home");
 				return;

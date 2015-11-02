@@ -43,7 +43,7 @@
 				<a href="define_ranking" class="btn">Define Ranking Category</a>
 			</div>
 			<div class="home-col">
-				<a href="define_inter_class_ranking" class="btn">Define Inter-Class Ranking Category</a>
+				<a href="define_compare" class="btn">Define Compare Category</a>
 			</div>
 		<%}%>
 		<%if(user.isGrader()){%>

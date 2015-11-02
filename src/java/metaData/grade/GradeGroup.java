@@ -37,6 +37,7 @@ public class GradeGroup extends Model {
 
 	public static final int GRADE = 0;
 	public static final int RANK = 1;
+	public static final int COMPARE = 2;
 
 	public static final String TABLE_NAME = "photo_grade_group";
 	public static final String FILENAME = "_photo_file_name";
