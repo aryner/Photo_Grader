@@ -17,20 +17,22 @@ import javax.servlet.http.HttpServletRequest;
 
 import SQL.Query;
 
+import metaData.grade.GroupBy;
+
 /**
  *
  * @author aryner
  */
 public class Compare extends Model {
 	private int id;
-	private int grade_group_id;
+	private String grader;
 	private Map<String,String> group_meta_data;
 	private String comparison;
 	private String high;
 	private String low;
 
 	public static final String ID = "id";
-	public static final String GRADE_GROUP_ID = "grade_group_id";
+	public static final String GRADER = "grader";
 	public static final String GROUP_META_DATA = "group_meta_data";
 	public static final String COMPARISON = "comparison";
 	public static final String HIGH = "high";
@@ -41,9 +43,9 @@ public class Compare extends Model {
 
 	public Compare() {}
 
-	public Compare(int id, int grade_group_id, Map group_meta_data, String comparison, String high, String low) {
+	public Compare(int id, String grader, Map group_meta_data, String comparison, String high, String low) {
 		this.id = id;
-		this.grade_group_id = grade_group_id;
+		this.grader = grader;
 		this.group_meta_data = group_meta_data;
 		this.comparison = comparison;
 		this.high = high;
@@ -63,7 +65,7 @@ public class Compare extends Model {
 			}
 
 			return new Compare(
-				resultSet.getInt(ID),resultSet.getInt(GRADE_GROUP_ID),
+				resultSet.getInt(ID),resultSet.getString(GRADER),
 				groupMeta,resultSet.getString(COMPARISON),
 				resultSet.getString(HIGH),resultSet.getString(LOW)
 			);
@@ -75,7 +77,19 @@ public class Compare extends Model {
 	}
 
 	public static void createTable(int group_id) {
-		//TODO
+		String tableName = "compare_"+Query.getField("photo_grade_group","grade_name","id='"+group_id+"'",null).get(0);
+		String query = "CREATE TABLE IF NOT EXISTS "+tableName+" ("+
+			"id int unsigned AUTO_INCREMENT, grader varchar(50),"+
+			"comparison varchar(40), high varchar(40), low varchar(40),";
+			
+		String postfix = "PRIMARY KEY(id)) ENGINE=INnoDB";
+		ArrayList<GroupBy> grouping = GroupBy.getGroup(group_id);
+
+		for(GroupBy group : grouping) {
+			query += group.getPhoto_attribute()+" varchar(40),";
+		}
+
+		Query.update(query+postfix);
 	}
 
 	public static void generateRankWithin(HttpServletRequest request, int group_id) {
@@ -118,20 +132,6 @@ public class Compare extends Model {
 	 */
 	public void setId(int id) {
 		this.id = id;
-	}
-
-	/**
-	 * @return the grade_group_id
-	 */
-	public int getGrade_group_id() {
-		return grade_group_id;
-	}
-
-	/**
-	 * @param grade_group_id the grade_group_id to set
-	 */
-	public void setGrade_group_id(int grade_group_id) {
-		this.grade_group_id = grade_group_id;
 	}
 
 	/**
@@ -188,6 +188,20 @@ public class Compare extends Model {
 	 */
 	public void setLow(String low) {
 		this.low = low;
+	}
+
+	/**
+	 * @return the grader
+	 */
+	public String getGrader() {
+		return grader;
+	}
+
+	/**
+	 * @param grader the grader to set
+	 */
+	public void setGrader(String grader) {
+		this.grader = grader;
 	}
 
 }
