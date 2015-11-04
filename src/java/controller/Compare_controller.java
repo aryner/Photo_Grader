@@ -29,7 +29,8 @@ import metaData.grade.GradeGroup;
  * @author aryner
  */
 @WebServlet(name = "Compare_controller", urlPatterns = {
-							"/Compare_controller","/define_compare","/select_compare_category"
+							"/Compare_controller","/define_compare","/select_compare_category",
+							"/defineCompare"
 							})
 public class Compare_controller extends HttpServlet {
 
@@ -98,6 +99,11 @@ public class Compare_controller extends HttpServlet {
 		User user = (User)session.getAttribute("user");
 
 		String url = "/WEB-INF/view" + userPath + ".jsp";
+
+		if(userPath.equals("/defineCompare")) {
+			response.sendRedirect("/home");
+			return;
+		}
 
 		try {
 			request.getRequestDispatcher(url).forward(request, response);
