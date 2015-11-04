@@ -17,6 +17,7 @@ import model.Study;
 import model.Photo;
 import model.Grade;
 import model.Rank;
+import model.Compare;
 
 import SQL.Query;
 
@@ -94,21 +95,24 @@ public class GradeGroup extends Model {
 		}
 
 		usedNames = (ArrayList)Query.getField(GradeGroup.TABLE_NAME, "grade_name", null,null);
-		String grade_name = Tools.generateTableName(type==GRADE?"grade_":"rank_", usedNames);
+		String grade_name = Tools.generateTableName(type==GRADE?"grade_":type==RANK?"rank_":"compare_", usedNames);
 		String query = "INSERT INTO photo_grade_group (study_id, name, grade_name, grade_rank) VALUES ('"+study.getId()+
-			       "', '"+newName+"', '"+grade_name+"', '"+(type==GRADE?GRADE:RANK)+"')";
+			       "', '"+newName+"', '"+grade_name+"', '"+(type==GRADE?GRADE:type==RANK?RANK:COMPARE)+"')";
 		Query.update(query);
 
 		int groupId = Integer.parseInt(Query.getField(
 			GradeGroup.TABLE_NAME,
 			"id",
-			"study_id="+study.getId()+" AND name='"+newName+"' AND grade_rank="+(type==GRADE?GRADE:RANK),null).get(0)+"");
+			"study_id="+study.getId()+" AND name='"+newName+"' AND grade_rank="+(type==GRADE?GRADE:type==RANK?RANK:COMPARE),null).get(0)+"");
 		createGroup(groupId, study.getPhoto_attribute_table_name(), request);
 		if(type==GRADE) {
 			Question.createQuestions(groupId, request);
 			Grade.createTable(groupId);
-		} else {
+		} else if(type==RANK){
 			Rank.createTable(groupId);
+		} else {
+			Compare.generateRankWithin(request,groupId);
+			Compare.createTable(groupId);
 		}
 
 		return errors;

@@ -101,7 +101,8 @@ public class Compare_controller extends HttpServlet {
 		String url = "/WEB-INF/view" + userPath + ".jsp";
 
 		if(userPath.equals("/defineCompare")) {
-			response.sendRedirect("/home");
+			session.setAttribute("errors",GradeGroup.createGradeGroup(request,study,GradeGroup.COMPARE));
+			response.sendRedirect("/Photo_Grader/home");
 			return;
 		}
 
