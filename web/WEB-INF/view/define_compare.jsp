@@ -24,28 +24,51 @@
 	}
 	%>
 	<div class="container">
-		<h3>Name this compare category</h3>
-		<input type="text" name="name">
-		<h3>Group Pictures that share:</h3>
-		<input type="hidden" name="questionCount" value="1">
-		<input type="hidden" name="groupOptionCount" value="<%out.print(columns.size());%>">
-		<input type="checkbox" name="groupBy_-1" value="-1"> File name (checking this means each picture is ranked individually)
-		<%
-		for(int i=0; i<columns.size(); i++) {
-			out.print("<br><input type='checkbox' name='groupBy_"+i+"' value='"+i+"'> "+columns.get(i));
-		}
-		%>
-		<h3>Select field to compare between</h3>
-		<%
-		for(int i=0; i<columns.size(); i++) {
-			out.print("<br><input type='radio' name='compare_between' value='"+i+"'> "+columns.get(i));
-		}
-		%>
-		<h3>Select the values of <span id="compare_with"></span> to compare</h3>
-		<h4>Ideal low end</h4>
-		<input type="text" name="low_0" style="margin-right:20px;"> 2nd Option? <input type="checkbox" name="low_opt_0">
-		<h4>Ideal high end</h4>
-		<input type="text" name="high_0" style="margin-right:20px;"> 2nd Option? <input type="checkbox" name="high_opt_0">
+		<div class="meta-row">
+			<h3>Name this compare category</h3>
+			<input type="text" name="name">
+		</div>
+		<div class="newRow"></div>
+		<div class="meta-row">
+			<div class="meta-col">
+				<h3>Group Pictures that share:</h3>
+				<input type="hidden" name="questionCount" value="1">
+				<input type="hidden" name="groupOptionCount" value="<%out.print(columns.size());%>">
+				<%
+				for(int i=0; i<columns.size(); i++) {
+					out.print("<br><input type='checkbox' name='groupBy_"+i+"' value='"+i+"'> "+columns.get(i));
+				}
+				%>
+			</div>
+		</div>
+		<div class="newRow"></div>
+		<div class="meta-row">
+			<div class="meta-col">
+				<h3>Select field to compare between</h3>
+				<%
+				for(int i=0; i<columns.size(); i++) {
+					out.print("<br><input type='radio' name='compare_between' value='"+i+"'> "+columns.get(i));
+				}
+				%>
+			</div>
+		</div>
+		<div class="newRow"></div>
+		<div class="meta-row" id="low">
+			<div class="meta-col">
+				<h3>Select the values to compare</h3>
+				<h4>Ideal low end</h4>
+				<input type="text" name="low_0" style="margin-right:20px;"> Next Option? <input type="checkbox" name="low_opt_0">
+				<input type="hidden" name="low_count" value="0">
+			</div>
+		</div>
+		<div class="newRow"></div>
+		<div class="meta-row" id="high">
+			<div class="meta-col">
+				<h4>Ideal high end</h4>
+				<input type="text" name="high_0" style="margin-right:20px;"> Next Option? <input type="checkbox" name="high_opt_0">
+				<input type="hidden" name="high_count" value="0">
+			</div>
+		</div>
 	</div>
 
 	<div class="errorDiv"></div>

@@ -5,9 +5,7 @@
  */
 
 
-
 $(document).ready(function() {
-	console.log('in function');
 	$(':submit[value=Submit]').click(function(e) {
 
 		var errors = getErrorMsg();
@@ -84,7 +82,7 @@ function checkGradeGroup(errors) {
 			groupSelected = true;
 		}
 	}
-	if(!groupSelected) errors.push("<p class='error'>You must select how to group the pictures you will grade : 'Grade Pictures that share'</p>");
+	if(!groupSelected) errors.push("<p class='error'>You must select how to group the pictures you will rank: 'Rank Pictures that share'</p>");
 
 	return errors;
 }
