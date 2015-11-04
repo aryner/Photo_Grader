@@ -71,7 +71,7 @@ public class Rank_controller extends HttpServlet {
 		}
 		else if (userPath.equals("/select_rank_category")) {
 			if(!user.isGrader()) {
-				response.sendRedirect("/home");
+				response.sendRedirect("/Photo_Grader/home");
 				return;
 			}
 			request.setAttribute("categories",study.getRankCategoryNames());

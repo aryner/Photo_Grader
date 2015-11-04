@@ -54,7 +54,7 @@
 				<a href="select_rank_category" class="btn">Rank</a>
 			</div>
 			<div class="home-col">
-				<a href="select_inter_class_rank_category" class="btn">Inter-Class Ranking</a>
+				<a href="select_compare_category" class="btn">Compare</a>
 			</div>
 		<%}%>
 		<div class="home-col">

@@ -96,6 +96,14 @@ public class Study extends Model {
 		return (ArrayList)Query.getField(GradeGroup.TABLE_NAME,"name","study_id="+this.id+" AND grade_rank="+GradeGroup.RANK,null);
 	}
 
+	public int getCompareGroupId(String name) {
+		return Integer.parseInt(""+Query.getField(GradeGroup.TABLE_NAME,"id","study_id="+this.id+" AND name='"+name+"' AND grade_rank="+GradeGroup.COMPARE,null).get(0));
+	}
+
+	public ArrayList<String> getCompareCategoryNames() {
+		return (ArrayList)Query.getField(GradeGroup.TABLE_NAME,"name","study_id="+this.id+" AND grade_rank="+GradeGroup.COMPARE,null);
+	}
+
 	public ArrayList getExcelTableMetaData() {
 		return new TableMetaData().getMetaDataSources("study_id='"+this.id+"' AND table_type='"+MetaData.EXCEL+"'","");
 	}

@@ -30,7 +30,7 @@ import metaData.grade.GradeGroup;
  */
 @WebServlet(name = "Compare_controller", urlPatterns = {
 							"/Compare_controller","/define_compare","/select_compare_category",
-							"/defineCompare"
+							"/defineCompare","/startComparing","/compare"
 							})
 public class Compare_controller extends HttpServlet {
 
@@ -68,9 +68,12 @@ public class Compare_controller extends HttpServlet {
 		}
 		else if(userPath.equals("/select_compare_category")) {
 			if(!user.isGrader()) {
-				response.sendRedirect("/home");
+				response.sendRedirect("/Photo_Grader/home");
 				return;
 			}
+			request.setAttribute("categories",study.getCompareCategoryNames());
+		}
+		else if(userPath.equals("/compare")) {
 		}
 
 		String url = "/WEB-INF/view" + userPath + ".jsp";
@@ -103,6 +106,12 @@ public class Compare_controller extends HttpServlet {
 		if(userPath.equals("/defineCompare")) {
 			session.setAttribute("errors",GradeGroup.createGradeGroup(request,study,GradeGroup.COMPARE));
 			response.sendRedirect("/Photo_Grader/home");
+			return;
+		}
+		else if (userPath.equals("/startComparing")) {
+			int compare_group_id = study.getCompareGroupId(request.getParameter("category"));
+			session.setAttribute("compare_group", new GradeGroup(compare_group_id));
+			response.sendRedirect("/Photo_Grader/compare");
 			return;
 		}
 
