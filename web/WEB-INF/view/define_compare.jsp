@@ -47,7 +47,7 @@
 				<h3>Select field to compare between</h3>
 				<%
 				for(int i=0; i<columns.size(); i++) {
-					out.print("<br><input type='radio' name='compare_between' value='"+i+"'> "+columns.get(i));
+					out.print("<br><input type='radio' name='compare_between' value='"+columns.get(i)+"'> "+columns.get(i));
 				}
 				%>
 			</div>

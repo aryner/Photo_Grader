@@ -7,6 +7,7 @@
 package model;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.sql.ResultSet;
@@ -18,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import SQL.Query;
 
 import metaData.grade.GroupBy;
+import metaData.grade.Ranked_within;
 
 /**
  *
@@ -30,6 +32,7 @@ public class Compare extends Model {
 	private String comparison;
 	private String high;
 	private String low;
+	private String compare_field;
 
 	public static final String ID = "id";
 	public static final String GRADER = "grader";
@@ -37,9 +40,6 @@ public class Compare extends Model {
 	public static final String COMPARISON = "comparison";
 	public static final String HIGH = "high";
 	public static final String LOW = "low";
-
-	public static final int WITHIN_LOW = 0;
-	public static final int WITHIN_HIGH = 1;
 
 	public Compare() {}
 
@@ -93,17 +93,18 @@ public class Compare extends Model {
 	}
 
 	public static void generateRankWithin(HttpServletRequest request, int group_id) {
-		String query = "INSERT INTO ranked_within (grade_group_id, value, position, high_low) VALUES ";
+		String query = "INSERT INTO ranked_within (grade_group_id, value, position, high_low, compare_field) VALUES ";
 
 		ArrayList<String> highs = getExtremes(request, HIGH);
 		ArrayList<String> lows = getExtremes(request, LOW);
 
+		String compare_field = request.getParameter("compare_between");
 		for(int i=0; i<highs.size(); i++) {
 			if(i>0) { query += ", "; }
-			query += "('"+group_id+"', '"+highs.get(i)+"', '"+i+"', '"+WITHIN_HIGH+"')";
+			query += "('"+group_id+"', '"+highs.get(i)+"', '"+i+"', '"+Ranked_within.HIGH+"', '"+compare_field+"')";
 		}
 		for(int i=0; i<lows.size(); i++) {
-			query += ", ('"+group_id+"', '"+lows.get(i)+"', '"+i+"', '"+WITHIN_LOW+"')";
+			query += ", ('"+group_id+"', '"+lows.get(i)+"', '"+i+"', '"+Ranked_within.LOW+"', '"+compare_field+"')";
 		}
 
 		Query.update(query);
@@ -118,6 +119,82 @@ public class Compare extends Model {
 		}
 
 		return results;
+	}
+
+	public static class Compare_photos {
+		private Compare compare;
+		private ArrayList<Photo> low_photos;
+		private ArrayList<Photo> high_photos;
+
+		public Compare_photos(Compare compare) {
+			this.compare = compare;
+		}
+
+		public void assign_photos(String photo_table, int group_id) {
+			String query = "SELECT * FROM "+photo_table+" WHERE ";
+			String where = "";
+			Set<String> keys = compare.getGroup_meta_data().keySet();
+			for(String key : keys) {
+				where += key+"='"+compare.getGroup_meta_data().get(key)+" AND ";
+			}
+			low_photos = (ArrayList)Query.getModel(query+where+" AND "+compare.getCompare_field(group_id)+"='"+compare.getLow()+"'",new Photo());
+			low_photos = (ArrayList)Query.getModel(query+where+" AND "+compare.getCompare_field(group_id)+"='"+compare.getHigh()+"'",new Photo());
+		}
+
+		/**
+		 * @return the compare
+		 */
+		public Compare getCompare() {
+			return compare;
+		}
+
+		/**
+		 * @param compare the compare to set
+		 */
+		public void setCompare(Compare compare) {
+			this.compare = compare;
+		}
+
+		/**
+		 * @return the low_photos
+		 */
+		public ArrayList<Photo> getLow_photos() {
+			return low_photos;
+		}
+
+		/**
+		 * @param low_photos the low_photos to set
+		 */
+		public void setLow_photos(ArrayList<Photo> low_photos) {
+			this.low_photos = low_photos;
+		}
+
+		/**
+		 * @return the high_photos
+		 */
+		public ArrayList<Photo> getHigh_photos() {
+			return high_photos;
+		}
+
+		/**
+		 * @param high_photos the high_photos to set
+		 */
+		public void setHigh_photos(ArrayList<Photo> high_photos) {
+			this.high_photos = high_photos;
+		}
+	}
+
+	public String getCompare_field(int group_id) {
+		if(compare_field == null) {
+			String query = "SELECT * FROM ranked_within WHERE grade_group_id="+group_id;
+			compare_field = ((Ranked_within)Query.getModel(query,new Ranked_within()).get(0)).getCompare_field();
+		}
+
+		return compare_field;
+	}
+
+	public String getCompare_field() {
+		return compare_field;
 	}
 
 	/**

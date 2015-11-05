@@ -74,6 +74,21 @@ public class Compare_controller extends HttpServlet {
 			request.setAttribute("categories",study.getCompareCategoryNames());
 		}
 		else if(userPath.equals("/compare")) {
+			int photoCount = Photo.getPhotoCount(study.getPhoto_attribute_table_name());
+			if(photoCount == 0) {
+				ArrayList<String> errors = new ArrayList<String>();
+				errors.add("There are no photos here to compare");
+				session.setAttribute("errors",errors);
+				response.sendRedirect("/Photo_Grader/home");
+				return;
+			} else if (photoCount == Photo.getUnassignedCount(study.getPhoto_attribute_table_name())) {
+				ArrayList<String> errors = new ArrayList<String>();
+				errors.add("Photos must have meta data assigned before they can be compared");
+				session.setAttribute("errors",errors);
+				response.sendRedirect("/Photo_Grader/home");
+				return;
+			}
+			GradeGroup group = (GradeGroup)session.getAttribute("compare_group");
 		}
 
 		String url = "/WEB-INF/view" + userPath + ".jsp";
