@@ -149,6 +149,7 @@ public class Query {
 	}
 
 	private SQLResult getResult(String query, int method) throws SQLException, NamingException {
+		query = query.replace("\\","\\\\");
 		InitialContext initialContext = new InitialContext();
 		Context context = (Context)initialContext.lookup(CONTEXT);
 		DataSource dataSource = (DataSource)context.lookup(DATASOURCE);
