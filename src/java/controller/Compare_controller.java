@@ -21,6 +21,7 @@ import SQL.Helper;
 import model.Study;
 import model.User;
 import model.Photo;
+import model.Compare;
 
 import metaData.grade.GradeGroup;
 
@@ -89,6 +90,7 @@ public class Compare_controller extends HttpServlet {
 				return;
 			}
 			GradeGroup group = (GradeGroup)session.getAttribute("compare_group");
+			request.setAttribute("compare",Compare.getCompare(group,user,study.getPhoto_attribute_table_name()));
 		}
 
 		String url = "/WEB-INF/view" + userPath + ".jsp";

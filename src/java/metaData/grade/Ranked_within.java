@@ -6,8 +6,11 @@
 
 package metaData.grade;
 
+import java.util.ArrayList;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import SQL.Query;
 
 import model.Model;
 
@@ -15,7 +18,7 @@ import model.Model;
  *
  * @author aryner
  */
-public class Ranked_within extends Model {
+public class Ranked_within extends Model implements Comparable<Ranked_within>{
 	private int id;
 	private int grade_group_id;
 	private String value;
@@ -49,6 +52,43 @@ public class Ranked_within extends Model {
 			e.printStackTrace(System.err);
 		}
 		return null;
+	}
+
+	public static ArrayList<Ranked_within> getHighs(int group_id) {
+		String query = "SELECT * FROM ranked_within WHERE grade_group_id="+group_id+" AND high_low="+HIGH;
+		return (ArrayList)Query.getModel(query,new Ranked_within());
+	}
+
+	public static ArrayList<Ranked_within> getLows(int group_id) {
+		String query = "SELECT * FROM ranked_within WHERE grade_group_id="+group_id+" AND high_low="+LOW;
+		return (ArrayList)Query.getModel(query,new Ranked_within());
+	}
+
+	@Override
+	public int compareTo(Ranked_within ranked_within) {
+		return ranked_within.position - this.position;
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = 5;
+		hash = 97 * hash + this.id;
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final Ranked_within other = (Ranked_within) obj;
+		if (this.id != other.id) {
+			return false;
+		}
+		return true;
 	}
 
 	/**

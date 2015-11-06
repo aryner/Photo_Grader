@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.Random;
+import java.util.Collections;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.ResultSetMetaData;
@@ -17,7 +19,9 @@ import java.sql.ResultSetMetaData;
 import javax.servlet.http.HttpServletRequest;
 
 import SQL.Query;
+import SQL.Helper;
 
+import metaData.grade.GradeGroup;
 import metaData.grade.GroupBy;
 import metaData.grade.Ranked_within;
 
@@ -33,6 +37,9 @@ public class Compare extends Model {
 	private String high;
 	private String low;
 	private String compare_field;
+
+	private ArrayList<Photo> low_photos;
+	private ArrayList<Photo> high_photos;
 
 	public static final String ID = "id";
 	public static final String GRADER = "grader";
@@ -110,6 +117,102 @@ public class Compare extends Model {
 		Query.update(query);
 	}
 
+	public static Compare getCompare(GradeGroup group, User user, String photoTable) {
+		ArrayList<Compare> compares = getCompares(group, user, photoTable);
+		
+		Random rand = new Random();
+		return compares.isEmpty()?null:compares.get(rand.nextInt(compares.size()));
+	}
+
+	private static ArrayList getCompares(GradeGroup group, User user, String photo_table) {
+		String query = "SELECT * FROM "+group.getGrade_name()+" WHERE grader='"+user.getName()+"'";
+		ArrayList<Compare> compares = (ArrayList)Query.getModel(query, new Compare());
+
+		if(compares.isEmpty()) { generateCompares(group, user, photo_table); }
+
+		query = "SELECT * FROM "+group.getGrade_name()+" WHERE grader='"+user.getName()+"' AND comparison IS NOT NULL";
+		return (ArrayList)Query.getModel(query,new Compare());
+	}
+
+	private static void generateCompares(GradeGroup group, User user, String photo_table) {
+		ArrayList<GroupBy> groupedBy = GroupBy.getGroup(group.getId());
+		String query = "INSERT INTO "+group.getGrade_name()+" (grader, high, low";
+		for(GroupBy grouped : groupedBy) {
+			query += ", "+grouped.getPhoto_attribute();
+		}
+		query += ") VALUES ";
+
+		ArrayList<Photo> patientSplitPhotos = Photo.getPhotosGroupedBy(photo_table,groupedBy);
+		ArrayList<Ranked_within> highs = Ranked_within.getHighs(group.getId());
+		ArrayList<Ranked_within> lows = Ranked_within.getLows(group.getId());
+
+		Random rand = new Random(System.currentTimeMillis());
+		while(!patientSplitPhotos.isEmpty()) {
+			int random = rand.nextInt(patientSplitPhotos.size());
+			Photo currPatient = patientSplitPhotos.remove(random);
+			//query photos for this patient
+			String photo_query = "SELECT * FROM "+photo_table+" WHERE ";
+			String postfix = "";
+			for(GroupBy grouped :groupedBy) {
+				if(postfix.length() > 0) { postfix += " AND "; }
+				postfix += grouped.getPhoto_attribute() + "='"+currPatient.getField(grouped.getPhoto_attribute())+"'";
+			}
+			ArrayList<Photo> patientPhotos = (ArrayList)Query.getModel(photo_query+postfix,new Photo());
+			//find extremes
+			Photo high = findExtreme(patientPhotos, highs, Ranked_within.HIGH);
+			Photo low = findExtreme(patientPhotos, lows, Ranked_within.LOW);
+			//if found 
+			if(low != null && high != null) {
+			  //add compare to insert query
+				String attribute = Helper.process(lows.get(0).getCompare_field());
+				query += "('"+user.getName()+"', '"+high.getField(attribute)+"', '"+low.getField(attribute)+"'";
+				for(GroupBy grouped : groupedBy) {
+					query += ", '"+low.getField(grouped.getPhoto_attribute())+"'";
+				}
+				query += "),";
+			}
+			//else
+			else {
+			  //add filled compare that has some signal for the misisng extreme
+			  //and marks it as compared in query
+				String attribute = Helper.process(lows.get(0).getCompare_field());
+				query += "('"+user.getName()+"', '"+(high!=null?high.getField(attribute):"_missing_")+
+					"', '"+(low!=null?low.getField(attribute):"_missing_")+"'";
+				for(GroupBy grouped : groupedBy) {
+					query += ", '"+currPatient.getField(grouped.getPhoto_attribute())+"'";
+				}
+				query += "),";
+			}
+		}
+		query = query.substring(0,query.length()-1);
+		//update query
+		Query.update(query);
+	}
+
+	private static Photo findExtreme(ArrayList<Photo> photos, ArrayList<Ranked_within> extremes, int high_low) {
+		String attribute = Helper.process(extremes.get(0).getCompare_field());
+		Photo extreme = null;
+
+		Collections.sort(extremes);
+		Collections.reverse(extremes); 
+		int i=0;
+		while(i<extremes.size() && extreme == null) {
+			extreme = selectPhotoWith(photos, extremes.get(i).getValue(), attribute);
+			i++;
+		}
+
+		return extreme;
+	}
+
+	private static Photo selectPhotoWith(ArrayList<Photo> photos, String value, String key) {
+		for(Photo photo : photos) {
+			if(photo.getField(key).equals(value)) {
+				return photo;
+			}
+		}
+		return null;
+	}
+
 	private static ArrayList<String> getExtremes(HttpServletRequest request, String extreme) {
 		ArrayList<String> results = new ArrayList<String>();
 
@@ -121,67 +224,15 @@ public class Compare extends Model {
 		return results;
 	}
 
-	public static class Compare_photos {
-		private Compare compare;
-		private ArrayList<Photo> low_photos;
-		private ArrayList<Photo> high_photos;
-
-		public Compare_photos(Compare compare) {
-			this.compare = compare;
+	public void assign_photos(String photo_table, int group_id) {
+		String query = "SELECT * FROM "+photo_table+" WHERE ";
+		String where = "";
+		Set<String> keys = this.getGroup_meta_data().keySet();
+		for(String key : keys) {
+			where += key+"='"+this.getGroup_meta_data().get(key)+" AND ";
 		}
-
-		public void assign_photos(String photo_table, int group_id) {
-			String query = "SELECT * FROM "+photo_table+" WHERE ";
-			String where = "";
-			Set<String> keys = compare.getGroup_meta_data().keySet();
-			for(String key : keys) {
-				where += key+"='"+compare.getGroup_meta_data().get(key)+" AND ";
-			}
-			low_photos = (ArrayList)Query.getModel(query+where+" AND "+compare.getCompare_field(group_id)+"='"+compare.getLow()+"'",new Photo());
-			low_photos = (ArrayList)Query.getModel(query+where+" AND "+compare.getCompare_field(group_id)+"='"+compare.getHigh()+"'",new Photo());
-		}
-
-		/**
-		 * @return the compare
-		 */
-		public Compare getCompare() {
-			return compare;
-		}
-
-		/**
-		 * @param compare the compare to set
-		 */
-		public void setCompare(Compare compare) {
-			this.compare = compare;
-		}
-
-		/**
-		 * @return the low_photos
-		 */
-		public ArrayList<Photo> getLow_photos() {
-			return low_photos;
-		}
-
-		/**
-		 * @param low_photos the low_photos to set
-		 */
-		public void setLow_photos(ArrayList<Photo> low_photos) {
-			this.low_photos = low_photos;
-		}
-
-		/**
-		 * @return the high_photos
-		 */
-		public ArrayList<Photo> getHigh_photos() {
-			return high_photos;
-		}
-
-		/**
-		 * @param high_photos the high_photos to set
-		 */
-		public void setHigh_photos(ArrayList<Photo> high_photos) {
-			this.high_photos = high_photos;
-		}
+		setLow_photos((ArrayList<Photo>) (ArrayList)Query.getModel(query+where+" AND "+this.getCompare_field(group_id)+"='"+this.getLow()+"'",new Photo()));
+		setLow_photos((ArrayList<Photo>) (ArrayList)Query.getModel(query+where+" AND "+this.getCompare_field(group_id)+"='"+this.getHigh()+"'",new Photo()));
 	}
 
 	public String getCompare_field(int group_id) {
@@ -279,6 +330,34 @@ public class Compare extends Model {
 	 */
 	public void setGrader(String grader) {
 		this.grader = grader;
+	}
+
+	/**
+	 * @return the low_photos
+	 */
+	public ArrayList<Photo> getLow_photos() {
+		return low_photos;
+	}
+
+	/**
+	 * @param low_photos the low_photos to set
+	 */
+	public void setLow_photos(ArrayList<Photo> low_photos) {
+		this.low_photos = low_photos;
+	}
+
+	/**
+	 * @return the high_photos
+	 */
+	public ArrayList<Photo> getHigh_photos() {
+		return high_photos;
+	}
+
+	/**
+	 * @param high_photos the high_photos to set
+	 */
+	public void setHigh_photos(ArrayList<Photo> high_photos) {
+		this.high_photos = high_photos;
 	}
 
 }

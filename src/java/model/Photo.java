@@ -25,6 +25,7 @@ import utilities.FileIO;
 import metaData.MetaDataSource;
 
 import metaData.grade.GradeGroup;
+import metaData.grade.GroupBy;
 
 /**
  *
@@ -173,6 +174,17 @@ public class Photo extends Model{
 		}
 
 		return (ArrayList)Query.getModel(query,new Photo());
+	}
+
+	public static ArrayList<Photo> getPhotosGroupedBy(String tableName, ArrayList<GroupBy> groupedBy) {
+		String query = "SELECT * FROM "+tableName+" GROUP BY ";
+		String postfix = "";
+		for(GroupBy grouped : groupedBy) {
+			if(postfix.length()>0) { postfix += ", "; }
+			postfix += grouped.getPhoto_attribute();
+		}
+
+		return (ArrayList)Query.getModel(query+postfix, new Photo());
 	}
 
 	public static ArrayList<Photo> getPossibleCombinations(GradeGroup category, String tableName) {
