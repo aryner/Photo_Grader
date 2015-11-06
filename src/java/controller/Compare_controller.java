@@ -91,6 +91,9 @@ public class Compare_controller extends HttpServlet {
 			}
 			GradeGroup group = (GradeGroup)session.getAttribute("compare_group");
 			request.setAttribute("compare",Compare.getCompare(group,user,study.getPhoto_attribute_table_name()));
+			request.setAttribute("group",group);
+			request.setAttribute("counts",new Compare.CompareCounts(user.getName(),group));
+			request.setAttribute("photo_table",study.getPhoto_attribute_table_name());
 		}
 
 		String url = "/WEB-INF/view" + userPath + ".jsp";

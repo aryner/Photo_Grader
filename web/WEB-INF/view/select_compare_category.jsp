@@ -21,7 +21,7 @@ if(categories != null && categories.size() > 0) {
 			<option value="<%out.print(category);%>"><%out.print(category);%></option>
 		<% } %>
 	</select>
-	<input type="submit" value="Start Ranking" class="btn">
+	<input type="submit" value="Start Comparing" class="btn">
 </form>
 <% } else { %>
 <h3>No ranking categories have been made yet</h3>

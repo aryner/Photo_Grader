@@ -121,7 +121,10 @@ public class Compare extends Model {
 		ArrayList<Compare> compares = getCompares(group, user, photoTable);
 		
 		Random rand = new Random();
-		return compares.isEmpty()?null:compares.get(rand.nextInt(compares.size()));
+		if(compares.isEmpty()) { return null; }
+		Compare compare = compares.get(rand.nextInt(compares.size()));
+		compare.assign_photos(photoTable,group.getId());
+		return compare;
 	}
 
 	private static ArrayList getCompares(GradeGroup group, User user, String photo_table) {
@@ -130,7 +133,7 @@ public class Compare extends Model {
 
 		if(compares.isEmpty()) { generateCompares(group, user, photo_table); }
 
-		query = "SELECT * FROM "+group.getGrade_name()+" WHERE grader='"+user.getName()+"' AND comparison IS NOT NULL";
+		query = "SELECT * FROM "+group.getGrade_name()+" WHERE grader='"+user.getName()+"' AND comparison IS NULL";
 		return (ArrayList)Query.getModel(query,new Compare());
 	}
 
@@ -187,6 +190,12 @@ public class Compare extends Model {
 		query = query.substring(0,query.length()-1);
 		//update query
 		Query.update(query);
+		updateMissingCompares(user.getName(),group.getGrade_name());
+	}
+
+	private static void updateMissingCompares(String grader, String table_name) {
+		String query = "UPDATE "+table_name+" SET comparison='equal' WHERE low='_missing_' OR high='_missing_'";
+		Query.update(query);
 	}
 
 	private static Photo findExtreme(ArrayList<Photo> photos, ArrayList<Ranked_within> extremes, int high_low) {
@@ -229,10 +238,50 @@ public class Compare extends Model {
 		String where = "";
 		Set<String> keys = this.getGroup_meta_data().keySet();
 		for(String key : keys) {
-			where += key+"='"+this.getGroup_meta_data().get(key)+" AND ";
+			where += key+"='"+this.getGroup_meta_data().get(key)+"' AND ";
 		}
-		setLow_photos((ArrayList<Photo>) (ArrayList)Query.getModel(query+where+" AND "+this.getCompare_field(group_id)+"='"+this.getLow()+"'",new Photo()));
-		setLow_photos((ArrayList<Photo>) (ArrayList)Query.getModel(query+where+" AND "+this.getCompare_field(group_id)+"='"+this.getHigh()+"'",new Photo()));
+		setLow_photos((ArrayList<Photo>) (ArrayList)Query.getModel(query+where+Helper.process(this.getCompare_field(group_id))+"='"+this.getLow()+"'",new Photo()));
+		setHigh_photos((ArrayList<Photo>) (ArrayList)Query.getModel(query+where+Helper.process(this.getCompare_field(group_id))+"='"+this.getHigh()+"'",new Photo()));
+	}
+
+	public static class CompareCounts{
+		private int total_compares;
+		private int compared;
+
+		public CompareCounts(String grader, GradeGroup group) {
+			String query = "SELECT * FROM "+group.getGrade_name()+" WHERE grader='"+grader+"' AND comparison IS NULL";
+			this.compared = Query.getModel(query,new Compare()).size();
+			query = "SELECT * FROM "+group.getGrade_name()+" WHERE grader='"+grader+"'";
+			this.total_compares = Query.getModel(query,new Compare()).size();
+		}
+
+		/**
+		 * @return the total_compares
+		 */
+		public int getTotal_compares() {
+			return total_compares;
+		}
+
+		/**
+		 * @param total_compares the total_compares to set
+		 */
+		public void setTotal_compares(int total_compares) {
+			this.total_compares = total_compares;
+		}
+
+		/**
+		 * @return the compared
+		 */
+		public int getCompared() {
+			return compared;
+		}
+
+		/**
+		 * @param compared the compared to set
+		 */
+		public void setCompared(int compared) {
+			this.compared = compared;
+		}
 	}
 
 	public String getCompare_field(int group_id) {
