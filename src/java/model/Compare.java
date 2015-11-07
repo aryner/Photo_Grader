@@ -249,7 +249,7 @@ public class Compare extends Model {
 		private int compared;
 
 		public CompareCounts(String grader, GradeGroup group) {
-			String query = "SELECT * FROM "+group.getGrade_name()+" WHERE grader='"+grader+"' AND comparison IS NULL";
+			String query = "SELECT * FROM "+group.getGrade_name()+" WHERE grader='"+grader+"' AND comparison IS NOT NULL";
 			this.compared = Query.getModel(query,new Compare()).size();
 			query = "SELECT * FROM "+group.getGrade_name()+" WHERE grader='"+grader+"'";
 			this.total_compares = Query.getModel(query,new Compare()).size();

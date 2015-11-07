@@ -31,7 +31,7 @@ import metaData.grade.GradeGroup;
  */
 @WebServlet(name = "Compare_controller", urlPatterns = {
 							"/Compare_controller","/define_compare","/select_compare_category",
-							"/defineCompare","/startComparing","/compare"
+							"/defineCompare","/startComparing","/compare","/submitCompare"
 							})
 public class Compare_controller extends HttpServlet {
 
@@ -131,6 +131,10 @@ public class Compare_controller extends HttpServlet {
 		else if (userPath.equals("/startComparing")) {
 			int compare_group_id = study.getCompareGroupId(request.getParameter("category"));
 			session.setAttribute("compare_group", new GradeGroup(compare_group_id));
+			response.sendRedirect("/Photo_Grader/compare");
+			return;
+		}
+		else if (userPath.equals("/submitCompare")) {
 			response.sendRedirect("/Photo_Grader/compare");
 			return;
 		}
