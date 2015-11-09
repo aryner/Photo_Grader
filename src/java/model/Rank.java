@@ -389,7 +389,7 @@ public class Rank extends Model implements Comparable<Rank>{
 				tempRank--;
 			}
 			rankedCount++;
-		} while (offChain.size() > 1 && parentRank < (onChain.size()+offChain.size()));
+		} while (offChain.size() > 1 && parentRank < (onChainSize(onChain)+offChain.size()));
 
 		//We only get to this loop if it is the odd rank out to be inserted (no parent)
 		for(Rank rank : currLevel) {
@@ -402,6 +402,16 @@ public class Rank extends Model implements Comparable<Rank>{
 		//Should not get this far
 		System.err.println("went too far in compareForChain");
 		return null;
+	}
+
+	public static int onChainSize(ArrayList<Rank> ranks) {
+		int count = 0;
+		for(Rank rank : ranks) {
+			if(rank.getMain_chain()==ON_CHAIN) {
+				count++;
+			}
+		}
+		return count;
 	}
 
 	private static void insertRanked(ArrayList<Rank> onChain, ArrayList<Rank> toBeAdded) {
