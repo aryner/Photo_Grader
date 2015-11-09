@@ -25,7 +25,6 @@ String photo_table_num = photo_table.substring(photo_table.lastIndexOf("_")+1);
 </div>
 <div class='newRow'></div>
 
-
 <div class="rank_col">
 <%
 if (compare != null) {
@@ -40,21 +39,24 @@ if (compare != null) {
 		left = compare.getHigh_photos();
 	}
 	int photoCount = 0;
-	//out.print(pair.getParent().getId());
+	if(lowFirst) { out.print(compare.getLow()); }
+	else { out.print(compare.getHigh()); }
 	for (Photo photo : left) {
 		out.print("<img class='Img' name='photo_"+photoCount+"' src='"+Constants.SRC+"img?number="+photo_table_num+"&name="+photo.getName()+"'>");
 		photoCount++;
 	}
 %>
 </div>
+
 <div class="rank_form">
 	<form action="submitCompare" method="POST">
 		<input type="hidden" id="back_pressed" name="back_pressed" value="0"/>
+		<input type="hidden" name="compare_id" value="<%out.print(compare.getId());%>"/>
 		<label>Which is worse?</label>
 		<ul>
-			<li><input type="radio" name="compare" value="<%out.print(lowFirst?"low":"high");%>">Left <b>(s)</b></li>
+			<li><input type="radio" name="compare" value="<%out.print(lowFirst?"low_worse":"high_worse");%>">Left <b>(s)</b></li>
 			<li><input type="radio" name="compare" value="equal">Equal <b>(d)</b></li>
-			<li><input type="radio" name="compare" value="<%out.print(lowFirst?"high":"low");%>">Right <b>(f)</b></li>
+			<li><input type="radio" name="compare" value="<%out.print(lowFirst?"high_worse":"low_worse");%>">Right <b>(f)</b></li>
 		</ul>
 		<input type="submit" value="Submit" class="btn"><b>(t)</b>
 		<div class="errorDiv"></div>
@@ -62,6 +64,8 @@ if (compare != null) {
 </div>
 <div class="rank_col">
 <%
+	if(!lowFirst) { out.print(compare.getLow()); }
+	else { out.print(compare.getHigh()); }
 	for (Photo photo : right) {
 		out.print("<img class='Img' name='photo_"+photoCount+"' src='"+Constants.SRC+"img?number="+photo_table_num+"&name="+photo.getName()+"'>");
 		photoCount++;

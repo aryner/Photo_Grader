@@ -135,6 +135,7 @@ public class Compare_controller extends HttpServlet {
 			return;
 		}
 		else if (userPath.equals("/submitCompare")) {
+			Compare.processCompare(request,(GradeGroup)session.getAttribute("compare_group"));
 			response.sendRedirect("/Photo_Grader/compare");
 			return;
 		}

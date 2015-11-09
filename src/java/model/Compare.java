@@ -50,6 +50,17 @@ public class Compare extends Model {
 
 	public Compare() {}
 
+	public Compare(String table, int id) {
+		String query = "SELECT * FROM "+table+" WHERE id="+id;
+		Compare compare = (Compare)Query.getModel(query,new Compare()).get(0);
+		this.id = compare.getId();
+		this.grader = compare.getGrader();
+		this.group_meta_data = compare.getGroup_meta_data();
+		this.comparison = compare.getComparison();
+		this.high = compare.getHigh();
+		this.low = compare.getLow();
+	}
+
 	public Compare(int id, String grader, Map group_meta_data, String comparison, String high, String low) {
 		this.id = id;
 		this.grader = grader;
@@ -242,6 +253,13 @@ public class Compare extends Model {
 		}
 		setLow_photos((ArrayList<Photo>) (ArrayList)Query.getModel(query+where+Helper.process(this.getCompare_field(group_id))+"='"+this.getLow()+"'",new Photo()));
 		setHigh_photos((ArrayList<Photo>) (ArrayList)Query.getModel(query+where+Helper.process(this.getCompare_field(group_id))+"='"+this.getHigh()+"'",new Photo()));
+	}
+
+	public static void processCompare(HttpServletRequest request, GradeGroup group) {
+		int id = Integer.parseInt(request.getParameter("compare_id"));
+		String compare = request.getParameter("compare");
+		String query = "UPDATE "+group.getGrade_name()+" SET comparison='"+compare+"' WHERE id="+id;
+		Query.update(query);
 	}
 
 	public static class CompareCounts{
