@@ -270,7 +270,7 @@ public class Rank extends Model implements Comparable<Rank>{
 	}
 
 	public static ArrayList<Rank> getAllRanks(String userName, String group) {
-		String query = "SELECT * FROM "+group+" WHERE grader='"+userName+"'";
+		String query = "SELECT * FROM "+group+" WHERE grader='"+userName+"' ORDER BY rank DESC";
 		return (ArrayList)Query.getModel(query,new Rank());
 	}
 
@@ -280,13 +280,13 @@ public class Rank extends Model implements Comparable<Rank>{
 			query += " WHERE grader='"+user.getName()+"'";
 		}
 
-		return (ArrayList)Query.getModel(query,new Rank());
+		return (ArrayList)Query.getModel(query+" ORDER BY rank DESC",new Rank());
 	}
 
 	public static ArrayList<Rank> getAllRanks(String group) {
 		String query = "SELECT * FROM "+group;
 
-		return (ArrayList)Query.getModel(query,new Rank());
+		return (ArrayList)Query.getModel(query+" ORDER BY rank DESC",new Rank());
 	}
 
 	public static void startChain(ArrayList<Rank> ranks, String group) {
@@ -437,12 +437,14 @@ public class Rank extends Model implements Comparable<Rank>{
 
 		ArrayList<Rank> ranks = getAllRanks(group.getGrade_name(),user);
 		for(Rank rank : ranks) {
-			currline = rank.getGrader();
-			for(String field : fields) {
-				currline += ", "+rank.getGroup_meta_value(field);
+			if(rank.getRank() > 0) {
+				currline = rank.getGrader();
+				for(String field : fields) {
+					currline += ", "+rank.getGroup_meta_value(field);
+				}
+				currline += ", "+rank.getRank();
+				lines.add(currline);
 			}
-			currline += ", "+rank.getRank();
-			lines.add(currline);
 		}
 
 		return lines;

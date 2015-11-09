@@ -10,6 +10,7 @@ import model.Study;
 import model.User;
 import model.Grade;
 import model.Rank;
+import model.Compare;
 
 import metaData.grade.GradeGroup;
 
@@ -71,6 +72,7 @@ public class Controller extends HttpServlet {
 		else if(userPath.equals("/select_CSVs")) {
 			request.setAttribute("gradeCategories",study.getGradeCategoryNames());
 			request.setAttribute("rankCategories",study.getRankCategoryNames());
+			request.setAttribute("compareCategories",study.getCompareCategoryNames());
 		}
 		else if (userPath.equals("/present_CSV")) {
 			String category = request.getParameter("category");
@@ -82,11 +84,16 @@ public class Controller extends HttpServlet {
 
 				request.setAttribute("category",category);
 				request.setAttribute("csvLines", Grade.getCSVLines(new GradeGroup(grade_group_id),study, user));
-			} else {
+			} else if(type.equals("rank")) {
 				int rank_group_id = study.getRankGroupId(categoryName);
 
 				request.setAttribute("category",category);
 				request.setAttribute("csvLines", Rank.getCSVLines(new GradeGroup(rank_group_id),study, user));
+			} else {
+				int compare_group_id = study.getCompareGroupId(categoryName);
+
+				request.setAttribute("category",category);
+				request.setAttribute("csvLines", Compare.getCSVLines(new GradeGroup(compare_group_id),study, user));
 			}
 		}
 

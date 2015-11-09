@@ -281,7 +281,7 @@ public class Grade extends Model {
 	}
 
 	public static ArrayList<Grade> getGrades(String grader, String grade_table) {
-		String query = "SELECT * FROM "+grade_table+" WHERE grader='"+grader+"'";
+		String query = "SELECT * FROM "+grade_table+" WHERE grader='"+grader+"' AND grade_rank="+GradeGroup.GRADE;
 		return (ArrayList)Query.getModel(query, new Grade());
 	}
 

@@ -262,6 +262,50 @@ public class Compare extends Model {
 		Query.update(query);
 	}
 
+	public static ArrayList<String> getCSVLines(GradeGroup group, Study study, User user) {
+		ArrayList<String> lines = new ArrayList<String>();
+		String query = "SELECT * FROM ranked_within WHERE grade_group_id="+group.getId();
+		String compare_field = ((Ranked_within)Query.getModel(query,new Ranked_within()).get(0)).getCompare_field();
+		ArrayList<Compare> compares = getAllCompares(group.getGrade_name(),user);
+		String line = "Grader, Comparision, high "+compare_field+", low "+compare_field;
+		Set<String> meta_keys = compares.get(0).getGroup_meta_data().keySet();
+		for(String key : meta_keys) {
+			line += ", "+key;
+		}
+		lines.add(line);
+		for(Compare compare : compares) {
+			if(compare.getComparison() != null) {
+				line = compare.getGrader()+", "+compare.getComparison()+", "+compare.getHigh()+", "+compare.getLow();
+				for(String key : meta_keys) {
+					line += ", "+compare.getMeta_data(key);
+				}
+				lines.add(line);
+			}
+		}
+
+		return lines;
+	}
+
+	public static ArrayList<Compare> getAllCompares(String userName, String group) {
+		String query = "SELECT * FROM "+group+" WHERE grader='"+userName+"'";
+		return (ArrayList)Query.getModel(query,new Compare());
+	}
+
+	public static ArrayList<Compare> getAllCompares(String group, User user) {
+		String query = "SELECT * FROM "+group;
+		if(user != null & !user.isStudy_coordinator()) {
+			query += " WHERE grader='"+user.getName()+"'";
+		}
+
+		return (ArrayList)Query.getModel(query,new Compare());
+	}
+
+	public static ArrayList<Compare> getAllCompares(String group) {
+		String query = "SELECT * FROM "+group;
+
+		return (ArrayList)Query.getModel(query,new Compare());
+	}
+
 	public static class CompareCounts{
 		private int total_compares;
 		private int compared;
@@ -341,6 +385,10 @@ public class Compare extends Model {
 	 */
 	public void setGroup_meta_data(Map<String,String> group_meta_data) {
 		this.group_meta_data = group_meta_data;
+	}
+
+	public String getMeta_data(String key) {
+		return group_meta_data.get(key);
 	}
 
 	/**

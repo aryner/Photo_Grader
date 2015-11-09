@@ -11,6 +11,7 @@
 <%
 ArrayList<String> gradeCategories = (ArrayList)request.getAttribute("gradeCategories");
 ArrayList<String> rankCategories = (ArrayList)request.getAttribute("rankCategories");
+ArrayList<String> compareCategories = (ArrayList)request.getAttribute("compareCategories");
 %>
 <h2>Grade CSVs</h2>
 <%
@@ -46,4 +47,21 @@ if(rankCategories != null && rankCategories.size() > 0) {
 </form>
 <% } else { %>
 <h3>No ranking categories have been made yet</h3>
+<% } %>
+<h2>Compare CSVs</h2>
+<%
+if(compareCategories != null && compareCategories.size() > 0) {
+%>
+
+<form action="present_CSV" method="GET">
+	<input type="hidden" name="type" value="compare">
+	<select name="category" class="btn">
+		<% for(String category : compareCategories) { %>
+			<option value="<%out.print(category);%>"><%out.print(category);%></option>
+		<% } %>
+	</select>
+	<input type="submit" value="See CSV" class="btn">
+</form>
+<% } else { %>
+<h3>No compare categories have been made yet</h3>
 <% } %>
