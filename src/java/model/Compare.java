@@ -110,6 +110,21 @@ public class Compare extends Model {
 		Query.update(query+postfix);
 	}
 
+	public static void removeCategory(HttpServletRequest request, Study study) {
+		String query = "SELECT * FROM photo_grade_group WHERE grade_rank="+GradeGroup.COMPARE+" AND study_id="+study.getId()+
+				" AND name='"+request.getParameter("category")+"'";
+		GradeGroup group = (GradeGroup)Query.getModel(query,new GradeGroup()).get(0);
+		query = "DELETE FROM group_by WHERE grade_group_id="+group.getId();
+		Query.update(query);
+		query = "DELETE FROM ranked_within WHERE grade_group_id="+group.getId();
+		Query.update(query);
+		query = "DROP TABLE "+group.getGrade_name();
+		Query.update(query);
+		query = "DELETE FROM photo_grade_group WHERE id="+group.getId();
+		Query.update(query);
+		//TODO
+	}
+
 	public static void generateRankWithin(HttpServletRequest request, int group_id) {
 		String query = "INSERT INTO ranked_within (grade_group_id, value, position, high_low, compare_field) VALUES ";
 

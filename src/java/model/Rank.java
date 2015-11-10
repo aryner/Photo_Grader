@@ -236,7 +236,7 @@ public class Rank extends Model implements Comparable<Rank>{
 	}
 
 	public static void removeCategory(HttpServletRequest request, Study study) {
-		String query = "SELECT * FROM photo_grade_group WHERE grade_rank=1 AND study_id="+study.getId()+
+		String query = "SELECT * FROM photo_grade_group WHERE grade_rank="+GradeGroup.RANK+" AND study_id="+study.getId()+
 				" AND name='"+request.getParameter("category")+"'";
 		GradeGroup group = (GradeGroup)Query.getModel(query,new GradeGroup()).get(0);
 		query = "DELETE FROM group_by WHERE grade_group_id="+group.getId();

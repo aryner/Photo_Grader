@@ -6,7 +6,7 @@
 
 $(document).ready(function() {
 	$('input[type=submit][name=delete]').click(function(e) {
-		var result = window.confirm("Are you sure you want to delte this category from the program?\n\nIt can't be undone; all data from this category will be lost");
+		var result = window.confirm("Are you sure you want to delete this category from the program?\n\nIt can't be undone; all data from this category will be lost");
 		if(result === false) { e.preventDefault(); }
 	});
 });

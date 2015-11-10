@@ -65,6 +65,7 @@ public class Study_controller extends HttpServlet {
 			Study study = (Study)session.getAttribute("study");
 			request.setAttribute("grades",study.getGradeCategoryNames());
 			request.setAttribute("ranks",study.getRankCategoryNames());
+			request.setAttribute("compares",study.getCompareCategoryNames());
 		}
 
 		String url = "/WEB-INF/view" + userPath + ".jsp";

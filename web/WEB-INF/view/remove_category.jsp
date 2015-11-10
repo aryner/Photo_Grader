@@ -16,6 +16,7 @@
 <%
 ArrayList<String> grades = (ArrayList)request.getAttribute("grades");
 ArrayList<String> ranks = (ArrayList) request.getAttribute("ranks");
+ArrayList<String> compares = (ArrayList) request.getAttribute("compares");
 %>
 
 <h2>Delete a Grading Category</h2>
@@ -53,6 +54,25 @@ if(ranks!=null&&ranks.size()>0) {
 } else {
 %>
 <h4>There are no rank categories to be deleted</h4>
+<%
+}
+%>
+<h2>Delete a Compare Category</h2>
+<%
+if(compares!=null&&compares.size()>0) {
+%>
+<form action="removeCompareCategory" method="POST">
+	<select name="category" class="btn">
+		<% for(String category : compares) { %>
+			<option value="<%out.print(category);%>"><%out.print(category);%></option>
+		<% } %>
+	</select>
+	<input type="submit" name='delete' value="Delete Ranking Category" class="btn">
+</form>
+<%
+} else {
+%>
+<h4>There are no compare categories to be deleted</h4>
 <%
 }
 %>
