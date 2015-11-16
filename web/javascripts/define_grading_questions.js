@@ -12,6 +12,11 @@ $(document).ready(function() {
 	addNewQuestionListener(0);
 	addAnswerTypeListener(0);
 
+	$(document).bind('keydown',function(e) {
+		var unicode = e.keyCode || e.which;
+		//return 
+		if(unicode === 13) { e.preventDefault(); }
+	});
 	$(':submit[value=Submit]').click(function(e) {
 		$('input[name=questionCount]').val(questionCount+1);
 

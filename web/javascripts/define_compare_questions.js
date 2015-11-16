@@ -8,6 +8,11 @@ checked_groups = [];
 $(document).ready(function() {
 	setNextOptionEmitter();
 
+	$(document).bind('keydown',function(e) {
+		var unicode = e.keyCode || e.which;
+		//return 
+		if(unicode === 13) { e.preventDefault(); }
+	});
 	$(':submit[value=Submit]').click(function(e) {
 
 		var errors = getErrorMsg();
