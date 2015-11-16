@@ -27,6 +27,8 @@ import metaData.grade.GradeGroup;
 
 import SQL.Helper;
 
+import utilities.FileIO;
+
 /**
  *
  * @author aryner
@@ -146,6 +148,10 @@ public class Rank_controller extends HttpServlet {
 			return;
 		}
 		else if (userPath.equals("/removeRankCategory")) {
+			String category = request.getParameter("category");
+			int grade_group_id = study.getRankGroupId(category);
+			FileIO.createCSV(Rank.getCSVLines(new GradeGroup(grade_group_id),study,user),category);
+
 			Rank.removeCategory(request,study);
 			response.sendRedirect("/Photo_Grader/home");
 			return;

@@ -23,6 +23,8 @@ import model.Photo;
 import SQL.Helper;
 import metaData.grade.GradeGroup;
 
+import utilities.FileIO;
+
 /**
  *
  * @author aryner
@@ -126,6 +128,10 @@ public class Grade_controller extends HttpServlet {
 			return;
 		}
 		else if(userPath.equals("/removeGradeCategory")) {
+			String category = request.getParameter("category");
+			int grade_group_id = study.getGradeGroupId(category);
+			FileIO.createCSV(Grade.getCSVLines(new GradeGroup(grade_group_id),study,user),category);
+
 			Grade.removeCategory(request,study);
 			response.sendRedirect("/Photo_Grader/home");
 			return;
