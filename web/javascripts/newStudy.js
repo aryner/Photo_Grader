@@ -6,6 +6,12 @@
 
 
 $(document).ready(function() {
+	$(document).bind('keydown',function(e) {
+		var unicode = e.keyCode || e.which;
+		//return 
+		if(unicode === 13) { e.preventDefault(); }
+	});
+
 	$('input[type=text][name=number]').on('input', function() {
 		this.value = this.value.replace(/[^0-9]/g,'');
 	});
