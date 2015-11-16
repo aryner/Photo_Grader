@@ -55,6 +55,7 @@ if (compare != null) {
 			<li><input type="radio" name="compare" value="<%out.print(lowFirst?"low_worse":"high_worse");%>">Left <b>(s)</b></li>
 			<li><input type="radio" name="compare" value="equal">Equal <b>(d)</b></li>
 			<li><input type="radio" name="compare" value="<%out.print(lowFirst?"high_worse":"low_worse");%>">Right <b>(f)</b></li>
+			<li><input type="radio" name="compare" value="same_photo">Photos are the same<b>(g)</b></li>
 		</ul>
 		<input type="submit" value="Submit" class="btn"><b>(t)</b>
 		<div class="errorDiv"></div>

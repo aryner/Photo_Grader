@@ -138,6 +138,11 @@ function addKeyboardRanking() {
 		else if (unicode === 70) {
 			choices[2].checked = true;
 		}
+		//g
+		else if (unicode === 71) {
+			choices[3].checked = true;
+		}
+
 		changeRadius(unicode);
 	});
 }
