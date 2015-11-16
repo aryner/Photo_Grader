@@ -107,7 +107,8 @@ public class Photo extends Model{
 
 	public static ArrayList<Photo> getUngradedGroup(GradeGroup category, String photoTable, String grader) {
 		ArrayList<Photo> choices = null;
-		if(Math.random() < 0.1) {
+		//currently no regrades, increase this number to add regrades
+		if(Math.random() < 0.0) {
 			choices = getRegradeCombinations(category, photoTable, grader);
 		} 
 		if (choices == null) {
