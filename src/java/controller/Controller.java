@@ -124,13 +124,18 @@ public class Controller extends HttpServlet {
 
 		if(userPath.equals("/printCSV")) {
 			String category = request.getParameter("category");
-			int grade_group_id = study.getGradeGroupId(request.getParameter("category"));
 			String type = request.getParameter("type");
 			if(type.equals("grade")) {
+				int grade_group_id = study.getGradeGroupId(request.getParameter("category"));
 				FileIO.createCSV(Grade.getCSVLines(new GradeGroup(grade_group_id),study,user),category);
 			}
-			else {
+			else if(type.equals("rank")) {
+				int grade_group_id = study.getRankGroupId(request.getParameter("category"));
 				FileIO.createCSV(Rank.getCSVLines(new GradeGroup(grade_group_id),study,user),category);
+			}
+			else {
+				int grade_group_id = study.getCompareGroupId(request.getParameter("category"));
+				FileIO.createCSV(Compare.getCSVLines(new GradeGroup(grade_group_id),study,user),category);
 			}
 			
 			response.sendRedirect("/Photo_Grader/home");

@@ -16,7 +16,6 @@ window.onpopstate = function(e) {
 	check_for_back();
 };
 
-
 $(document).ready(function() {
 	back_pressed = document.getElementById('back_pressed');
 

@@ -25,6 +25,8 @@ import model.Compare;
 
 import metaData.grade.GradeGroup;
 
+import utilities.FileIO;
+
 /**
  *
  * @author aryner
@@ -140,6 +142,10 @@ public class Compare_controller extends HttpServlet {
 			return;
 		}
 		else if (userPath.equals("/removeCompareCategory")) {
+			String category = request.getParameter("category");
+			int grade_group_id = study.getCompareGroupId(category);
+			FileIO.createCSV(Compare.getCSVLines(new GradeGroup(grade_group_id),study,user),category);
+
 			Compare.removeCategory(request,study);
 			response.sendRedirect("/Photo_Grader/home");
 			return;

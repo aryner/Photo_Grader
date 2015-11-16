@@ -8,9 +8,10 @@
 
 <h1>Delete Category</h1>
 <p>
+	<!---
 	It's recommended that you get CSVs from categories you are about to delete.  
 	<a href='select_CSVs' class='btn'>Get CSV file</a>
-	<br><span class='error'>Warning: deleting cannot be undone; all data from the category will be lost.</span>
+	<br>--><b><span class='error'>Warning: deleting cannot be undone; all data from the category will be lost.</span><b>
 </p>
 
 <%
