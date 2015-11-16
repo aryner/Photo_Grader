@@ -122,7 +122,6 @@ public class Compare extends Model {
 		Query.update(query);
 		query = "DELETE FROM photo_grade_group WHERE id="+group.getId();
 		Query.update(query);
-		//TODO
 	}
 
 	public static void generateRankWithin(HttpServletRequest request, int group_id) {

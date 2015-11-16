@@ -39,8 +39,6 @@ if (compare != null) {
 		left = compare.getHigh_photos();
 	}
 	int photoCount = 0;
-	if(lowFirst) { out.print(compare.getLow()); }
-	else { out.print(compare.getHigh()); }
 	for (Photo photo : left) {
 		out.print("<img class='Img' name='photo_"+photoCount+"' src='"+Constants.SRC+"img?number="+photo_table_num+"&name="+photo.getName()+"'>");
 		photoCount++;
@@ -64,8 +62,6 @@ if (compare != null) {
 </div>
 <div class="rank_col">
 <%
-	if(!lowFirst) { out.print(compare.getLow()); }
-	else { out.print(compare.getHigh()); }
 	for (Photo photo : right) {
 		out.print("<img class='Img' name='photo_"+photoCount+"' src='"+Constants.SRC+"img?number="+photo_table_num+"&name="+photo.getName()+"'>");
 		photoCount++;
