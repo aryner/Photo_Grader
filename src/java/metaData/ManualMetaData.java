@@ -221,7 +221,7 @@ public class ManualMetaData extends Model implements MetaDataSource {
 	}
 
 	private void setOptions() {
-		this.options = (ArrayList)Query.getField("check_radio_option","value","photo_data_id='"+getId()+"'",null);
+		this.options = (ArrayList)Query.getField("check_radio_option","value","photo_data_id='"+getId()+"' AND meta_grade="+MetaData.META,null);
 		Helper.unprocess(this.options);
 	}
 
