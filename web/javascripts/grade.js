@@ -50,7 +50,7 @@ function addTextConstraints() {
 	});
 	decs.on('input',function() {
 		console.log('in the thing');
-		while(this.value.match(/[^0-9\.]/)) {
+		while(this.value.match(/[^0-9\.]/) || this.value.indexOf(".") !== this.value.lastIndexOf(".")) {
 			this.value = this.value.substring(0,this.value.length-1);
 		}
 	});
