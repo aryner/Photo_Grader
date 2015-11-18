@@ -340,12 +340,14 @@ public class Photo extends Model{
 		String query = "SELECT * FROM "+tableName;
 		Photo photo = (Photo)Query.getModel(query,new Photo()).get(0);
 
-		query = "SELECT * FROM "+tableName+" WHERE ";
+		query = "SELECT * FROM "+tableName;
 		String postfix = "";
 		for(Object field : photo.getFields().keySet()) {
 			if (postfix.length() > 0 ) { postfix += " OR "; }
 			postfix += field.toString() + " IS NULL";
 		}
+		if(postfix.length() > 0) { postfix = " WHERE "+postfix; }
+		else { return -1; }
 
 		return Query.getModel(query+postfix,new Photo()).size();
 	}
