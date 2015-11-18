@@ -40,6 +40,10 @@ public class Question extends Model{
 	public static final int IS_NOT_DEFAULT = 0;
 	public static final int IS_DEFAULT = 1;
 
+	public static final int TEXT = 1;
+	public static final int INTEGER = 2;
+	public static final int DECIMAL = 3;
+
 	public Question() {}
 
 	public Question(int id, int grade_group_id, String label, String question, int q_type, int constraints) {
@@ -84,7 +88,20 @@ public class Question extends Model{
 			questions.add(request.getParameter("question_"+i));
 			types.add(Integer.parseInt(request.getParameter("type_"+i)));
 			labels.add(request.getParameter("label_"+i));
-			constraints.add(request.getParameter("constraints_"+i));
+			int sign = (request.getParameter("constraints_"+i).equals("0")?1:-1);
+			if(types.get(types.size()-1) == MetaData.TEXT) {
+				String type = request.getParameter("text_option_"+i);
+				if(type.equals("text")) {
+					constraints.add((sign*TEXT)+"");
+				} else if (type.equals("int")) {
+					constraints.add((sign*INTEGER)+"");
+				} else {
+					constraints.add((sign*DECIMAL)+"");
+				}
+			}
+			else {
+				constraints.add(""+sign);
+			}
 		}
 
 		String query = "INSERT INTO question (grade_group_id, label, question, q_type, constraints) VALUES ";

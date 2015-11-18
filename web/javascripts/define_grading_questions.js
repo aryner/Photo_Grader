@@ -63,7 +63,6 @@ function checkForRepeatLabels(errors) {
 			break;
 		}
 	}
-	//TODO
 	return errors;
 }
 
