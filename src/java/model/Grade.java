@@ -86,9 +86,9 @@ public class Grade extends Model {
 		ArrayList<Question> questions = Question.getQuestions(group_id);
 
 		for(GroupBy group : grouping) 
-			query += group.getPhoto_attribute()+" varchar(40),";
+			query += group.getPhoto_attribute()+" varchar(100),";
 		for(Question question : questions) 
-			query += question.getLabel()+" varchar(40),";
+			query += question.getLabel()+" varchar(100),";
 
 		Query.update(query+postfix);
 	}

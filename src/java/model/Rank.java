@@ -89,7 +89,7 @@ public class Rank extends Model implements Comparable<Rank>{
 		ArrayList<GroupBy> grouping = GroupBy.getGroup(group_id);
 
 		for(GroupBy group : grouping) {
-			query += group.getPhoto_attribute()+" varchar(40),";
+			query += group.getPhoto_attribute()+" varchar(100),";
 		}
 		query += PARENT+" int DEFAULT 0, "+CHILD+" int DEFAULT 0, "+MAIN_CHAIN+" int DEFAULT "+OFF_CHAIN+", "+RANK+" int DEFAULT 0,";
 

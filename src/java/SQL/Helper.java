@@ -27,7 +27,7 @@ public class Helper {
 		if(javaType.equals(MetaData.INTEGER+"")) {
 			return "int";
 		}
-		return "varchar(40)";
+		return "varchar(100)";
 	}
 
 	public static ArrayList<String> insertAndUpdateUploads(int type, Study study, ArrayList<String> picNames) {
