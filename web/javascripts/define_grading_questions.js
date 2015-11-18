@@ -47,7 +47,31 @@ function setTextLimit(name) {
 }
 
 function getErrorMsg() {
-	return checkForInvalidCharacters(checkForName(checkForFilledQuestions(checkGradeGroup())));
+	return checkForInvalidCharacters(checkForName(checkForRepeatLabels(checkForFilledQuestions(checkGradeGroup()))));
+}
+
+function checkForRepeatLabels(errors) {
+	var labels = [];
+	for(var i=0; i<questionCount+1; i++) {
+		var label = document.getElementsByName('label_'+i)[0].value.trim();
+		labels.push(label);
+	}
+	for(var i=labels.length; i>=0; i--) {
+		var label = labels.pop();
+		if(contains(label,labels)) { 
+			errors.push('<span class="error">Make sure each question has a different label</span>');
+			break;
+		}
+	}
+	//TODO
+	return errors;
+}
+
+function contains(needle, haystack) {
+	for(var i=0; i<haystack.length; i++) {
+		if (needle === haystack[i]) { return true; }
+	}
+	return false;
 }
 
 function checkForInvalidCharacters(errors) {
