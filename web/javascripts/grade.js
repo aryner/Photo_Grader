@@ -18,6 +18,7 @@ $(document).ready(function() {
 
 	addPhotoClickListeners(photoCount);
 	addKeyboardGrading(questionCount);
+	addTextConstraints();
 	
 	$('input[type=submit][value=Submit]').click(function(e) {
 
@@ -35,6 +36,25 @@ $(document).ready(function() {
 		}
 	});
 });
+
+function addTextConstraints() {
+	var ints = $(".constraint_2");
+	var decs = $(".constraint_3");
+	console.log(ints[0]);
+
+	ints.on('input',function() {
+		console.log('in the thing');
+		while(this.value.match(/[^0-9]/)) {
+			this.value = this.value.substring(0,this.value.length-1);
+		}
+	});
+	decs.on('input',function() {
+		console.log('in the thing');
+		while(this.value.match(/[^0-9\.]/)) {
+			this.value = this.value.substring(0,this.value.length-1);
+		}
+	});
+}
 
 function addPhotoClickListeners(photoCount) {
 	for(var i=0; i<photoCount; i++) {

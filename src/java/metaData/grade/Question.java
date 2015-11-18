@@ -159,7 +159,7 @@ public class Question extends Model{
 	}
 
 	private String getTextHtml() {
-		return "<input type='text' title='"+this.q_type+"' name='"+this.label+"'>";
+		return "<input type='text' title='"+this.q_type+"' name='"+this.label+"' class='constraint_"+Math.abs(this.constraints)+"'>";
 	}
 
 	private String getRadioHtml(int questionIndex) {
