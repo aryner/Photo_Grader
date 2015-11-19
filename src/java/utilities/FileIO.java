@@ -131,20 +131,22 @@ public class FileIO {
 		String pathAndName = Constants.HOME + Constants.FILE_SEP + "Desktop" + Constants.FILE_SEP + fileName;
 		String suffix = getSuffix(pathAndName, ".csv");
 
-		try {
-			FileOutputStream fileOut = new FileOutputStream(pathAndName + suffix + ".csv");
+		if(csv != null && !csv.isEmpty()) {
+			try {
+				FileOutputStream fileOut = new FileOutputStream(pathAndName + suffix + ".csv");
 
-			for(String line : csv) {
-				fileOut.write((line+"\n").getBytes());
+				for(String line : csv) {
+					fileOut.write((line+"\n").getBytes());
+				}
+
+				fileOut.close();
+			} 
+			catch (java.io.FileNotFoundException e) {
+				e.printStackTrace(System.err);
 			}
-
-			fileOut.close();
-		} 
-		catch (java.io.FileNotFoundException e) {
-			e.printStackTrace(System.err);
-		}
-		catch (java.io.IOException e) {
-			e.printStackTrace(System.err);
+			catch (java.io.IOException e) {
+				e.printStackTrace(System.err);
+			}
 		}
 	}
 
