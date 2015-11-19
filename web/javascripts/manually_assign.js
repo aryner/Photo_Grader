@@ -26,10 +26,12 @@ $(document).ready(function(){
 			//right arrow
 			if(unicode === 37) {
 				$(':submit[name=prev]').click();
+				$(':submit[name=submit]').click();
 			}
 			//left arrow
 			if(unicode === 39) {
 				$(':submit[name=next]').click();
+				$(':submit[name=submit]').click();
 			}
 		}
 		changeRadius(unicode);
