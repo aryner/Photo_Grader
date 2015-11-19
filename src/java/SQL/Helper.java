@@ -48,6 +48,9 @@ public class Helper {
 		for(String picName : picNames) {
 			if(postfix.length() != 0) postfix += ", ";
 			postfix += "('"+picName+"', '"+FileIO.BASE_PICTURE_DIR+Tools.getGeneratedNumber(study.getPhoto_attribute_table_name())+Constants.FILE_SEP+"'";
+			System.out.println("picName = "+picName);
+			System.out.println("metaData.size = "+metaData.size());
+			System.out.println("errors.size = "+errors.size());
 			for(String attribute : PhotoNameMetaData.extractAttributes(picName, metaData, errors)) {
 				postfix += ", '"+attribute+"'";
 			}

@@ -197,7 +197,7 @@ public class PhotoNameMetaData extends Model implements MetaDataSource {
 			case BEFORE:
 				return -2;
 			case NUMBER:
-				return currIndex + Integer.parseInt(datum.getStart_flag());
+				return currIndex + Integer.parseInt(side==START?datum.getStart_flag():datum.getEnd_flag());
 			case DELIMITER:
 				return getDelimIndex(currIndex, name, datum, side);
 			case END:
