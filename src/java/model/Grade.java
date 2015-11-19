@@ -95,7 +95,8 @@ public class Grade extends Model {
 
 	public static void grade(HttpServletRequest request, Study study, GradeGroup group, User user) {
 		Photo photo = new Photo(study, request.getParameter("photo"));
-		ArrayList update = hasBeenGraded(study,group,user,photo);
+		boolean repeat = request.getParameter("repeat").equals("true");
+		ArrayList update = hasBeenGraded(study,group,user,photo,repeat);
 
 		if(update.isEmpty()) {
 			newGrade(request, study, group, user, photo);
@@ -114,7 +115,7 @@ public class Grade extends Model {
 
 		Query.update(query);
 	}
-
+	
 	private static void newGrade(HttpServletRequest request, Study study, GradeGroup group, User user, Photo photo) {
 		//if request notes repeat, take appropriate actions
 		String query = "INSERT INTO "+group.getGrade_name()+" ";
@@ -185,7 +186,8 @@ public class Grade extends Model {
 		}
 	}
 
-	public static ArrayList hasBeenGraded(Study study, GradeGroup group, User user, Photo photo) {
+	public static ArrayList hasBeenGraded(Study study, GradeGroup group, User user, Photo photo,boolean repeat) {
+		if(repeat) { return new ArrayList(); }
 		String query = "SELECT * FROM "+group.getGrade_name()+" WHERE grader='"+user.getName()+"'";
 		for(int i=0; i<group.groupBySize(); i++) {
 			String key = group.getGroupBy(i).getPhoto_attribute();

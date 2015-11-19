@@ -105,11 +105,11 @@ public class Photo extends Model{
 		return keys;
 	}
 
-	public static ArrayList<Photo> getUngradedGroup(GradeGroup category, String photoTable, String grader) {
+	public static ArrayList<Photo> getUngradedGroup(GradeGroup category, String photoTable, String grader, boolean repeat) {
 		ArrayList<Photo> choices = null;
-		//currently no regrades, increase this number to add regrades
-		if(Math.random() < 0.0) {
+		if(repeat) {
 			choices = getRegradeCombinations(category, photoTable, grader);
+			System.out.println("choices.size = "+choices.size());
 		} 
 		if (choices == null) {
 			choices = getUngradedCombinations(category, photoTable, grader);

@@ -99,8 +99,9 @@ public class GradeGroup extends Model {
 
 		usedNames = (ArrayList)Query.getField(GradeGroup.TABLE_NAME, "grade_name", null,null);
 		String grade_name = Tools.generateTableName(type==GRADE?"grade_":type==RANK?"rank_":"compare_", usedNames);
-		String query = "INSERT INTO photo_grade_group (study_id, name, grade_name, grade_rank) VALUES ('"+study.getId()+
-			       "', '"+newName+"', '"+grade_name+"', '"+(type==GRADE?GRADE:type==RANK?RANK:COMPARE)+"')";
+		String query = "INSERT INTO photo_grade_group (study_id, name, grade_name, grade_rank, repeats) VALUES ('"+study.getId()+
+			        "', '"+newName+"', '"+grade_name+"', '"+(type==GRADE?GRADE:type==RANK?RANK:COMPARE)+
+				"', '"+(type==GRADE?request.getParameter("repeats"):-1)+"')";
 		Query.update(query);
 
 		int groupId = Integer.parseInt(Query.getField(

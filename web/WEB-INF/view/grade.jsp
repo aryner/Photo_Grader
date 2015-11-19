@@ -13,22 +13,26 @@ GradeGroup group = (GradeGroup)session.getAttribute("grade_group");
 ArrayList<Photo> photoGroup = (ArrayList)request.getAttribute("photoGroup");
 String photoNumber = (String)request.getAttribute("photoNumber");
 GradeCounts counts = (GradeCounts)request.getAttribute("gradeCounts");
+Boolean repeat = (Boolean)request.getAttribute("repeat");
 
 if(photoGroup.size()>0) {
 %>
 
 <div class='grade_rank_header'>
 	<h1>Grade <%out.print(group.getName());%></h1>
-	<progress value='<%out.print(counts.getGraded());%>' max='<%out.print(counts.getTotal_grades());%>'>
+	<progress value='<%out.print(counts.getGraded());%>' max='<%out.print((int)(counts.getTotal_grades()+(counts.getTotal_grades()*group.getRepeats()/100)));%>'>
 	</progress>
+	<!--
 	<p>
 		<%out.print(counts.getGraded()+"/"+counts.getTotal_grades());%>
 	</p>
+ 	-->
 </div>
 <div class='newRow'></div>
 
 <div class="meta-row">
 	<form action="submitGrade" method="POST">
+		<input type="hidden" name="repeat" value="<%out.print(repeat);%>">
 		<input type="hidden" name="photo" value="<%out.print(photoGroup.get(0).getName());%>">
 		<input type="hidden" name="questionCount" value="<%out.print(group.questionSize());%>">
 		<input type="hidden" name="photoCount" value="<%out.print(photoGroup.size());%>">

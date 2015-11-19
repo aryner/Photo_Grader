@@ -64,8 +64,22 @@ public class Grade_controller extends HttpServlet {
 		}
 		else if(userPath.equals("/grade")) {
 			GradeGroup group = (GradeGroup)session.getAttribute("grade_group");
+			boolean repeat = (Math.random() < group.getRepeats()/100.);
+			if(repeat) { 
+				ArrayList<Photo> photos = Photo.getUngradedGroup(group, study.getPhoto_attribute_table_name(), user.getName(),true);
+				if (photos.size() > 0) {
+					System.out.println("showing repeat");
+					request.setAttribute("photoGroup",photos);
+					request.setAttribute("repeat",true);
+				} else {
+					request.setAttribute("repeat",false);
+					request.setAttribute("photoGroup",Photo.getUngradedGroup(group, study.getPhoto_attribute_table_name(), user.getName(),false));
+				}
+			} else {
+				request.setAttribute("repeat",false);
+				request.setAttribute("photoGroup",Photo.getUngradedGroup(group, study.getPhoto_attribute_table_name(), user.getName(),false));
+			}
 			request.setAttribute("gradeCounts",new GradeCounts(study.getPhoto_attribute_table_name(),user.getName(),group));
-			request.setAttribute("photoGroup",Photo.getUngradedGroup(group, study.getPhoto_attribute_table_name(), user.getName()));
 			request.setAttribute("photoNumber", study.getPhotoNumber());
 		}
 		else if(userPath.equals("/define_grading_questions")) {
