@@ -68,7 +68,6 @@ public class Grade_controller extends HttpServlet {
 			if(repeat) { 
 				ArrayList<Photo> photos = Photo.getUngradedGroup(group, study.getPhoto_attribute_table_name(), user.getName(),true);
 				if (photos.size() > 0) {
-					System.out.println("showing repeat");
 					request.setAttribute("photoGroup",photos);
 					request.setAttribute("repeat",true);
 				} else {

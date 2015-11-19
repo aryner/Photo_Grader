@@ -53,6 +53,10 @@
 			</div>
 		</div>
 		<div class="newRow"></div>
+		<h3>Include Random Repeats</h3>
+		<input type="input" name="repeats" value="0" style="width:20px;" class="repeats"> 
+		percent of the time graders will be given a randomly selected patient to re-compare.
+		<div class="newRow"></div>
 		<div class="meta-row" id="low">
 			<div class="meta-col">
 				<h3>Select the values to compare</h3>

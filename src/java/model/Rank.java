@@ -227,11 +227,25 @@ public class Rank extends Model implements Comparable<Rank>{
 
 				query += "(";
 				String temp = "'"+user.getName()+"'";
-				/*
-				for (Object field : photo.getFields().keySet()) {
-					temp += ",'"+photo.getField(field.toString())+"'";
+
+				for(int i=0; i<grade_group.groupBySize(); i++) {
+					String attribute = grade_group.getGroupBy(i).getPhoto_attribute();
+					if(attribute.equals(Grade.FILENAME)) {
+						temp += ",'"+photo.getName()+"'";
+					} else {
+						temp += ",'"+photo.getField(attribute)+"'";
+					}
 				}
-				*/
+				query += temp + ")";
+			}
+			int size = (int)((float)photos.size() * (((float)grade_group.getRepeats())/100.));
+			Random rand = new Random();
+			for(int j=0; j<size; j++) {
+				query += ",";
+				Photo photo = photos.remove(rand.nextInt(photos.size()));
+				query += "(";
+				String temp = "'"+user.getName()+"'";
+
 				for(int i=0; i<grade_group.groupBySize(); i++) {
 					String attribute = grade_group.getGroupBy(i).getPhoto_attribute();
 					if(attribute.equals(Grade.FILENAME)) {

@@ -109,7 +109,6 @@ public class Photo extends Model{
 		ArrayList<Photo> choices = null;
 		if(repeat) {
 			choices = getRegradeCombinations(category, photoTable, grader);
-			System.out.println("choices.size = "+choices.size());
 		} 
 		if (choices == null) {
 			choices = getUngradedCombinations(category, photoTable, grader);

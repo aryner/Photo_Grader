@@ -35,6 +35,10 @@
 			out.print("<br><input type='checkbox' name='groupBy_"+i+"' value='"+i+"'> "+columns.get(i));
 		}
 		%>
+
+		<h3>Include Random Repeats</h3>
+		<input type="input" name="repeats" value="0" style="width:20px;" class="repeats"> 
+		percent of the time graders will be given a randomly selected patient to re-rank.
 	</div>
 
 	<div class="errorDiv"></div>
