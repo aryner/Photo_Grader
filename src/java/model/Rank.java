@@ -35,6 +35,7 @@ public class Rank extends Model implements Comparable<Rank>{
 	private int child_id;
 	private int main_chain;
 	private int rank;
+	private String equals;
 
 	public static final String PARENT = "parent_id";
 	public static final String CHILD = "child_id";
@@ -50,7 +51,7 @@ public class Rank extends Model implements Comparable<Rank>{
 
 	public Rank() {}
 
-	public Rank(int id, String grader, Map<String,String> group_meta_data, int parent_id, int child_id, int main_chain, int rank) {
+	public Rank(int id, String grader, Map<String,String> group_meta_data, int parent_id, int child_id, int main_chain, int rank, String equals) {
 		this.id = id;
 		this.grader = grader;
 		this.group_meta_data = group_meta_data;
@@ -58,6 +59,7 @@ public class Rank extends Model implements Comparable<Rank>{
 		this.child_id = child_id;
 		this.main_chain = main_chain;
 		this.rank = rank;
+		this.equals = equals;
 	}
 
 	@Override
@@ -73,7 +75,7 @@ public class Rank extends Model implements Comparable<Rank>{
 			}
 
 			return new Rank(resultSet.getInt("id"),resultSet.getString("grader"),groupMeta,resultSet.getInt(PARENT),
-					resultSet.getInt(CHILD),resultSet.getInt(MAIN_CHAIN),resultSet.getInt(RANK));
+					resultSet.getInt(CHILD),resultSet.getInt(MAIN_CHAIN),resultSet.getInt(RANK),resultSet.getString("equal"));
 		}
 		catch(SQLException e) {
 			e.printStackTrace(System.err);
@@ -84,7 +86,8 @@ public class Rank extends Model implements Comparable<Rank>{
 	public static void createTable(int group_id) {
 		String tableName = "rank_"+Query.getField("photo_grade_group","grade_name","id='"+group_id+"'",null).get(0);
 		String query = "CREATE TABLE IF NOT EXISTS "+tableName+" ( "+
-				"id int unsigned AUTO_INCREMENT,grader varchar(50),";
+				"id int unsigned AUTO_INCREMENT,grader varchar(50),"+
+				"equal tinyint unsigned,";
 		String postfix = "PRIMARY KEY(id)) ENGINE=INnoDB";
 		ArrayList<GroupBy> grouping = GroupBy.getGroup(group_id);
 
@@ -136,16 +139,25 @@ public class Rank extends Model implements Comparable<Rank>{
 		session.setAttribute("low_rank",low_rank);
 		if (high_rank < low_rank) {
 			int to_insert_id = Integer.parseInt(request.getParameter("right_rank"));
-			insertRank(group.getGrade_name(),low_rank,to_insert_id,user.getName());
+			int equalId = -1;
+			if(comparison == EQUAL) {
+				String query = "SELECT * FROM "+group.getGrade_name()+" WHERE rank="+session.getAttribute("last_compared_rank");
+				equalId = ((Rank)Query.getModel(query,new Rank()).get(0)).getId();
+			}
+			insertRank(group.getGrade_name(),low_rank,to_insert_id,user.getName(),equalId);
 			session.removeAttribute("last_compared_rank");
 		}
 	}
 
-	private static void insertRank(String table_name, int bottom_of_shift, int insert_id, String grader) {
+	private static void insertRank(String table_name, int bottom_of_shift, int insert_id, String grader, int equalId) {
 		String query = "UPDATE "+table_name+" SET rank=rank-1 WHERE grader='"+grader+"' AND rank<"+bottom_of_shift+" AND rank>0";
 		Query.update(query);
 		query = "UPDATE "+table_name+" SET rank="+(bottom_of_shift-1)+" WHERE id="+insert_id;
 		Query.update(query);
+		if(equalId > 0) {
+			query = "UPDATE "+table_name+" SET equal =  "+equalId+" WHERE grader='"+grader+"' AND rank<"+bottom_of_shift+" AND rank>0";
+			Query.update(query);
+		}
 	}
 
 	public static void assignParentChildRelationship(int right_id, int left_id, String compare, String category) {
@@ -437,22 +449,23 @@ public class Rank extends Model implements Comparable<Rank>{
 	public static ArrayList<String> getCSVLines(GradeGroup group, Study study, User user) {
 		ArrayList<String> lines = new ArrayList<String>();
 		ArrayList<String> fields = new ArrayList<String>();
-		String currline = "Grader";
+		String currline = "Grader, RankId,";
 		for(int i=0; i<group.groupBySize();i++) {
 			fields.add(group.getGroupBy(i).getPhoto_attribute());
 			currline += ", "+group.getGroupBy(i).getPhoto_attribute();
 		}
-		currline += ", rank";
+		currline += ", rank, equal with rankId";
 		lines.add(currline);
 
 		ArrayList<Rank> ranks = getAllRanks(group.getGrade_name(),user);
 		for(Rank rank : ranks) {
 			if(rank.getRank() > 0) {
-				currline = rank.getGrader();
+				currline = rank.getGrader()+", "+rank.getId();
 				for(String field : fields) {
 					currline += ", "+rank.getGroup_meta_value(field);
 				}
-				currline += ", "+rank.getRank();
+				String equals = rank.getEquals();
+				currline += ", "+rank.getRank()+","+(equals!=null?equals:"");
 				lines.add(currline);
 			}
 		}
@@ -516,6 +529,20 @@ public class Rank extends Model implements Comparable<Rank>{
 	@Override
 	public int compareTo(Rank r1) {
 		return this.rank - r1.getRank();
+	}
+
+	/**
+	 * @return the equals
+	 */
+	public String getEquals() {
+		return equals;
+	}
+
+	/**
+	 * @param equals the equals to set
+	 */
+	public void setEquals(String equals) {
+		this.equals = equals;
 	}
 
 	public static class Pair {
