@@ -11,6 +11,7 @@ $(document).ready(function() {
 
 	addNewQuestionListener(0);
 	addAnswerTypeListener(0);
+	addRepeatListener();
 
 	$(document).bind('keydown',function(e) {
 		var unicode = e.keyCode || e.which;
@@ -37,6 +38,16 @@ $(document).ready(function() {
 		}
 	});
 });
+
+function addRepeatListener() {
+	var repeats = $(".repeats");
+
+	repeats.on('input',function() {
+		while(this.value.match(/[^0-9]/) || Number(this.value) > 99) {
+			this.value = this.value.substring(0,this.value.length-1);
+		}
+	});
+}
 
 function setTextLimit(name) {
 	$('input[name='+name+']').on('input', function() {

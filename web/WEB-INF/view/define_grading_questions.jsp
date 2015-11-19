@@ -35,6 +35,10 @@
 		}
 		%>
 
+		<h3>Include Random Repeats</h3>
+		<input type="input" name="repeats" value="0" style="width:20px;" class="repeats"> 
+		percent of the time graders will be given a randomly selected patient to re-grade.
+
 		<h3>Define questions</h3>
 		<h3>Question 1</h3>
 		<div class="meta-col">

@@ -116,6 +116,7 @@ public class Grade extends Model {
 	}
 
 	private static void newGrade(HttpServletRequest request, Study study, GradeGroup group, User user, Photo photo) {
+		//if request notes repeat, take appropriate actions
 		String query = "INSERT INTO "+group.getGrade_name()+" ";
 
 		String parameters = "(grader";

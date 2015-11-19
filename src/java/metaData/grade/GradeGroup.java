@@ -33,6 +33,7 @@ public class GradeGroup extends Model {
 	private String grade_name;
 	private String name;
 	private int grade_rank;
+	private int repeats;
 	private ArrayList<GroupBy> groupBy;
 	private ArrayList<Question> questions;
 
@@ -55,17 +56,19 @@ public class GradeGroup extends Model {
 		this.grade_name = temp.getGrade_name();
 		this.name = temp.getName();
 		this.grade_rank = temp.getGrade_rank();
+		this.repeats = temp.getRepeats();
 
 		setGroupBy();
 		setQuestions();
 	}
 
-	public GradeGroup(int id, int study_id, String grade_name, String name, int grade_rank) {
+	public GradeGroup(int id, int study_id, String grade_name, String name, int grade_rank, int repeats) {
 		this.id = id;
 		this.study_id = study_id;
 		this.grade_name = grade_name;
 		this.name = name;
 		this.grade_rank = grade_rank;
+		this.repeats = repeats;
 
 		setGroupBy();
 		setQuestions();
@@ -76,7 +79,7 @@ public class GradeGroup extends Model {
 		try {
 			return new GradeGroup(resultSet.getInt("id"),resultSet.getInt("study_id"),
 					      resultSet.getString("grade_name"),resultSet.getString("name"),
-					      resultSet.getInt("grade_rank"));
+					      resultSet.getInt("grade_rank"),resultSet.getInt("repeats"));
 		}
 		catch(SQLException e) {
 			e.printStackTrace(System.err);
@@ -259,6 +262,20 @@ public class GradeGroup extends Model {
 	 */
 	public void setGroupBy(ArrayList<GroupBy> groupBy) {
 		this.groupBy = groupBy;
+	}
+
+	/**
+	 * @return the repeats
+	 */
+	public int getRepeats() {
+		return repeats;
+	}
+
+	/**
+	 * @param repeates the repeats to set
+	 */
+	public void setRepeats(int repeates) {
+		this.repeats = repeates;
 	}
 	
 }
