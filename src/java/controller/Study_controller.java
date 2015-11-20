@@ -26,7 +26,7 @@ import model.User;
  */
 @WebServlet(name = "Controller.Study_controller", urlPatterns = {
 								"/select_study","/setStudy","/createStudy","/create_study",
-								"/remove_category","/remove_study"
+								"/remove_category","/remove_study","/removeStudy"
 								})
 public class Study_controller extends HttpServlet {
 	/**
@@ -67,6 +67,9 @@ public class Study_controller extends HttpServlet {
 			request.setAttribute("ranks",study.getRankCategoryNames());
 			request.setAttribute("compares",study.getCompareCategoryNames());
 		}
+		else if(userPath.equals("/remove_study")) {
+			request.setAttribute("studyNames",Query.getField("study","name",null,null));
+		}
 
 		String url = "/WEB-INF/view" + userPath + ".jsp";
 
@@ -99,6 +102,15 @@ public class Study_controller extends HttpServlet {
 		else if(userPath.equals("/setStudy")) {
 			session.setAttribute("study",Study.getStudyByName(request.getParameter("name")));
 			response.sendRedirect("/Photo_Grader/home");
+			return;
+		}
+		else if(userPath.equals("/removeStudy")) {
+			if(!user.isAdmin()) {
+				response.sendRedirect("/Photo_Grader/home");
+				return;
+			}
+			//TODO
+			response.sendRedirect("/Photo_Grader/admin_page");
 			return;
 		}
 
