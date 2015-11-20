@@ -215,7 +215,40 @@ public class Compare extends Model {
 		query = query.substring(0,query.length()-1);
 		//update query
 		Query.update(query);
+
+		int size = (int)((float)patientSplitPhotos.size() * (((float)group.getRepeats())/100.));
+		query = "SELECT * FROM "+group.getGrade_name()+" WHERE grader='"+user.getName()+"'";
+		ArrayList<Compare> compares = (ArrayList)Query.getModel(query, new Compare());
+		ArrayList<Compare> repeats = new ArrayList<Compare>();
+
+		for(int i=0; i<size; i++) {
+			repeats.add(compares.remove(rand.nextInt(compares.size())));
+		}
+
+		generateRepeats(group,user,photo_table,compares);
 		updateMissingCompares(user.getName(),group.getGrade_name());
+	}
+
+	private static void generateRepeats(GradeGroup group, User user, String photo_table,ArrayList<Compare> compares) {
+		ArrayList<GroupBy> groupedBy = GroupBy.getGroup(group.getId());
+		String query = "INSERT INTO "+group.getGrade_name()+" (grader, high, low";
+		for(GroupBy grouped : groupedBy) {
+			query += ", "+grouped.getPhoto_attribute();
+		}
+		query += ") VALUES ";
+
+		int count = 0;
+		for(Compare compare : compares) {
+			if(count > 0) { query += ","; }
+			query += "('"+user.getName()+"', '"+compare.getHigh()+"', '"+compare.getLow()+"'";
+			for(GroupBy grouped : groupedBy) {
+				query += ", '"+compare.getMeta_data(grouped.getPhoto_attribute())+"'";
+			}
+			query += ")";
+			count++;
+		}
+
+		Query.update(query);
 	}
 
 	private static void updateMissingCompares(String grader, String table_name) {
