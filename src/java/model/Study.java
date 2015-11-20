@@ -6,6 +6,7 @@
 
 package model;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -22,6 +23,7 @@ import metaData.ManualMetaData;
 import metaData.MetaData;
 
 import metaData.grade.GradeGroup;
+import metaData.grade.Question;
 
 /**
  *
@@ -74,6 +76,76 @@ public class Study extends Model {
 
 		newStudy = "SELECT * FROM study WHERE name='"+Helper.process(name)+"'";
 		return (Study)Query.getModel(newStudy, new Study()).get(0);
+	}
+
+	public static String removeStudy(HttpServletRequest request, User user) {
+		//check for password match
+		String query = "SELECT * FROM user WHERE name='"+Helper.process(request.getParameter("userName"))+"' AND "+
+				"password=MD5('"+request.getParameter("password")+"')";
+		ArrayList<User> users = (ArrayList)Query.getModel(query, new User());
+		if(users.isEmpty()) { return "That user name and password combination was not correct"; }
+		if(user.getId() != users.get(0).getId()) { return "That user name and password combination was not correct"; }
+		//get study
+		query = "SELECT * FROM study WHERE name='"+Helper.process(request.getParameter("studyName"))+"'";
+		Study study = (Study)Query.getModel(query,new Study()).get(0);
+
+		//delete all meta data (name,manual,table)
+		query = "DELETE FROM photo_data_by_manual WHERE study_id="+study.getId();
+		Query.update(query);
+		query = "DELETE FROM photo_data_by_name WHERE study_id="+study.getId();
+		Query.update(query);
+		query = "DELETE FROM photo_data_by_table WHERE study_id="+study.getId();
+		Query.update(query);
+		//delete all photos
+		query = "SELECT * FROM "+study.getPhoto_attribute_table_name();
+		ArrayList<Photo> photos = (ArrayList)Query.getModel(query,new Photo());
+		String path = "";
+		for (Photo photo : photos) {
+			new File(photo.getPath()+photo.getName()).delete();
+			path = photo.getPath();
+		}
+		new File(path).delete();
+		//drop photo table
+		query = "DROP TABLE "+study.getPhoto_attribute_table_name();
+		Query.update(query);
+		//get all groups
+		query = "SELECT * FROM photo_grade_group WHERE study_id="+study.getId();
+		ArrayList<GradeGroup> groups = (ArrayList)Query.getModel(query, new GradeGroup());
+		//delete all group by and ranked_within, get all questions and drop all categories
+		String groupQuery = "";
+		ArrayList<Question> questions = new ArrayList<Question>();
+		for(GradeGroup group : groups) {
+			query = "DROP TABLE "+group.getGrade_name();
+			Query.update(query);
+			query = "DELETE FROM group_by WHERE grade_group_id="+group.getId();
+			Query.update(query);
+			query = "DELETE FROM ranked_within WHERE grade_group_id="+group.getId();
+			Query.update(query);
+			query = "SELECT * FROM question WHERE grade_group_id="+group.getId();
+			questions.addAll((ArrayList)Query.getModel(query,new Question()));
+			if(!groupQuery.equals("")) { groupQuery += " OR "; }
+			groupQuery += " id = "+group.getId();
+		}
+		//delete check radios
+		String questionQuery = "";
+		for(Question question : questions) {
+			query = "DELETE FROM check_radio_option WHERE photo_data_id="+question.getId();
+			Query.update(query);
+			if(!questionQuery.equals("")) { questionQuery += " OR "; }
+			questionQuery += "id = "+question.getId();
+		}
+		//delete questions
+		if(!questionQuery.equals("")) {
+			Query.update("DELETE FROM question WHERE "+questionQuery);
+		}
+		//delete all groups
+		if(!groupQuery.equals("")) {
+			Query.update("DELETE FROM photo_grade_group WHERE "+groupQuery);
+		}
+		//delete study
+		query = "DELETE FROM study WHERE id="+study.getId();
+		Query.update(query);
+		return null;
 	}
 
 	public String getPhotoNumber() {

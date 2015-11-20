@@ -6,6 +6,7 @@
 
 package controller;
 
+import java.util.ArrayList;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
@@ -68,6 +69,10 @@ public class Study_controller extends HttpServlet {
 			request.setAttribute("compares",study.getCompareCategoryNames());
 		}
 		else if(userPath.equals("/remove_study")) {
+			if(!user.isAdmin()) {
+				response.sendRedirect("/Photo_Grader/home");
+				return;
+			}
 			request.setAttribute("studyNames",Query.getField("study","name",null,null));
 		}
 
@@ -109,8 +114,15 @@ public class Study_controller extends HttpServlet {
 				response.sendRedirect("/Photo_Grader/home");
 				return;
 			}
-			//TODO
-			response.sendRedirect("/Photo_Grader/admin_page");
+			ArrayList<String> errors = new ArrayList<String>();
+			String error = Study.removeStudy(request,user);
+			if(error != null && !error.equals("")) {
+				errors.add(error);
+				session.setAttribute("errors",errors);
+				response.sendRedirect("/Photo_Grader/home");
+				return;
+			}
+			response.sendRedirect("/Photo_Grader/select_study");
 			return;
 		}
 
