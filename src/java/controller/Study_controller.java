@@ -26,7 +26,7 @@ import model.User;
  */
 @WebServlet(name = "Controller.Study_controller", urlPatterns = {
 								"/select_study","/setStudy","/createStudy","/create_study",
-								"/remove_category"
+								"/remove_category","/remove_study"
 								})
 public class Study_controller extends HttpServlet {
 	/**

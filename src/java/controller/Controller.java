@@ -58,6 +58,9 @@ public class Controller extends HttpServlet {
 			if(user.isAdmin() && study == null) {
 				response.sendRedirect("/Photo_Grader/admin_page");
 				return;
+			} else if (user.isStudy_coordinator() && !user.isGrader() && study == null){
+				response.sendRedirect("/Photo_Grader/select_study");
+				return;
 			}
 			session.removeAttribute("grade_group");
 			session.removeAttribute("rank_group");

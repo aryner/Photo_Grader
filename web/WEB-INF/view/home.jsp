@@ -76,5 +76,10 @@
 				<a href="admin_page" class="btn">Change user privileges</a>
 			</div>
 		<%}%>
+		<%if(user.isAdmin() && user.isStudy_coordinator()) {%>
+			<div class="home-col">
+				<a href="remove_study" class="btn">Delete a Study</a>
+			</div>
+		<%}%>
 	</div>
 </div>

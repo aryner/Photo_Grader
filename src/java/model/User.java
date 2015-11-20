@@ -96,7 +96,7 @@ public class User extends Model {
 		if(!users.isEmpty()) return null;
 
 		String insertQuery = "INSERT INTO user (name, password, access_level) VALUES ("+
-			       "'"+Helper.process(name)+"', MD5('"+password+"'), '"+(userCount()>0?1:4)+"')";
+			       "'"+Helper.process(name)+"', MD5('"+password+"'), '"+(adminCount()>0?1:4)+"')";
 		Query.update(insertQuery);
 		
 		return (User)Query.getModel(getQuery, new User()).get(0);
@@ -132,6 +132,17 @@ public class User extends Model {
 		query += " END";
 
 		Query.update(query);
+	}
+
+	public static int adminCount() {
+		String query = "SELECT * FROM user";
+		ArrayList<User> users = (ArrayList)Query.getModel(query, new User());
+		int count = 0;
+		for(User user : users) {
+			if(user.isAdmin()) { count++; }
+		}
+
+		return count;
 	}
 
 	public static ArrayList getUsers() {
