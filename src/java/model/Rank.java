@@ -155,7 +155,7 @@ public class Rank extends Model implements Comparable<Rank>{
 		query = "UPDATE "+table_name+" SET rank="+(bottom_of_shift-1)+" WHERE id="+insert_id;
 		Query.update(query);
 		if(equalId > 0) {
-			query = "UPDATE "+table_name+" SET equal =  "+equalId+" WHERE grader='"+grader+"' AND rank<"+bottom_of_shift+" AND rank>0";
+			query = "UPDATE "+table_name+" SET equal =  "+equalId+" WHERE grader='"+grader+"' AND rank="+(bottom_of_shift-1);
 			Query.update(query);
 		}
 	}
